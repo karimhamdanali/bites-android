@@ -1,0 +1,8 @@
+#summary Bites Overview.
+
+= Introduction =
+
+Bites is an organiser for cooks. It helps you manage your recipes, inventory, plan meals and  go shopping.
+
+
+= Details =
