@@ -1,13 +1,10 @@
-#summary One-sentence summary of this page.
+#summary The Inventory activity.
 
 = Introduction =
 
-Add your content here.
+The Inventory activity manages what is in the cupboard. 
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Inventory contains a row for each ingredient that keep in the cupboard, or that you use in your recipes. Each ingredient has a number of properties that can be set in the [InventoryEdit Inventory Edit] activity.
