@@ -8,14 +8,15 @@ Use Recipe Edit to edit, insert or make a recipe.
 = Details =
 
 Use the Recipe Edit activity to enter data to update an existing recipe or insert a new one.
-*Screen Fields*
+
+== Screen Fields ==
 ||*Screen Field*||*Description*||
 ||Recipe||Recipe name||
 ||Serves||How many people this recipe serves, or when making a meal how many serves to make||
 ||Method||Expandable list of method steps||
 ||Ingredients||Expandable list of ingredients and quantities used||
 
-*The options menu*
+== The Options Menu ==
 ||*Menu Option*||*Description*||
 ||Make Meal||Make the current recipe||
 ||Discard||Discard changes made||
