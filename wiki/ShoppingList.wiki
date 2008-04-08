@@ -1,13 +1,15 @@
-#summary One-sentence summary of this page.
+#Shopping List Activity.
 
 = Introduction =
 
-Add your content here.
+The shopping list activity shows your shopping list and allows you to tick off items as they go in the trolley.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Ingredients are automatically added for [RecipeEdit recipes] in the [MealPlannerList meal planner] and miscellaneous ingredients can be added manually. When you are shopping you can simply click on an item on the shopping list to add it to the trolley and strike it out.
+
+== Menu Options ==
+
+|| *Menu Option* || *Description* ||
+|| Finish Shopping || Add all items that are in the trolley to your [Inventory inventory] and delete them from the shopping list||
