@@ -1,5 +1,5 @@
+#summary Recipe List activity.
 #labels Featured
-# Summary Recipe List activity.
 
 = Introduction =
 
