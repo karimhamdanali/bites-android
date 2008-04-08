@@ -1,13 +1,12 @@
-#summary One-sentence summary of this page.
+#Meal Planner Activity.
 
 = Introduction =
 
-Add your content here.
+The Meal Planner activity list meals you have planned to make.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+The meal planner activity lists the meals you have planned to make using the [MealPlannerEdit meal planner edit] activity. Each row of the list shows a meal and how many people you have planned to make it for.
+
+A [ShoppingList shopping list] is automatically generated based on the ingredients that will be used to make each meal and what is currently in the cupboard.
