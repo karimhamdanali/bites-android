@@ -1,0 +1,19 @@
+#Meal Planner Edit Activity.
+
+= Introduction =
+
+Add or edit a meal that you plan to make.
+
+
+= Details =
+
+Use the Meal Planner Edit activity to pick a recipe from your [RecipeList recipe list] and plan to make a number of serves. A [ShoppingList shopping list] is automatically generated using the ingredients used to make the [RecipeEdit recipe] and what is currently in the [InventoryList cupboard].
+
+== Screen Fields ==
+|| *Field* || *Description* ||
+|| Recipe || The recipe that you will make ||
+|| Serves || The number of people to make the recipe for ||
+
+== Menu Options ==
+|| *Menu Option* || *Description* ||
+|| Discard || Discard any changes made ||
