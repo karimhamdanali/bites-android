@@ -1,4 +1,4 @@
-#Recipe Edit.
+#summary Recipe Edit.
 
 = Introduction =
 
