@@ -1,5 +1,5 @@
+#summary Meal Planner Activity.
 #labels Featured
-#Meal Planner Activity.
 
 = Introduction =
 
