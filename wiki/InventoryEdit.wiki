@@ -1,5 +1,5 @@
-#InventoryEdit activity.
-
+#summary Inventory Edit activity.
+ 
 = Introduction =
 
 Edit and insert individual ingredients in the inventory.
