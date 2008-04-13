@@ -11,11 +11,16 @@ Start up Bites and you'll see the home page with the the main activities.
 
 _Bites Home Page_
 
+
+==Inventory==
+
 First let's add an ingredient to our inventory. Click the "Inventory" button and you'll be taken to the [Inventory] page. This page lists all ingredients currently in your inventory, click the Menu button and select "Insert" to put a enter a new ingredient.
 
 You should now be at the [InventoryEdit Inventory Edit] page, ready to add a new ingredient to your inventory. 
 
 [http://bites-android.googlecode.com/svn/wiki/InventoryEdit.png]
+
+_Inventory Edit Page_
 
 So lets add some beans to the cupboard - enter the following:
 || *Field* || *Value* || *Description* ||
@@ -26,9 +31,14 @@ So lets add some beans to the cupboard - enter the following:
 
 Now just press the back button, these changes will be saved and the Inventory List will show Baked Beans. Press back once more to get to the home page.
 
+
+==Recipes==
+
 Now we want to enter a recipe, so click the "Recipes" button to get to the [RecipeList recipe list]. Here we want to add a recipe so click the menu button and then "insert", this takes us to the [RecipeEdit recipe edit] page.
 
 [http://bites-android.googlecode.com/svn/wiki/RecipeEdit.png]
+
+_Recipe Edit Page_
 
 Now we can create our first recipe. Set the fields on this page like this:
 
@@ -52,10 +62,18 @@ Now we want to add some slices of bread, bread slices are not in the inventory s
 Now hit the back button to enter this new ingredient taking us back to the [Inventory inventory list]. Click "Bread" from the list, then in the following [IngredientEdit ingredient edit] page enter "4" in the Quantity field then click the back button.
 Now we have a complete Beans on Toast recipe.
 
+
+==Meal Planner==
+
 It's time to plan a meal, so click back until you hit the bites home page. Now click "Meal Planner" then on the [MealPlannerList meal planner list] page click menu, Insert, which will take you to the [RecipeList recipe list] page to select a recipe to make for your guests. Click "Beans on toast", this will take you to the [MealPlannerEdit meal planner edit] page to enter the number of serves you want to make. Enter "4" in the Number of serves field and click the back button. Beans on toast for 4 people is now in the meal planner. Click back again to go to the Bites home page.
+
+
+==Shopping List==
 
 Now you can check out your automatically generated shopping list. Click "Shopping List" to go to the [ShoppingList shopping list] page. 
 
 [http://bites-android.googlecode.com/svn/wiki/ShoppingList.png]
 
-Here you can see 
+_Shopping List Page_
+
+Here you can see that you will need 2 cans of beans and 8 slices of bread to make beans on toast for 4 people. Click on one of the shopping list items and you will see it grey out with a strikethrough, use this when you are shopping to tick off items that are in your trolley. When you are finished shopping hit menu, "Finish Shopping" and all items that are ticked off will be added to your inventory.
