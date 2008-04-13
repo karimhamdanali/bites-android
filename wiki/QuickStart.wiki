@@ -36,4 +36,26 @@ Now we can create our first recipe. Set the fields on this page like this:
 || Recipe || Baked Beans || The recipe name ||
 || Serves || 2 || The number of people this recipe serves ||
 
-Click on "method" to expand a list of method steps. This is empty because we haven't added any yet, so click menu and "Add Method Step" to go the method step edit page.
+Click on "method" to expand a list of method steps. This is empty because we haven't added any yet, so click menu and "Add Method Step" to go the [MethodEdit method edit] page.
+When you insert a method step, the next step number is automatically filled in on the [MethodEdit method edit] page, so we just need to add the text to our method step. In the method field enter "Heat up baked beans", then push the back button and you should see this step in the method list. Repeat the above to add the next steps "Toast bread slices" and "Spread beans evenly over toast slices".
+
+Now we need to add some ingredients, so click menu then "Add Ingredient" which will take us to the [Inventory inventory list] page. Pick Baked Beans from the list and then in the [IngredientEdit ingredients edit] page that follows enter "1" in the quantity field, then the back button. Baked Beans will now appear in the ingredients list on the [RecipeEdit recipe edit] page.
+
+Now we want to add some slices of bread, bread slices are not in the inventory so this will be a bit different. First click menu then "Add Ingredient" which takes us to the [Inventory inventory list], bread slices are not here so click menu, Insert to create a new ingredient. On the [InventoryEdit inventory edit] page fill in the fields like this:
+
+|| *Field* || *Value* ||
+|| Ingredient || Bread ||
+|| Quantity || 0 ||
+|| Unit || Slice ||
+|| Minimum Quantity || 0 ||
+
+Now hit the back button to enter this new ingredient taking us back to the [Inventory inventory list]. Click "Bread" from the list, then in the following [IngredientEdit ingredient edit] page enter "4" in the Quantity field then click the back button.
+Now we have a complete Beans on Toast recipe.
+
+It's time to plan a meal, so click back until you hit the bites home page. Now click "Meal Planner" then on the [MealPlannerList meal planner list] page click menu, Insert, which will take you to the [RecipeList recipe list] page to select a recipe to make for your guests. Click "Beans on toast", this will take you to the [MealPlannerEdit meal planner edit] page to enter the number of serves you want to make. Enter "4" in the Number of serves field and click the back button. Beans on toast for 4 people is now in the meal planner. Click back again to go to the Bites home page.
+
+Now you can check out your automatically generated shopping list. Click "Shopping List" to go to the [ShoppingList shopping list] page. 
+
+[http://bites-android.googlecode.com/svn/wiki/ShoppingList.png]
+
+Here you can see 
