@@ -1,8 +1,9 @@
 #summary Quick start guide.
+#labels Featured
 
 = Quick Start Guide =
 
 This guide will walk you through your first time using Bites by planning a dinner party, so let's get started.
 
 First let's add an ingredient to our inventory.
-[http://code.google.com/p/bites-android/source/browse/wiki/main.png]
+[http://bites-android.googlecode.com/svn/wiki/main.png]
