@@ -35,3 +35,5 @@ Now we can create our first recipe. Set the fields on this page like this:
 || *Fields* || *Value* || *Description* ||
 || Recipe || Baked Beans || The recipe name ||
 || Serves || 2 || The number of people this recipe serves ||
+
+Click on "method" to expand a list of method steps. This is empty because we haven't added any yet, so click menu and "Add Method Step" to go the method step edit page.
