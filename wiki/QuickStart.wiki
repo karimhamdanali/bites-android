@@ -5,4 +5,4 @@
 This guide will walk you through your first time using Bites by planning a dinner party, so let's get started.
 
 First let's add an ingredient to our inventory.
-[http:main.pmg]
+[http:main.png]
