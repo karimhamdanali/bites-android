@@ -5,5 +5,7 @@
 
 This guide will walk you through your first time using Bites by planning a dinner party, so let's get started.
 
-|| [http://bites-android.googlecode.com/svn/wiki/main.png] || Start up Bites and you'll see the home page with the the main activities. First let's add an ingredient to our inventory. Click the "Inventory" button and you'll be taken to the Inventory page. This page lists all ingredients currently in your inventory, click the Menu button and select "Insert" to put a enter a new ingredient ||
-|| Bites Home Page || || 
+Start up Bites and you'll see the home page with the the main activities. First let's add an ingredient to our inventory. Click the "Inventory" button and you'll be taken to the Inventory page. This page lists all ingredients currently in your inventory, click the Menu button and select "Insert" to put a enter a new ingredient.
+
+|| [http://bites-android.googlecode.com/svn/wiki/main.png] ||
+|| Bites Home Page ||
