@@ -17,9 +17,13 @@ You should now be at the [InventoryEdit Inventory Edit] page, ready to add a new
 
 [http://bites-android.googlecode.com/svn/wiki/InventoryEdit.png]
 
-Enter the following:
+So lets add some beans to the cupboard - enter the following:
 || *Field* || *Value* || *Description ||
-|| Ingredient || Tofu || The name of the ingredient ||
+|| Ingredient || Baked Beans || The name of the ingredient ||
 || Quantity || 1 || The quantity you actually have on hand ||
-|| Unit || Bag || The units that quantity is measured in ||
+|| Unit || Can || The units that quantity is measured in ||
 || Minimum Quantity || 1 || The minimum quantity to keep on hand ||
+
+Now just press the back button, these changes will be saved and the Inventory List will show Baked Beans. Press back once more to get to the home page.
+
+Now we want to enter a recipe, so click the "Recipes" button to get to the [RecipeList recipe list]. Here we want to add a recipe so click the menu button and then "insert", this takes us to the [RecipeEdit recipe edit] page.
