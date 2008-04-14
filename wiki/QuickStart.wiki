@@ -49,7 +49,7 @@ Now we can create our first recipe. Set the fields on this page like this:
 Click on "method" to expand a list of method steps. This is empty because we haven't added any yet, so click menu and "Add Method Step" to go the [MethodEdit method edit] page.
 When you insert a method step, the next step number is automatically filled in on the [MethodEdit method edit] page, so we just need to add the text to our method step. In the method field enter "Heat up baked beans", then push the back button and you should see this step in the method list. Repeat the above to add the next steps "Toast bread slices" and "Spread beans evenly over toast slices".
 
-Now we need to add some ingredients, so click menu then "Add Ingredient" which will take us to the [Inventory inventory list] page. Pick Baked Beans from the list and then in the [IngredientEdit ingredients edit] page that follows enter "1" in the quantity field, then the back button. Baked Beans will now appear in the ingredients list on the [RecipeEdit recipe edit] page.
+Now we need to add some ingredients, so click menu then "Add Ingredient" which will take us to the [Inventory inventory list] page. Pick Baked Beans from the list and then in the [InventoryEdit inventory edit] page that follows enter "1" in the quantity field, then the back button. Baked Beans will now appear in the ingredients list on the [RecipeEdit recipe edit] page.
 
 Now we want to add some slices of bread, bread slices are not in the inventory so this will be a bit different. First click menu then "Add Ingredient" which takes us to the [Inventory inventory list], bread slices are not here so click menu, Insert to create a new ingredient. On the [InventoryEdit inventory edit] page fill in the fields like this:
 
