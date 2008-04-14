@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:paddingTop="5sp"
+	android:paddingBottom="5sp"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+	<TextView android:id="@+id/ingredient"
+		android:bufferType="spannable"
+		android:text="Ingredient"
+		android:layout_weight="1"
+		android:layout_width="wrap_content" 
+		android:layout_height="fill_parent" />
+	<TextView android:id="@+id/qty"
+		android:bufferType="spannable"
+		android:text="Qty"
+		android:paddingRight="10sp"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent" />
+	<TextView android:id="@+id/unit"
+		android:bufferType="spannable"
+		android:text="Unit"
+		android:width="80sp"
+		android:textAlign="end"
+		android:paddingRight="10sp"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent" />
+</LinearLayout>
+

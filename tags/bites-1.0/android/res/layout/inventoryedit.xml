@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >
+	<TextView android:id="@+id/txt_ingredient"
+		android:layout_height="wrap_content"
+		android:text="Ingredient:"
+		android:layout_width="wrap_content" />
+	<EditText android:id="@+id/ingredient"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:selectAllOnFocus="true" />
+	<TextView android:id="@+id/txt_quantity"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:text="Quantity:" />
+	<EditText android:id="@+id/quantity"
+		android:numeric="true"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:selectAllOnFocus="true" />
+	<TextView android:id="@+id/txt_unit"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:text="Unit:" />
+	<EditText android:id="@+id/unit"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:selectAllOnFocus="true" />
+	<TextView android:id="@+id/txt_quantitymin"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:text="Minimum Quantity:" />
+	<EditText android:id="@+id/quantitymin"
+		android:numeric="true"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:selectAllOnFocus="true" />
+</LinearLayout>
+
