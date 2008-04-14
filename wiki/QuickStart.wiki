@@ -59,7 +59,7 @@ Now we want to add some slices of bread, bread slices are not in the inventory s
 || Unit || Slice ||
 || Minimum Quantity || 0 ||
 
-Now hit the back button to enter this new ingredient taking us back to the [Inventory inventory list]. Click "Bread" from the list, then in the following [IngredientEdit ingredient edit] page enter "4" in the Quantity field then click the back button.
+Now hit the back button to enter this new ingredient taking us back to the [Inventory inventory list]. Click "Bread" from the list, then in the following [InventoryEdit inventory edit] page enter "4" in the Quantity field then click the back button.
 Now we have a complete Beans on Toast recipe.
 
 
