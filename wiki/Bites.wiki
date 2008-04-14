@@ -2,9 +2,9 @@
 
 = Introduction =
 
-Bites is an organiser for cooks. It can be used to manage recipes and inventory, plan meals and automatically create shopping lists.
+Bites is an organiser for cooks. The key feature of Bites is the creation of "relationships" between ingredients in recipes and ingredients in inventory, allowing automatic generation of a shopping list based on planned meals and items that are low in stock.
 
-*If you just want to jump in and start using Bites then try this [QuickStart quick start guide]*
+*If you just want to jump in and start using Bites now, try the [QuickStart quick start guide]*
 
 
 == Details ==
