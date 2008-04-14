@@ -1,0 +1,17 @@
+#summary Method Edit.
+
+= Introduction =
+
+Edits a method step in a recipe
+
+
+= Details =
+
+The method edit page allows you to enter a step in a recipe method.
+The fields on this page are:
+
+|| *Field* || *Description* ||
+|| Step || The step number e.g. 1,2,1a ||
+|| Method || The actual method text e.g. "Beat eggs lightly" ||
+
+When you insert a method step the step number automatically goes to the last step in the recipe. You can change the step number, keeping in mind that the steps will be sorted alphabetically on the [RecipeEdit recipe edit] page. So if you have a recipe with steps 1-5 and your realise you need another step between steps 2 and 3, simply enter a new step with step number "2a".
