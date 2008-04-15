@@ -1,4 +1,5 @@
 #summary Bites Overview.
+#labels Featured
 
 = Introduction =
 
