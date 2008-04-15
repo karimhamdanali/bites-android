@@ -5,7 +5,7 @@
 
 This guide will walk you through your first time using Bites by planning to make baked beans on toast for a dinner party. Your guests might not come back but it should be a simple example, so let's get started.
 
-Start up Bites and you'll see the home page with the the main activities. 
+Once you have [Installation installed Bites] start it up and you'll see the home page with the the main activities. 
 
 [http://bites-android.googlecode.com/svn/wiki/main.png]
 
