@@ -1,7 +1,7 @@
 #summary Installation Instructions.
 #labels Featured
 
-= Introduction =
+= Installation =
 
 Phones with the Android OS have not been released yet, so Bites has only been run on an Android emulator. 
 The emulator is available as part of the Android SDK available for download from [http://code.google.com/android/download.html]
