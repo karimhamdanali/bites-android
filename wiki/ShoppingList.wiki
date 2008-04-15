@@ -1,5 +1,4 @@
 #summary Shopping List Activity.
-#labels Featured
 
 = Introduction =
 
