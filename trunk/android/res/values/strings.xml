@@ -1,4 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">home</string>
+	<string name="t_inventory_create">"CREATE TABLE t_Inventory (_id INTEGER PRIMARY KEY,c_Ingredient TEXT,c_Quantity INTEGER,
+		c_Unit TEXT,c_QuantityMin INTEGER DEFAULT 0,c_QuantityBasket INTEGER DEFAULT 0);"</string>
+	<string name="t_mealplanner_create">"CREATE TABLE t_MealPlanner (_id INTEGER PRIMARY KEY,c_ID_Recipe INTEGER,
+		c_Serves INTEGER);"</string>
+	<string name="t_recipeingredients_create">"CREATE TABLE t_RecipeIngredients (_id INTEGER PRIMARY KEY,c_ID_Recipe INTEGER,
+		c_Qty INTEGER,c_ID_Ingredient INTEGER);"</string>
+	<string name="t_recipemethod_create">"CREATE TABLE t_RecipeMethod (_id INTEGER PRIMARY KEY,c_ID_Recipe INTEGER,
+		c_Step INTEGER,c_Method TEXT);"</string>
+	<string name="t_recipes_create">"CREATE TABLE t_Recipes (_id INTEGER PRIMARY KEY,c_Recipe TEXT,c_Serves INTEGER);
+		CREATE TRIGGER t_t_Recipes_delete AFTER DELETE ON t_Recipes BEGIN DELETE FROM t_RecipeIngredients WHERE c_ID_Recipe=old._id; 
+			DELETE FROM t_RecipeMethod WHERE c_ID_Recipe=old._id; 
+		END;"</string>
+	<string name="v_mealplanner_create">"CREATE VIEW v_MealPlanner AS SELECT t_MealPlanner._id AS _id,
+		t_MealPlanner.c_ID_Recipe AS c_ID_Recipe,t_Recipes.c_Recipe AS c_Recipe,t_MealPlanner.c_Serves AS c_Serves,
+		t_Recipes.c_Serves AS c_Recipe_Serves FROM t_MealPlanner INNER JOIN t_Recipes ON c_ID_Recipe=t_Recipes._id;
+		CREATE TRIGGER t_v_MealPlanner_delete INSTEAD OF DELETE ON v_MealPlanner BEGIN DELETE FROM t_MealPlanner WHERE _id=old._id; 
+		END;
+		CREATE TRIGGER t_v_MealPlanner_insert INSTEAD OF INSERT ON v_MealPlanner BEGIN 
+			INSERT INTO t_MealPlanner (c_ID_Recipe,c_Serves) VALUES (new.c_ID_Recipe,new.c_Serves); 
+		END;
+		CREATE TRIGGER t_v_MealPlanner_update INSTEAD OF UPDATE ON v_MealPlanner BEGIN 
+			UPDATE t_MealPlanner SET c_ID_Recipe=new.c_ID_Recipe,c_Serves=new.c_Serves WHERE _id=old._id; 
+		END;"</string>
+	<string name="v_mealplanneringredients_create">"CREATE VIEW v_MealPlannerIngredients AS SELECT t_Inventory._id AS c_ID_Ingredient,
+		t_Inventory.c_Ingredient AS c_Ingredient,
+		SUM((t_MealPlanner.c_Serves+t_Recipes.c_Serves-1)/t_Recipes.c_Serves*t_RecipeIngredients.c_Qty) AS c_Qty 
+		FROM t_Inventory JOIN t_RecipeIngredients ON t_Inventory._id=t_RecipeIngredients.c_ID_Ingredient 
+		JOIN t_Recipes ON t_RecipeIngredients.c_ID_Recipe=t_Recipes._id 
+		JOIN t_MealPlanner ON t_Recipes._id=t_MealPlanner.c_ID_Recipe GROUP BY t_Inventory._id;"</string>
+	<string name="v_recipeingredients_create">"CREATE VIEW v_RecipeIngredients AS SELECT t_RecipeIngredients._id AS _id,
+		t_RecipeIngredients.c_ID_Recipe AS c_ID_Recipe,t_RecipeIngredients.c_ID_Ingredient AS c_ID_Ingredient,
+		t_Inventory.c_Ingredient AS c_Ingredient,t_RecipeIngredients.c_Qty AS c_Qty,t_Inventory.c_Quantity AS c_Qty_Inventory,
+		t_Inventory.c_Unit AS c_Unit FROM t_RecipeIngredients INNER JOIN t_Inventory ON c_ID_Ingredient=t_Inventory._id;
+		CREATE TRIGGER t_v_RecipeIngredients_delete INSTEAD OF DELETE ON v_RecipeIngredients BEGIN 
+			DELETE FROM t_RecipeIngredients WHERE _id=old._id; 
+		END;
+		CREATE TRIGGER t_v_RecipeIngredients_insert INSTEAD OF INSERT ON v_RecipeIngredients BEGIN 
+			INSERT INTO t_RecipeIngredients (c_ID_Recipe,c_Qty,c_ID_Ingredient) 
+			VALUES (new.c_ID_Recipe,new.c_Qty,new.c_ID_Ingredient); 
+		END;
+		CREATE TRIGGER t_v_RecipeIngredients_update INSTEAD OF UPDATE ON v_RecipeIngredients BEGIN 
+			UPDATE t_RecipeIngredients SET c_ID_Recipe=new.c_ID_Recipe,c_ID_Ingredient=new.c_ID_Ingredient,
+			c_Qty=new.c_Qty WHERE _id=old._id; 
+		END;"</string>
+	<string name="v_shoppinglist_create">"CREATE VIEW v_ShoppingList AS SELECT t_Inventory._id AS _id,
+		t_Inventory.c_Ingredient AS c_Ingredient,CASE WHEN v_MealPlannerIngredients.c_Qty IS NULL THEN 
+		t_Inventory.c_QuantityMin-t_Inventory.c_Quantity 
+		ELSE v_MealPlannerIngredients.c_Qty-t_Inventory.c_Quantity+t_Inventory.c_QuantityMin END AS c_Qty,
+		t_Inventory.c_QuantityBasket AS c_QuantityBasket,t_Inventory.c_Unit AS c_Unit 
+		FROM t_Inventory LEFT JOIN v_MealPlannerIngredients ON t_Inventory._id=v_MealPlannerIngredients.c_ID_Ingredient 
+		WHERE t_Inventory.c_QuantityMin>t_Inventory.c_Quantity OR v_MealPlannerIngredients.c_Qty IS NOT NULL 
+		AND v_MealPlannerIngredients.c_Qty> (t_Inventory.c_Quantity-t_Inventory.c_QuantityMin);
+		CREATE TRIGGER t_v_ShoppingList_update INSTEAD OF UPDATE ON v_ShoppingList BEGIN 
+			UPDATE t_Inventory SET c_QuantityBasket=new.c_QuantityBasket WHERE _id=old._id; 
+		END;"</string>
 </resources>
