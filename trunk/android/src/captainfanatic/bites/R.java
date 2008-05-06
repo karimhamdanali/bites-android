@@ -63,6 +63,27 @@ public final class R {
         public static final int shoppinglistedit=0x7f030013;
     }
     public static final class string {
-        public static final int app_name=0x7f050000;
+        public static final int app_name=0x7f050011;
+        /**  sql table creation strings 
+         */
+        public static final int t_inventory_create=0x7f050000;
+        public static final int t_mealplanner_create=0x7f050001;
+        public static final int t_recipeingredients_create=0x7f050002;
+        public static final int t_recipemethod_create=0x7f050003;
+        public static final int t_recipes_create=0x7f050004;
+        /**  sq trigger creation strings 
+         */
+        public static final int trig_t_recipes_delete=0x7f050009;
+        public static final int trig_v_mealplanner_delete=0x7f05000a;
+        public static final int trig_v_mealplanner_insert=0x7f05000b;
+        public static final int trig_v_mealplanner_update=0x7f05000c;
+        public static final int trig_v_recipeingredients_delete=0x7f05000d;
+        public static final int trig_v_recipeingredients_insert=0x7f05000e;
+        public static final int trig_v_recipeingredients_update=0x7f05000f;
+        public static final int trig_v_shoppinglist_update=0x7f050010;
+        public static final int v_mealplanner_create=0x7f050005;
+        public static final int v_mealplanneringredients_create=0x7f050006;
+        public static final int v_recipeingredients_create=0x7f050007;
+        public static final int v_shoppinglist_create=0x7f050008;
     }
 }

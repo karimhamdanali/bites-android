@@ -30,6 +30,7 @@ import android.database.Cursor;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
+import android.content.Context;
 
 public class Provider extends ContentProvider
 {
@@ -39,10 +40,10 @@ public class Provider extends ContentProvider
 		public static final String TABLE = "t_Inventory";
 		//Column names
 		public static final String INGREDIENT = "c_Ingredient";
-		public static final String QTY = "c_Quantity";
+		public static final String QTY = "c_Qty";
 		public static final String UNIT = "c_Unit";
-		public static final String QTY_MIN = "c_QuantityMin";
-		public static final String QTY_BASKET = "c_QuantityBasket";
+		public static final String QTY_MIN = "c_QtyMin";
+		public static final String QTY_BASKET = "c_QtyBasket";
 		//Column index numbers
 		public static final int INGREDIENT_INDEX = 1;
 		public static final int QTY_INDEX = 2;
@@ -226,168 +227,36 @@ public class Provider extends ContentProvider
 	private static final int MEAL_PLANNER_ID = 12;
 	private static final int RECIPE_METHOD = 13;
 	private static final int RECIPE_METHOD_ID = 14;
+	private static Resources resources;
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+			//SQL query strings for table and trigger creating are stored as resources
+
 			//Create Tables
-		    	db.execSQL("CREATE TABLE " + Inventory.TABLE + " (_id INTEGER PRIMARY KEY,"
-			    	 + Inventory.INGREDIENT + " TEXT," + Inventory.QTY + " INTEGER,"
-				 + Inventory.UNIT + " TEXT," + Inventory.QTY_MIN + " INTEGER DEFAULT 0,"
-				 + Inventory.QTY_BASKET + " INTEGER DEFAULT 0" + ");");
-
-			db.execSQL("CREATE TABLE " + Recipes.TABLE + " (_id INTEGER PRIMARY KEY,"
-				+ Recipes.RECIPE + " TEXT," + Recipes.SERVES + " INTEGER" + ");");
-
-		    	db.execSQL("CREATE TABLE " + RecipeIngredients.TABLE + " (_id INTEGER PRIMARY KEY,"
-			    	+ RecipeIngredients.ID_RECIPE + " INTEGER," 
-			    	+ RecipeIngredients.QTY + " INTEGER," 
-				+ RecipeIngredients.ID_INGREDIENT + " INTEGER" + ");");
-
-		    	db.execSQL("CREATE TABLE " + RecipeMethod.TABLE + " (_id INTEGER PRIMARY KEY,"
-			    	+ RecipeMethod.ID_RECIPE + " INTEGER," 
-			    	+ RecipeMethod.STEP + " INTEGER," 
-				+ RecipeMethod.METHOD + " TEXT" + ");");
-
-		    	db.execSQL("CREATE TABLE " + MealPlanner.TABLE + " (_id INTEGER PRIMARY KEY,"
-			    	+ MealPlanner.ID_RECIPE  + " INTEGER," 
-			    	+ MealPlanner.SERVES + " INTEGER" + ");"); 
+			db.execSQL(resources.getString(R.string.t_inventory_create));
+			db.execSQL(resources.getString(R.string.t_recipes_create));
+		    	db.execSQL(resources.getString(R.string.t_recipeingredients_create));
+		    	db.execSQL(resources.getString(R.string.t_recipemethod_create));
+		    	db.execSQL(resources.getString(R.string.t_mealplanner_create)); 
 
 			//Create Views
-			 db.execSQL("CREATE VIEW " + RecipeIngredientsView.TABLE + " AS SELECT "
-				+ RecipeIngredients.TABLE + "._id AS _id," 
-				+ RecipeIngredients.TABLE + "." + RecipeIngredients.ID_RECIPE 
-				+ " AS " + RecipeIngredientsView.ID_RECIPE + ","
-				+ RecipeIngredients.TABLE + "." + RecipeIngredients.ID_INGREDIENT 
-				+ " AS " + RecipeIngredientsView.ID_INGREDIENT + ","
-				+ Inventory.TABLE + "." + Inventory.INGREDIENT + " AS " + RecipeIngredientsView.INGREDIENT + ","
-				+ RecipeIngredients.TABLE + "." + RecipeIngredients.QTY 
-				+ " AS " + RecipeIngredientsView.QTY + ","
-				+ Inventory.TABLE + "." + Inventory.QTY + " AS " + RecipeIngredientsView.QTY_INV + ","
-				+ Inventory.TABLE + "." + Inventory.UNIT + " AS " + RecipeIngredientsView.UNIT
-				+ " FROM " + RecipeIngredients.TABLE
-				+ " INNER JOIN " + Inventory.TABLE
-				+ " ON " + RecipeIngredients.ID_INGREDIENT + "="
-				+ Inventory.TABLE + "." + Inventory._ID + ";");
-
-			 db.execSQL("CREATE VIEW " + MealPlannerView.TABLE + " AS SELECT "
-				+ MealPlanner.TABLE + "._id AS _id," 
-				+ MealPlanner.TABLE + "." + MealPlanner.ID_RECIPE 
-				+ " AS " + MealPlannerView.ID_RECIPE + ","
-				+ Recipes.TABLE + "." + Recipes.RECIPE 
-				+ " AS " + MealPlannerView.RECIPE + ","
-				+ MealPlanner.TABLE + "." + MealPlanner.SERVES + " AS " + MealPlannerView.SERVES + ","
-				+ Recipes.TABLE + "." + Recipes.SERVES + " AS " + MealPlannerView.RECIPE_SERVES 
-				+ " FROM " + MealPlanner.TABLE
-				+ " INNER JOIN " + Recipes.TABLE
-				+ " ON " + MealPlanner.ID_RECIPE + "="
-				+ Recipes.TABLE + "." + Recipes._ID + ";");
-
-			db.execSQL("CREATE VIEW " + MealIngredientsView.TABLE + " AS SELECT "
-				+ Inventory.TABLE + "." + Inventory._ID + " AS " + MealIngredientsView.ID_INGREDIENT 
-				+ "," + Inventory.TABLE + "." + Inventory.INGREDIENT + " AS " + MealIngredientsView.INGREDIENT
-				+ ",SUM((" + MealPlanner.TABLE + "." + MealPlanner.SERVES + "+" + Recipes.TABLE +"."+Recipes.SERVES+"-1)/"
-				+ Recipes.TABLE + "." + Recipes.SERVES + "*" + RecipeIngredients.TABLE + "." + RecipeIngredients.QTY 
-				+ ") AS " + MealIngredientsView.QTY + " FROM " + Inventory.TABLE + " JOIN " + RecipeIngredients.TABLE + " ON " 
-				+ Inventory.TABLE + "." + Inventory._ID + "=" + RecipeIngredients.TABLE + "." 
-				+ RecipeIngredients.ID_INGREDIENT + " JOIN " + Recipes.TABLE + " ON " + RecipeIngredients.TABLE + "."
-				+ RecipeIngredients.ID_RECIPE + "=" + Recipes.TABLE + "." + Recipes._ID + " JOIN " 
-				+ MealPlanner.TABLE + " ON " + Recipes.TABLE + "." + Recipes._ID + "=" 
-				+ MealPlanner.TABLE + "." + MealPlanner.ID_RECIPE + " GROUP BY " 
-				+ Inventory.TABLE + "." + Inventory._ID + ";");
-
-			db.execSQL("CREATE VIEW " + ShoppingList.TABLE + " AS SELECT "
-				+ Inventory.TABLE + "." + Inventory._ID + " AS " + ShoppingList._ID + ","
-				+ Inventory.TABLE + "." + Inventory.INGREDIENT + " AS " + ShoppingList.INGREDIENT + "," 
-				+ "CASE WHEN " + MealIngredientsView.TABLE + "." + MealIngredientsView.QTY + " IS NULL THEN "
-				+ Inventory.TABLE + "." + Inventory.QTY_MIN + "-" + Inventory.TABLE + "." + Inventory.QTY
-				+ " ELSE " + MealIngredientsView.TABLE + "." + MealIngredientsView.QTY + "-" 
-				+ Inventory.TABLE + "." + Inventory.QTY + "+" + Inventory.TABLE + "." + Inventory.QTY_MIN
-				+ " END AS " + ShoppingList.QTY + "," 
-				+ Inventory.TABLE + "." + Inventory.QTY_BASKET
-				+ " AS " + ShoppingList.QTY_BASKET + "," + Inventory.TABLE + "." + Inventory.UNIT 
-				+ " AS " + ShoppingList.UNIT + " FROM " + Inventory.TABLE + " LEFT JOIN "
-				+ MealIngredientsView.TABLE + " ON " + Inventory.TABLE + "." + Inventory._ID
-				+ "=" + MealIngredientsView.TABLE + "." + MealIngredientsView.ID_INGREDIENT 
-				+ " WHERE " + Inventory.TABLE + "." + Inventory.QTY_MIN + ">" 
-				+ Inventory.TABLE + "." + Inventory.QTY + " OR " + MealIngredientsView.TABLE + "."
-				+ MealIngredientsView.QTY + " IS NOT NULL AND " + MealIngredientsView.TABLE + "." 
-				+ MealIngredientsView.QTY + "> (" + Inventory.TABLE + "." + Inventory.QTY + "-"
-				+ Inventory.TABLE + "." + Inventory.QTY_MIN + ");");
+			db.execSQL(resources.getString(R.string.v_recipeingredients_create));
+			db.execSQL(resources.getString(R.string.v_mealplanner_create));
+			db.execSQL(resources.getString(R.string.v_mealplanneringredients_create));
+			db.execSQL(resources.getString(R.string.v_shoppinglist_create));
 			
 			//Create Triggers
-			//A trigger to delete the associations between a recipe and its ingredients after it is deleted
-			db.execSQL("CREATE TRIGGER t_" + Recipes.TABLE + "_delete "
-				+ "AFTER DELETE ON " + Recipes.TABLE + " "
-				+ "BEGIN "
-				+ "DELETE FROM " + RecipeIngredients.TABLE + " "
-				+ "WHERE " + RecipeIngredients.ID_RECIPE + "=old._id; "
-				+ "DELETE FROM " + RecipeMethod.TABLE + " "
-				+ "WHERE " + RecipeMethod.ID_RECIPE + "=old._id; "
-				+ "END;");
-
-			db.execSQL("CREATE TRIGGER " + RecipeIngredientsView.TRIG_UPDATE + " "
-				+ "INSTEAD OF UPDATE ON " + RecipeIngredientsView.TABLE + " "
-				+ "BEGIN "
-				+ "UPDATE " + RecipeIngredients.TABLE + " "
-				+ "SET " + RecipeIngredients.ID_RECIPE + "=new." + RecipeIngredientsView.ID_RECIPE + ","
-				+ RecipeIngredients.ID_INGREDIENT + "=new." + RecipeIngredientsView.ID_INGREDIENT + ","
-				+ RecipeIngredients.QTY + "=new." + RecipeIngredientsView.QTY + " "
-				+ "WHERE _id=old._id; "
-				+ "END;");
-
-			db.execSQL("CREATE TRIGGER " + RecipeIngredientsView.TRIG_INSERT + " "
-				+ "INSTEAD OF INSERT ON " + RecipeIngredientsView.TABLE + " "
-				+ "BEGIN "
-				+ "INSERT INTO " + RecipeIngredients.TABLE + " "
-				+ "(" + RecipeIngredients.ID_RECIPE + "," + RecipeIngredients.QTY + "," 
-				+ RecipeIngredients.ID_INGREDIENT + ") "
-				+ "VALUES (new." + RecipeIngredientsView.ID_RECIPE + ","
-				+ "new." + RecipeIngredientsView.QTY + ","
-				+ "new." + RecipeIngredientsView.ID_INGREDIENT + "); "
-				+ "END;");
-
-			db.execSQL("CREATE TRIGGER " + RecipeIngredientsView.TRIG_DELETE +" "
-				+ "INSTEAD OF DELETE ON " + RecipeIngredientsView.TABLE + " "
-				+ "BEGIN "
-				+ "DELETE FROM " + RecipeIngredients.TABLE + " "
-				+ "WHERE _id=old._id; "
-				+ "END;");
-
-			db.execSQL("CREATE TRIGGER " + MealPlannerView.TRIG_DELETE +" "
-				+ "INSTEAD OF DELETE ON " + MealPlannerView.TABLE + " "
-				+ "BEGIN "
-				+ "DELETE FROM " + MealPlanner.TABLE + " "
-				+ "WHERE _id=old._id; "
-				+ "END;");
-
-			db.execSQL("CREATE TRIGGER " + MealPlannerView.TRIG_INSERT + " "
-				+ "INSTEAD OF INSERT ON " + MealPlannerView.TABLE + " "
-				+ "BEGIN "
-				+ "INSERT INTO " + MealPlanner.TABLE + " "
-				+ "(" + MealPlanner.ID_RECIPE + "," + MealPlanner.SERVES + ") " 
-				+ "VALUES (new." + MealPlannerView.ID_RECIPE + ","
-				+ "new." + MealPlannerView.SERVES + "); "
-				+ "END;");
-
-			db.execSQL("CREATE TRIGGER " + MealPlannerView.TRIG_UPDATE + " "
-				+ "INSTEAD OF UPDATE ON " + MealPlannerView.TABLE + " "
-				+ "BEGIN "
-				+ "UPDATE " + MealPlanner.TABLE + " "
-				+ "SET " + MealPlanner.ID_RECIPE + "=new." + MealPlannerView.ID_RECIPE + ","
-				+ MealPlanner.SERVES + "=new." + MealPlannerView.SERVES + " "
-				+ "WHERE _id=old._id; "
-				+ "END;");
-
-			db.execSQL("CREATE TRIGGER " + ShoppingList.TRIG_UPDATE + " "
-				+ "INSTEAD OF UPDATE ON " + ShoppingList.TABLE + " "
-				+ "BEGIN "
-				+ "UPDATE " + Inventory.TABLE + " "
-				+ "SET " + Inventory.QTY_BASKET + "=new." + ShoppingList.QTY_BASKET + " "
-				+ "WHERE _id=old._id; "
-				+ "END;");
-
+			db.execSQL(resources.getString(R.string.trig_t_recipes_delete));
+			db.execSQL(resources.getString(R.string.trig_v_recipeingredients_update));
+			db.execSQL(resources.getString(R.string.trig_v_recipeingredients_insert));
+			db.execSQL(resources.getString(R.string.trig_v_recipeingredients_delete));
+			db.execSQL(resources.getString(R.string.trig_v_mealplanner_delete));
+			db.execSQL(resources.getString(R.string.trig_v_mealplanner_insert));
+			db.execSQL(resources.getString(R.string.trig_v_mealplanner_update));
+			db.execSQL(resources.getString(R.string.trig_v_shoppinglist_update));
 		}
 
 		@Override
@@ -417,6 +286,8 @@ public class Provider extends ContentProvider
 
 	@Override
 	public boolean onCreate() {
+		//Get a resources handle 
+		resources = getContext().getResources();
 		DatabaseHelper dbHelper = new DatabaseHelper();
 		mDB = dbHelper.openDatabase(getContext(), DATABASE_NAME, null, DATABASE_VERSION);
 		return (mDB == null) ? false : true;
@@ -587,7 +458,6 @@ public class Provider extends ContentProvider
 		}
 		switch (URL_MATCHER.match(url)){
 			case INVENTORY:
-
 				//Make sure all fields are set
 				//If no ingredient name is entered use "Spam"
 				if (values.containsKey(Provider.Inventory.INGREDIENT) == false) {
