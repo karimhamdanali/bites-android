@@ -208,6 +208,15 @@ public class Provider extends ContentProvider
 		public static final String DEFAULT_SORT_ORDER = ID_INGREDIENT + " ASC";
 	}
 
+	public static final class Transaction {
+		public static final Uri CONTENT_URI = Uri.parse("content://captainfanatic.bites.Provider/transaction");
+		public static final String TYPE = "type";
+		//keys
+		public static final int BEGIN = 1;
+		public static final int ROLLBACK = 2;
+		public static final int COMMIT = 3;
+	}
+
 	private SQLiteDatabase mDB;
 	private static final UriMatcher URL_MATCHER;
 	private static final String TAG = "Bites.Provider";
@@ -227,6 +236,7 @@ public class Provider extends ContentProvider
 	private static final int MEAL_PLANNER_ID = 12;
 	private static final int RECIPE_METHOD = 13;
 	private static final int RECIPE_METHOD_ID = 14;
+	private static final int TRANSACTION = 15;
 	private static Resources resources;
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -263,23 +273,15 @@ public class Provider extends ContentProvider
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		    Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
 			    + newVersion + ", which will destroy all old data");
-		    db.execSQL("DROP TABLE IF EXISTS " + Inventory.TABLE + ";");
-		    db.execSQL("DROP TABLE IF EXISTS " + Recipes.TABLE+ ";");
-		    db.execSQL("DROP TABLE IF EXISTS " + RecipeIngredients.TABLE + ";");
-		    db.execSQL("DROP TABLE IF EXISTS " + RecipeMethod.TABLE + ";");
-		    db.execSQL("DROP TABLE IF EXISTS " + MealPlanner.TABLE + ";");
-		    db.execSQL("DROP VIEW IF EXISTS " + RecipeIngredientsView.TABLE + ";");
-		    db.execSQL("DROP VIEW IF EXISTS " + MealPlannerView.TABLE + ";");
-		    db.execSQL("DROP VIEW IF EXISTS " + MealIngredientsView.TABLE + ";");
-		    db.execSQL("DROP VIEW IF EXISTS " + ShoppingList.TABLE + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + RecipeIngredientsView.TRIG_UPDATE + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + RecipeIngredientsView.TRIG_DELETE + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + RecipeIngredientsView.TRIG_INSERT + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + Recipes.TRIG_DELETE + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + MealPlannerView.TRIG_INSERT + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + MealPlannerView.TRIG_UPDATE + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + MealPlannerView.TRIG_DELETE + ";");
-		    db.execSQL("DROP TRIGGER IF EXISTS " + ShoppingList.TRIG_UPDATE + ";");
+		    db.execSQL(resources.getString(R.string.drop_t_inventory));
+		    db.execSQL(resources.getString(R.string.drop_t_mealplanner));
+		    db.execSQL(resources.getString(R.string.drop_t_recipeingredients));
+		    db.execSQL(resources.getString(R.string.drop_t_recipemethod));
+		    db.execSQL(resources.getString(R.string.drop_t_recipes));
+		    db.execSQL(resources.getString(R.string.drop_v_mealplanner));
+		    db.execSQL(resources.getString(R.string.drop_v_mealplanneringredients));
+		    db.execSQL(resources.getString(R.string.drop_v_recipeingredients));
+		    db.execSQL(resources.getString(R.string.drop_v_shoppinglist));
 		    onCreate(db);
 		}
     	}
@@ -581,8 +583,26 @@ public class Provider extends ContentProvider
 									values.getAsLong(Provider.ShoppingList._ID));
 			    	getContext().getContentResolver().notifyChange(uri, null);
 			    	return uri;
-			
-			//TODO: add entry for more providers as they are needed
+		
+			case TRANSACTION:
+				int type = values.getAsInteger(Transaction.TYPE);
+				switch (type)
+				{
+					case Transaction.BEGIN:
+						mDB.execSQL("BEGIN;");
+						return url;
+					case Transaction.COMMIT:
+						mDB.execSQL("COMMIT;");
+						return url;
+					case Transaction.ROLLBACK:
+						mDB.execSQL("ROLLBACK;");
+						return url;
+					default:
+						throw new IllegalArgumentException(TAG + " No transaction type give");
+				}
+				
+				
+							
 			default:
 			throw new IllegalArgumentException("Insert: Unknown URL " + url);
 		
@@ -817,6 +837,7 @@ public class Provider extends ContentProvider
 		URL_MATCHER.addURI("captainfanatic.bites.Provider", "recipeingredientsview/#", RECIPE_INGREDIENTS_VIEW_ID);
 		URL_MATCHER.addURI("captainfanatic.bites.Provider", "mealplanner", MEAL_PLANNER);
 		URL_MATCHER.addURI("captainfanatic.bites.Provider", "mealplanner/#", MEAL_PLANNER_ID);
+		URL_MATCHER.addURI("captainfanatic.bites.Provider", "transaction", TRANSACTION);
 	}
 
 }

@@ -63,7 +63,18 @@ public final class R {
         public static final int shoppinglistedit=0x7f030013;
     }
     public static final class string {
-        public static final int app_name=0x7f050011;
+        public static final int app_name=0x7f05001a;
+        /**  Drop table and trigger strings 
+         */
+        public static final int drop_t_inventory=0x7f050011;
+        public static final int drop_t_mealplanner=0x7f050012;
+        public static final int drop_t_recipeingredients=0x7f050013;
+        public static final int drop_t_recipemethod=0x7f050014;
+        public static final int drop_t_recipes=0x7f050015;
+        public static final int drop_v_mealplanner=0x7f050016;
+        public static final int drop_v_mealplanneringredients=0x7f050017;
+        public static final int drop_v_recipeingredients=0x7f050018;
+        public static final int drop_v_shoppinglist=0x7f050019;
         /**  sql table creation strings 
          */
         public static final int t_inventory_create=0x7f050000;
