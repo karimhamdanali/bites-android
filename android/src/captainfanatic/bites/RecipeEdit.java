@@ -29,6 +29,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.view.View;
 import android.view.Menu;
 import android.view.ViewGroup;
@@ -116,13 +117,14 @@ public class RecipeEdit extends ExpandableListActivity
 		String action = intent.getAction();
 		contentResolver = getContentResolver();
 		
+
 		if (intent.getData() == null) {
 			intent.setData(Provider.Recipes.CONTENT_URI);
 		}
 
 		if (action.equals(Intent.INSERT_ACTION)) {
 			mState = STATE_INSERT;
-			mUriRecipe = getContentResolver().insert(intent.getData(), null);
+			mUriRecipe = contentResolver.insert(intent.getData(), null);
 			mSetResult = false;
 		}
 		if (action.equals(Intent.EDIT_ACTION)) {
@@ -156,7 +158,6 @@ public class RecipeEdit extends ExpandableListActivity
 		if (mCursorRecipe != null) {
 			mCursorRecipe.first();
 			mRecipeId = mCursorRecipe.getLong(0);
-			mOriginalRecipe = mCursorRecipe.getString(Provider.Recipes.RECIPE_INDEX);
 			mRecipeServes = mCursorRecipe.getInt(Provider.Recipes.SERVES_INDEX);
 		}
 
@@ -284,12 +285,14 @@ public class RecipeEdit extends ExpandableListActivity
 				refresh();
 				return true;
 			case DISCARD_ID:
+				ContentValues rollback = new ContentValues();
+				rollback.put(Provider.Transaction.TYPE, Provider.Transaction.ROLLBACK);
 				switch (mState) {
 					case STATE_INSERT:
-						mCursorRecipe.deleteRow();
+						contentResolver.insert(Provider.Transaction.CONTENT_URI, rollback);
 						break;
 					case STATE_EDIT:
-						mRecipe.setText(mOriginalRecipe);
+						contentResolver.insert(Provider.Transaction.CONTENT_URI, rollback);
 						break;
 						//TODO: undo ingredients and method changess??
 					case STATE_VIEW:
@@ -327,6 +330,10 @@ public class RecipeEdit extends ExpandableListActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
+		//set up a content values key to use for an sql "BEGIN" - allowing a database rollback
+		ContentValues begin = new ContentValues();
+		begin.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
+		contentResolver.insert(Provider.Transaction.CONTENT_URI, begin);
 		mCursorRecipe.first();
 		mRecipe.setText(mCursorRecipe.getString(Provider.Recipes.RECIPE_INDEX));
 		refresh();
@@ -346,6 +353,9 @@ public class RecipeEdit extends ExpandableListActivity
 			mCursorRecipe.updateString(Provider.Recipes.SERVES_INDEX, mServes.getText().toString());
 		}
 		managedCommitUpdates(mCursorRecipe);
+		ContentValues commit = new ContentValues();
+		commit.put(Provider.Transaction.TYPE, Provider.Transaction.COMMIT);
+		contentResolver.insert(Provider.Transaction.CONTENT_URI, commit);
 	}
 
 	@Override

@@ -91,4 +91,18 @@
 		BEGIN 
 			UPDATE t_Inventory SET c_QtyBasket=new.c_QtyBasket WHERE _id=old._id; 
 		END;"</string>
+
+
+	<!-- Drop table and trigger strings -->
+
+	<string name="drop_t_inventory">"DROP TABLE IF EXISTS t_Inventory"</string>
+	<string name="drop_t_mealplanner">"DROP TABLE IF EXISTS t_MealPlanner"</string>
+	<string name="drop_t_recipeingredients">"DROP TABLE IF EXISTS t_RecipeIngredients"</string>
+	<string name="drop_t_recipemethod">"DROP TABLE IF EXISTS t_RecipeMethod"</string>
+	<string name="drop_t_recipes">"DROP TABLE IF EXISTS t_Recipes"</string>
+	<string name="drop_v_mealplanner">"DROP TABLE IF EXISTS v_MealPlanner"</string>
+	<string name="drop_v_mealplanneringredients">"DROP TABLE IF EXISTS v_MealPlannerIngredients"</string>
+	<string name="drop_v_recipeingredients">"DROP TABLE IF EXISTS v_RecipeIngredients"</string>
+	<string name="drop_v_shoppinglist">"DROP TABLE IF EXISTS v_ShoppingList"</string>
+	
 </resources>
