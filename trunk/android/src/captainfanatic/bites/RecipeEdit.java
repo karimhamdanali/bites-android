@@ -73,6 +73,7 @@ public class RecipeEdit extends ExpandableListActivity
 	private boolean mMethodExpanded;
 	private boolean mIngredientsExpanded;
 	private boolean mSetResult;
+	private boolean mRollback;
 
 	public static final String RECIPE_ID_KEY = "recipeId";
 	public static final String SERVES_KEY = "serves";
@@ -99,7 +100,7 @@ public class RecipeEdit extends ExpandableListActivity
 	private String mOriginalRecipe;
 	private String mOriginalMethod;
 
-	private Long mRecipeId;
+	private String mRecipeId;
 	private String mMealPlannerId;
 
 	private int mServesMultiplier;
@@ -112,11 +113,15 @@ public class RecipeEdit extends ExpandableListActivity
     	public void onCreate(Bundle icicle)
     	{
 		super.onCreate(icicle);
-
+Log.d(TAG,"onCreate");
 		final Intent intent = getIntent();
 		String action = intent.getAction();
 		contentResolver = getContentResolver();
 		
+		//Start a transaction with Provider, allows rollback
+		ContentValues begin = new ContentValues();
+		begin.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
+		contentResolver.insert(Provider.Transaction.CONTENT_URI, begin);
 
 		if (intent.getData() == null) {
 			intent.setData(Provider.Recipes.CONTENT_URI);
@@ -157,7 +162,7 @@ public class RecipeEdit extends ExpandableListActivity
 
 		if (mCursorRecipe != null) {
 			mCursorRecipe.first();
-			mRecipeId = mCursorRecipe.getLong(0);
+			mRecipeId = mCursorRecipe.getString(0);
 			mRecipeServes = mCursorRecipe.getInt(Provider.Recipes.SERVES_INDEX);
 		}
 
@@ -285,16 +290,13 @@ public class RecipeEdit extends ExpandableListActivity
 				refresh();
 				return true;
 			case DISCARD_ID:
-				ContentValues rollback = new ContentValues();
-				rollback.put(Provider.Transaction.TYPE, Provider.Transaction.ROLLBACK);
 				switch (mState) {
 					case STATE_INSERT:
-						contentResolver.insert(Provider.Transaction.CONTENT_URI, rollback);
+						mRollback = true;
 						break;
 					case STATE_EDIT:
-						contentResolver.insert(Provider.Transaction.CONTENT_URI, rollback);
+						mRollback = true;
 						break;
-						//TODO: undo ingredients and method changess??
 					case STATE_VIEW:
 						if (mSetResult) {
 							setResult(RESULT_CANCELED);
@@ -330,10 +332,6 @@ public class RecipeEdit extends ExpandableListActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//set up a content values key to use for an sql "BEGIN" - allowing a database rollback
-		ContentValues begin = new ContentValues();
-		begin.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
-		contentResolver.insert(Provider.Transaction.CONTENT_URI, begin);
 		mCursorRecipe.first();
 		mRecipe.setText(mCursorRecipe.getString(Provider.Recipes.RECIPE_INDEX));
 		refresh();
@@ -344,23 +342,29 @@ public class RecipeEdit extends ExpandableListActivity
 		super.onPause();
 		//Check recipe string for all whitespace and substitute "Untitled" if it is
 		//(Looks much neater in the recipe list to have "Untitled" rather than a blank row)
-		String recipe = mRecipe.getText().toString();
-		if (recipe.trim().length() == 0) {
-			recipe="Untitled";
-		}
-		mCursorRecipe.updateString(Provider.Recipes.RECIPE_INDEX, recipe);
+		ContentValues updates = new ContentValues();
+		updates.put(Provider.Recipes.RECIPE, mRecipe.getText().toString());
 		if (mState == STATE_EDIT || mState == STATE_INSERT) {
-			mCursorRecipe.updateString(Provider.Recipes.SERVES_INDEX, mServes.getText().toString());
+			updates.put(Provider.Recipes.SERVES, mServes.getText().toString());
 		}
-		managedCommitUpdates(mCursorRecipe);
-		ContentValues commit = new ContentValues();
-		commit.put(Provider.Transaction.TYPE, Provider.Transaction.COMMIT);
-		contentResolver.insert(Provider.Transaction.CONTENT_URI, commit);
+		contentResolver.update(mUriRecipe, updates, null, null);
+
+		//If this activity is finishing an edit or insert, commit the transactions since onCreate()
+		//or rollback the Provider database to as it was before onCreate()
+		if (isFinishing() && (mState == STATE_EDIT || mState == STATE_INSERT)) {
+			ContentValues transEnd = new ContentValues();
+			if (mRollback) {
+				transEnd.put(Provider.Transaction.TYPE, Provider.Transaction.ROLLBACK);
+			}
+			else {
+				transEnd.put(Provider.Transaction.TYPE, Provider.Transaction.COMMIT);
+			}
+			contentResolver.insert(Provider.Transaction.CONTENT_URI, transEnd);
+		}
 	}
 
 	@Override
 	protected void onFreeze(Bundle outState) {
-
 	}
 
 	public class RecipeAdapter extends BaseExpandableListAdapter {
