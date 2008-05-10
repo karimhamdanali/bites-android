@@ -211,6 +211,10 @@ public class Provider extends ContentProvider
 	public static final class Transaction {
 		public static final Uri CONTENT_URI = Uri.parse("content://captainfanatic.bites.Provider/transaction");
 		public static final String TYPE = "type";
+		private static Boolean locked = false;
+		public static Boolean isLocked() {
+			return locked;
+		}
 		//keys
 		public static final int BEGIN = 1;
 		public static final int ROLLBACK = 2;
@@ -589,16 +593,16 @@ public class Provider extends ContentProvider
 				switch (type)
 				{
 					case Transaction.BEGIN:
-Log.d(TAG,"Begin transaction");				
+						Transaction.locked = true;
 						mDB.execSQL("BEGIN;");
 						return url;
 					case Transaction.COMMIT:
-Log.d(TAG,"commit transaction");
 						mDB.execSQL("COMMIT;");
+						Transaction.locked = false;
 						return url;
 					case Transaction.ROLLBACK:
-Log.d(TAG,"rollback transaction");
 						mDB.execSQL("ROLLBACK;");
+						Transaction.locked = false;
 						return url;
 					default:
 						throw new IllegalArgumentException(TAG + " No transaction type give");

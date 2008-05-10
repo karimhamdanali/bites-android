@@ -25,6 +25,8 @@ import android.widget.EditText;
 import android.view.View;
 import android.view.Menu;
 import android.content.Intent;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.net.Uri;
 import android.database.Cursor;
 import android.util.Log;
@@ -41,6 +43,9 @@ public class InventoryEdit extends Activity
 
 	private Uri mUri;	
 	private Cursor mCursor;
+	private Boolean mRollback;
+	private Boolean mGotLock;
+	private ContentResolver contentResolver;
 
 	private EditText mIngredient;
 	private EditText mQty;
@@ -56,6 +61,19 @@ public class InventoryEdit extends Activity
 
 	final Intent intent = getIntent();
 	final String action = intent.getAction();
+
+	contentResolver = getContentResolver();
+	
+	//Begin a transaction in the Provider database - allows rollback
+	if (!Provider.Transaction.isLocked()) {
+		ContentValues transaction = new ContentValues();
+		transaction.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
+		contentResolver.insert(Provider.Transaction.CONTENT_URI, transaction);
+		mGotLock = true;
+	}
+	else {
+		mGotLock = false;
+	}
 
 	if (action.equals(Intent.INSERT_ACTION)) {
 		mState = STATE_INSERT;
@@ -83,6 +101,7 @@ public class InventoryEdit extends Activity
 		super.onResume();
 		
 		mCursor.first();
+		mRollback = false;
 
 		mIngredient.setText(mCursor.getString(Provider.Inventory.INGREDIENT_INDEX));
 		mQty.setText(mCursor.getString(Provider.Inventory.QTY_INDEX));
@@ -105,13 +124,10 @@ public class InventoryEdit extends Activity
                         case DISCARD_ID:
                                 switch (mState) {
                                         case STATE_INSERT:
-                                                mCursor.deleteRow();
+						mRollback = true;
                                                 break;
                                         case STATE_EDIT:
-						mIngredient.setText(mCursor.getString(Provider.Inventory.INGREDIENT_INDEX));
-						mQty.setText(mCursor.getString(Provider.Inventory.QTY_INDEX));
-						mUnit.setText(mCursor.getString(Provider.Inventory.UNIT_INDEX));
-						mQtyMin.setText(mCursor.getString(Provider.Inventory.QTY_MIN_INDEX));
+						mRollback = true;
                                                 break;
                                 }
                                 finish();
@@ -124,14 +140,25 @@ public class InventoryEdit extends Activity
 	protected void onPause() {
 		super.onPause();
 		if (!mCursor.isBeforeFirst()) {
+			ContentValues updates = new ContentValues();
 			if (mState == STATE_INSERT) {
-				mCursor.updateString(Provider.Inventory.INGREDIENT_INDEX, mIngredient.getText().toString());
+				updates.put(Provider.Inventory.INGREDIENT, mIngredient.getText().toString());
 			}
-			mCursor.updateString(Provider.Inventory.QTY_INDEX, mQty.getText().toString());
-			mCursor.updateString(Provider.Inventory.UNIT_INDEX, mUnit.getText().toString());
-			mCursor.updateString(Provider.Inventory.QTY_MIN_INDEX, mQtyMin.getText().toString());
+			updates.put(Provider.Inventory.QTY, mQty.getText().toString());
+			updates.put(Provider.Inventory.UNIT, mUnit.getText().toString());
+			updates.put(Provider.Inventory.QTY_MIN, mQtyMin.getText().toString());
 
-			managedCommitUpdates(mCursor);
+			contentResolver.update(mUri,updates,null,null);
+		}
+		if (isFinishing() && mGotLock){
+			ContentValues transaction = new ContentValues();
+			if (mRollback){
+				transaction.put(Provider.Transaction.TYPE, Provider.Transaction.ROLLBACK);
+			}
+			else{
+				transaction.put(Provider.Transaction.TYPE, Provider.Transaction.COMMIT);
+			}
+			contentResolver.insert(Provider.Transaction.CONTENT_URI, transaction);
 		}
 	}
 
