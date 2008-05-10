@@ -589,12 +589,15 @@ public class Provider extends ContentProvider
 				switch (type)
 				{
 					case Transaction.BEGIN:
+Log.d(TAG,"Begin transaction");				
 						mDB.execSQL("BEGIN;");
 						return url;
 					case Transaction.COMMIT:
+Log.d(TAG,"commit transaction");
 						mDB.execSQL("COMMIT;");
 						return url;
 					case Transaction.ROLLBACK:
+Log.d(TAG,"rollback transaction");
 						mDB.execSQL("ROLLBACK;");
 						return url;
 					default:
