@@ -29,7 +29,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.view.View;
 import android.view.Menu;
 import android.view.ViewGroup;
@@ -74,6 +73,7 @@ public class RecipeEdit extends ExpandableListActivity
 	private boolean mIngredientsExpanded;
 	private boolean mSetResult;
 	private boolean mRollback;
+	private boolean mGotLock;
 
 	public static final String RECIPE_ID_KEY = "recipeId";
 	public static final String SERVES_KEY = "serves";
@@ -119,9 +119,15 @@ Log.d(TAG,"onCreate");
 		contentResolver = getContentResolver();
 		
 		//Start a transaction with Provider, allows rollback
-		ContentValues begin = new ContentValues();
-		begin.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
-		contentResolver.insert(Provider.Transaction.CONTENT_URI, begin);
+		if (!Provider.Transaction.isLocked()) {
+			ContentValues begin = new ContentValues();
+			begin.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
+			contentResolver.insert(Provider.Transaction.CONTENT_URI, begin);
+			mGotLock = true;
+		}
+		else {
+			mGotLock = false;
+		}
 
 		if (intent.getData() == null) {
 			intent.setData(Provider.Recipes.CONTENT_URI);
@@ -351,7 +357,7 @@ Log.d(TAG,"onCreate");
 
 		//If this activity is finishing an edit or insert, commit the transactions since onCreate()
 		//or rollback the Provider database to as it was before onCreate()
-		if (isFinishing() && (mState == STATE_EDIT || mState == STATE_INSERT)) {
+		if (isFinishing() && (mState == STATE_EDIT || mState == STATE_INSERT) && mGotLock) {
 			ContentValues transEnd = new ContentValues();
 			if (mRollback) {
 				transEnd.put(Provider.Transaction.TYPE, Provider.Transaction.ROLLBACK);
