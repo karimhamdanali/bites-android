@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema 
-xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns="http://bites-android.googlecode.com"
 targetNamespace="http://bites-android.googlecode.com"
 elementFormDefault="qualified">
 <!-- definition of complex elements -->
   <xs:complexType name="ingredientType">
     <xs:sequence>
-      <xs:element name="ingredientName" type="xs:string"/>
+      <xs:element name="name" type="xs:string"/>
       <xs:element name="quantity" type="xs:integer"/>
       <xs:element name="unit" type="xs:string"/>
     </xs:sequence>
