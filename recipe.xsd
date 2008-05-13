@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+targetNameSpace="http://code.google.com/p/bites-android"
+xmlns="http://code.google.com/p/bites-android"
+elementFormDefault="qualified">
 <!-- definition of complex elements -->
   <xs:complexType name="ingredientType">
     <xs:sequence>
@@ -22,8 +24,6 @@
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required"/>
   </xs:complexType>
-
 <!-- The Schema -->
 <xs:element name="recipe" type="recipeType"/>
-  
 </xs:schema>
