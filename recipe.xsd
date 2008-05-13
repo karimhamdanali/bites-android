@@ -6,7 +6,7 @@ elementFormDefault="qualified">
 <!-- definition of complex elements -->
   <xs:complexType name="ingredientType">
     <xs:sequence>
-      <xs:element name="name" type="xs:string"/>
+      <xs:element name="ingredientName" type="xs:string"/>
       <xs:element name="quantity" type="xs:integer"/>
       <xs:element name="unit" type="xs:string"/>
     </xs:sequence>
