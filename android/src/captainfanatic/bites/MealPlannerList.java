@@ -48,6 +48,10 @@ public class MealPlannerList extends ListActivity
 	private static final int EDIT_ID = Menu.FIRST + 1;
 	private static final int MAKE_MEAL_ID = Menu.FIRST +2;
 	private static final int DELETE_ID = Menu.FIRST +3;
+	private static final int DISCARD_ID = Menu.FIRST +4;
+
+	private Boolean mGotLock = false;
+	private Boolean mRollBack = false;
 	
     /** Called when the activity is first created. */
     @Override
@@ -57,6 +61,16 @@ public class MealPlannerList extends ListActivity
 
 	setContentView(R.layout.mealplannerlist);
 	contentResolver = getContentResolver();
+	//Begin a transaction if one has not been started already (allows rollback)
+	if (!Provider.Transaction.isLocked()) {
+		ContentValues begin = new ContentValues();
+		begin.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
+		contentResolver.insert(Provider.Transaction.CONTENT_URI, begin);	
+		mGotLock = true;
+	}
+	else {
+		mGotLock = false;
+	}
 
 	intent = getIntent();
 	if (intent.getData() == null) {
@@ -70,6 +84,21 @@ public class MealPlannerList extends ListActivity
 	@Override
 	protected void onResume(){
 		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (mGotLock && isFinishing()) {
+			ContentValues transaction = new ContentValues();
+			if (mRollBack) {
+				transaction.put(Provider.Transaction.TYPE, Provider.Transaction.ROLLBACK);
+			}
+			else {
+				transaction.put(Provider.Transaction.TYPE, Provider.Transaction.COMMIT);
+			}
+			contentResolver.insert(Provider.Transaction.CONTENT_URI, transaction);
+		}
 	}
 
 
@@ -90,6 +119,7 @@ public class MealPlannerList extends ListActivity
 		
 		menu.clear();
 		menu.add(0, INSERT_ID, "Insert");
+		menu.add(0, DISCARD_ID, "Discard");
 		if (mCursor.count() > 0) {
 			menu.add(0, DELETE_ID, "Delete");
 			menu.add(0, EDIT_ID, "Edit");
@@ -115,6 +145,10 @@ public class MealPlannerList extends ListActivity
 	@Override
 	public boolean onOptionsItemSelected(Menu.Item item) {
 		switch (item.getId()){
+			case DISCARD_ID:
+				mRollBack = true;
+				finish();
+				return true;
 			case INSERT_ID:
 				startActivity(new Intent(Intent.INSERT_ACTION, getIntent().getData()));
 				return true;

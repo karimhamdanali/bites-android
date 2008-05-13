@@ -73,6 +73,8 @@ public class ShoppingList extends ListActivity
 	private ContentResolver contentResolver;
 	private Intent intent;
 	private Cursor mCursor;
+	private Boolean mGotLock = false;
+	private Boolean mRollBack = false;
 	
 	private static final int DISCARD_ID = Menu.FIRST;
 	private static final int FINISH_SHOPPING_ID = Menu.FIRST + 1;
@@ -83,6 +85,15 @@ public class ShoppingList extends ListActivity
     {
         super.onCreate(icicle);
 	contentResolver = getContentResolver();
+	if (!Provider.Transaction.isLocked()) {
+		ContentValues begin = new ContentValues();
+		begin.put(Provider.Transaction.TYPE, Provider.Transaction.BEGIN);
+		contentResolver.insert(Provider.Transaction.CONTENT_URI,begin);
+		mGotLock = true;
+	}
+	else {
+		mGotLock = false;
+	}
         setContentView(R.layout.shoppinglist);
 	View headerView = getViewInflate().inflate(R.layout.shoppinglist_row,null,false,null);
 	TextView v = (TextView)headerView.findViewById(R.id.ingredient);
@@ -100,13 +111,28 @@ public class ShoppingList extends ListActivity
 	}
 	
 	mUri = intent.getData();
-	mCursor = managedQuery(mUri, null, null, null);
+	mCursor = contentResolver.query(mUri, null, null, null,null);
     }
 
 	@Override
         protected void onResume() {
                 super.onResume();
 		refreshList();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (mGotLock && isFinishing()) {
+			ContentValues transaction = new ContentValues();
+			if (mRollBack) {
+				transaction.put(Provider.Transaction.TYPE, Provider.Transaction.ROLLBACK);
+			}
+			else {
+				transaction.put(Provider.Transaction.TYPE, Provider.Transaction.COMMIT);
+			}
+			contentResolver.insert(Provider.Transaction.CONTENT_URI, transaction);
+		}
 	}
 
 	private void refreshList() {
@@ -137,9 +163,7 @@ public class ShoppingList extends ListActivity
 	public boolean onOptionsItemSelected(Menu.Item item) {
 		switch(item.getId()) {
 			case DISCARD_ID:
-				ContentValues emptyBasket = new ContentValues();
-				emptyBasket.put(Provider.ShoppingList.QTY_BASKET,"0");
-				contentResolver.update(mUri, emptyBasket,null,null);
+				mRollBack = true;	
 				finish();
 				return true;
 			case FINISH_SHOPPING_ID:
@@ -147,6 +171,7 @@ public class ShoppingList extends ListActivity
 				int qtyInv;
 				Uri invUri;
 				Cursor cInv;
+				ContentValues update;
 				//Loop through the shopping list adding basket qtys to inventory qtys
 				mCursor.first();
 				do{
@@ -156,13 +181,16 @@ public class ShoppingList extends ListActivity
 					cInv.first();
 					qtyInv = cInv.getInt(Provider.Inventory.QTY_INDEX);
 					qtyInv = qtyInv + qtyBasket;
-					cInv.updateInt(Provider.Inventory.QTY_INDEX, qtyInv);
-					cInv.updateInt(Provider.Inventory.QTY_BASKET_INDEX,0);
-					cInv.commitUpdates();
+					update = new ContentValues();
+					update.put(Provider.Inventory.QTY, qtyInv);
+					update.put(Provider.Inventory.QTY_BASKET,0);
+					contentResolver.update(invUri, update, null, null);
 					mCursor.next();
 					
 				} while (!mCursor.isAfterLast());
 				cInv.close();
+				mCursor.close();
+				mRollBack = false;
 				finish();
 				return true;
 		}
@@ -174,13 +202,14 @@ public class ShoppingList extends ListActivity
 		if (position > 0) {
 			int basket = mCursor.getInt(Provider.ShoppingList.QTY_BASKET_INDEX);
 			int needed = mCursor.getInt(Provider.ShoppingList.QTY_INDEX);
+			ContentValues update = new ContentValues();
 			if (basket < needed) {
-				mCursor.updateInt(Provider.ShoppingList.QTY_BASKET_INDEX, needed);
+				update.put(Provider.ShoppingList.QTY_BASKET, needed);
 			}
 			else {
-				mCursor.updateInt(Provider.ShoppingList.QTY_BASKET_INDEX, 0);
+				update.put(Provider.ShoppingList.QTY_BASKET, 0);
 			}
-			mCursor.commitUpdates();
+			contentResolver.update(Uri.withAppendedPath(Provider.ShoppingList.CONTENT_URI,"" + id),update,null,null);
 			refreshList();
 		}
         }
