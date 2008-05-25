@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <project name="bites" default="package">
-    <property name="sdk-folder" value="/home/ben/android-sdk_m5-rc14_linux-x86" />
-    <property name="android-tools" value="/home/ben/android-sdk_m5-rc14_linux-x86/tools" />
+    <property name="sdk-folder" value="/etc/alternatives/android" />
+    <property name="android-tools" value="${sdk-folder}/tools" />
     <property name="android-framework" value="${android-tools}/lib/framework.aidl" />
 
     <!-- The intermediates directory -->
