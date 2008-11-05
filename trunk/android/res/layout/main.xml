@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+	<Button android:id="@+id/btn_Inventory"    
+	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+	android:layout_weight="1"
+    	android:text="Inventory" />
+
+	<Button android:id="@+id/btn_Recipes"    
+	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+	android:layout_weight="1"
+    	android:text="Recipes" />
+
+	<Button android:id="@+id/btn_ShoppingList"
+	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+	android:layout_weight="1"
+    	android:text="Shopping List" />
+
+	<Button android:id="@+id/btn_MealPlanner"
+	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+	android:layout_weight="1"
+    	android:text="Meal Planner" />
+
+</LinearLayout>
+
