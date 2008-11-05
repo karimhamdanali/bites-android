@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal"
+	android:paddingTop="5sp"
+	android:paddingBottom="5sp"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >
+	<TextView android:id="@+id/recipe"
+		android:width="200sp"
+		android:layout_width="wrap_content" 
+		android:layout_height="fill_parent" />
+	<TextView android:id="@+id/serves"
+		android:width="50sp"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent" />
+	<TextView android:text="serves"
+		android:width="100sp"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent" />
+	<TextView android:id="@+id/recipeserves"
+		android:width="100sp"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent" />
+</LinearLayout>
+
