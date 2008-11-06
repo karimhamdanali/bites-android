@@ -9,4 +9,30 @@
     android:layout_height="wrap_content" 
     android:text="@string/hello"
     />
+<Button android:id="@+id/flip_me" 
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	/>
+<ViewFlipper android:id="@+id/details" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent">
+	<TextView android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:textColor="#FF00FF00"
+		android:text="This is the first panel"
+	/>
+	<TextView android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:textColor="#FFFF0000"
+		android:text="This is the second panel"
+	/>
+	<TextView android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:textColor="#FFFFFF00"
+		android:text="This is the third panel"
+	/>
+</ViewFlipper>
 </LinearLayout>
