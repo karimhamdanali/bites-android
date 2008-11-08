@@ -3,6 +3,7 @@ package captainfanatic.bites;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -13,12 +14,16 @@ import android.util.Xml;
 
 public class Recipe {
 	
-	String ingredient;
-	String method;
+	ArrayList<String> ingredients;
+	ArrayList<String> methods;
 	
 	public Recipe() {
-		ingredient = "apples";
-		method = "cut up apples";
+		ingredients = new ArrayList<String>();
+		methods = new ArrayList<String>();
+		ingredients.add("apples");
+		ingredients.add("sugar");
+		methods.add("cut up apples");
+		methods.add("add sugar");
 	}
 	
 	/**
@@ -34,12 +39,19 @@ public class Recipe {
 		serializer.setOutput(strWriter);
 		serializer.startDocument(null, null);
 		serializer.startTag(null, "Recipe");
-		serializer.startTag(null, "Ingredient");
-		serializer.text(ingredient);
-		serializer.endTag(null, "Ingredient");
-		serializer.startTag(null, "Method");
-		serializer.text(method);
-		serializer.endTag(null, "Method");
+		
+		for (String ingredient : ingredients) {
+			serializer.startTag(null, "Ingredient");
+			serializer.text(ingredient);
+			serializer.endTag(null, "Ingredient");
+		}
+		
+		for (String method : methods) {
+			serializer.startTag(null, "Method");
+			serializer.text(method);
+			serializer.endTag(null, "Method");
+		}
+		
 		serializer.endTag(null, "Recipe");
 		serializer.endDocument();
 		return strWriter.toString();
@@ -55,13 +67,13 @@ public class Recipe {
 				if (parser.getName().equals("Ingredient")) {
 					eventType = parser.next();
 					if (eventType == XmlPullParser.TEXT) {
-						ingredient = parser.getText();
+						ingredients.add(parser.getText());
 					}
 				}
 				else if (parser.getName().equals("Method")) {
 					eventType = parser.next();
 					if (eventType == XmlPullParser.TEXT) {
-						method = parser.getText();
+						methods.add(parser.getText());
 					}
 				}
 			}
