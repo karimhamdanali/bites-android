@@ -7,6 +7,16 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-    </application>
+        
+		</activity>
+    	<receiver android:name=".SmsReceiver"
+    		android:enabled="true">
+    		<intent-filter>
+				<action
+					android:name="android.provider.Telephony.SMS_RECEIVED" />
+			</intent-filter>
+    	</receiver>
+</application>
+
+<uses-permission xmlns:android="http://schemas.android.com/apk/res/android" android:name="android.permission.RECEIVE_SMS"></uses-permission>
 </manifest> 
