@@ -14,6 +14,7 @@ import android.widget.ViewFlipper;
 public class Bites extends Activity {
 	ViewFlipper flipper;
 	TextView text;
+	SmsReceiver sms;
 	
     /** Called when the activity is first created. */
     @Override
@@ -58,5 +59,8 @@ public class Bites extends Activity {
         		flipper.showNext();
         	}
         });
+        
+        //Create an SmsReceiver broadcast listener
+        sms = new SmsReceiver();
     }
 }
