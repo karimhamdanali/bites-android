@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+//TODO: handle sms message text in intent from SmsReceiver
+
 public class Bites extends Activity {
 	ViewFlipper flipper;
 	TextView text;
@@ -21,7 +23,7 @@ public class Bites extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+       
         flipper=(ViewFlipper)findViewById(R.id.details);
         text = (TextView)findViewById(R.id.TextView01);
         String strXml = new String();
@@ -59,8 +61,13 @@ public class Bites extends Activity {
         		flipper.showNext();
         	}
         });
-        
-        //Create an SmsReceiver broadcast listener
-        sms = new SmsReceiver();
     }
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setContentView(R.layout.main);
+	}
+    
+    
 }
