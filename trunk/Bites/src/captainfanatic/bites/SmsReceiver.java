@@ -12,10 +12,12 @@ import android.telephony.gsm.SmsMessage;
  *
  */
 public class SmsReceiver extends BroadcastReceiver {
-
+	
+	public static final String KEY_MSG_TEXT = "messageText";
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		String message;
+		String message = "asdf";
 		
 		if (!intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
 			return;
@@ -29,7 +31,16 @@ public class SmsReceiver extends BroadcastReceiver {
 			message = SmsMessage.createFromPdu(byteData).getDisplayMessageBody();
 		}
 		
-		//TODO: parse the message and create a recipe object if relevant
-	
+		if (message.contains("Recipe")) {
+			Intent broadcast = new Intent("com.captainfanatic.bites.RECEIVED_RECIPE");
+			broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			broadcast.putExtra(KEY_MSG_TEXT, message);
+			try {
+				context.startActivity(broadcast);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		}				
 	}
 }
