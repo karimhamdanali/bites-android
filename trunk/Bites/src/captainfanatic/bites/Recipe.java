@@ -14,12 +14,21 @@ import android.util.Xml;
 
 public class Recipe {
 	
+	String mName;
 	ArrayList<String> ingredients;
 	ArrayList<String> methods;
 	
+	
+	
+	@Override
+	public String toString() {
+		return mName; 
+	}
+
 	public Recipe() {
 		ingredients = new ArrayList<String>();
 		methods = new ArrayList<String>();
+		mName = "New Recipe";
 		ingredients.add("apples");
 		ingredients.add("sugar");
 		methods.add("cut up apples");
