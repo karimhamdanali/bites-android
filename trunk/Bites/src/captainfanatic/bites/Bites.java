@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,7 +25,10 @@ public class Bites extends Activity {
 	ViewFlipper flipper;
 	TextView text;
 	SmsReceiver sms;
-	Button btn;
+	Button mMethodButton;
+	Button mIngredientsButton;
+	Button mRecipesButton01;
+	Button mRecipesButton02;
 	ListView mRecipeListView;
 	ListView mRecipeIngredientsView;
 	ListView mRecipeMethodView;
@@ -51,6 +55,34 @@ public class Bites extends Activity {
         
         mRecipeIngredientsView = (ListView)findViewById(R.id.recipeIngredientsView);
         mRecipeMethodView = (ListView)findViewById(R.id.recipeMethodView);
+        
+        mMethodButton = (Button)findViewById(R.id.methodButton);
+        mIngredientsButton = (Button)findViewById(R.id.ingredientsButton);
+        mRecipesButton01 = (Button)findViewById(R.id.recipesButton01);
+        mRecipesButton02 = (Button)findViewById(R.id.recipesButton02);
+        
+        mMethodButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				flipper.showNext();
+			}});
+        
+        mIngredientsButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				flipper.showPrevious();
+			}
+        });
+        
+        mRecipesButton01.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				flipper.showPrevious();
+			}
+        });
+        
+        mRecipesButton02.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				flipper.showNext();
+			}
+        });
         
 		selRecipe = (Recipe)mRecipeListView.getItemAtPosition(0);
         mRecipeIngredientsView.setAdapter(new ArrayAdapter<String>(context, 
