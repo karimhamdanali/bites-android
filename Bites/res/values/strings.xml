@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, Bites</string>
     <string name="app_name">Bites</string>
+<string name="Tab_Recipes">Recipes</string>
+<string name="Tab_Ingredients">Ingredients</string>
+<string name="Tab_Methods">Method</string>
 </resources>

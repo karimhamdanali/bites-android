@@ -1,113 +1,38 @@
 package captainfanatic.bites;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.xmlpull.v1.XmlPullParserException;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
+import android.app.TabActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.ViewFlipper;
+import android.view.LayoutInflater;
+import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 
 //TODO: handle sms message text in intent from SmsReceiver
 
-public class Bites extends Activity {
-	ViewFlipper flipper;
-	TextView text;
+public class Bites extends TabActivity {
 	SmsReceiver sms;
-	Button mMethodButton;
-	Button mIngredientsButton;
-	Button mRecipesButton01;
-	Button mRecipesButton02;
-	ListView mRecipeListView;
-	ListView mRecipeIngredientsView;
-	ListView mRecipeMethodView;
 
-	ArrayList<Recipe> mRecipeList;
-	Recipe selRecipe;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        TabHost tabHost = getTabHost();
         
-        final Context context = this;
+        LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
+
+        tabHost.addTab(tabHost.newTabSpec("tab1")
+                .setIndicator("tab 1")
+                .setContent(R.id.view1));
+        tabHost.addTab(tabHost.newTabSpec("tab3")
+                .setIndicator("tab 2")
+                .setContent(R.id.view2));
+        tabHost.addTab(tabHost.newTabSpec("tab3")
+                .setIndicator("tab 3")
+                .setContent(R.id.view3));
         
-        mRecipeList = new ArrayList<Recipe>();
-        Recipe recipe = new Recipe();
-        selRecipe = new Recipe();
-        mRecipeList.add(recipe);
-        mRecipeList.add(recipe);       
-        mRecipeListView = (ListView)findViewById(R.id.recipeListView);
-        mRecipeListView.setAdapter(new ArrayAdapter<Recipe>(this,
-                android.R.layout.simple_list_item_1,mRecipeList));
-        
-        mRecipeIngredientsView = (ListView)findViewById(R.id.recipeIngredientsView);
-        mRecipeMethodView = (ListView)findViewById(R.id.recipeMethodView);
-        
-        mMethodButton = (Button)findViewById(R.id.methodButton);
-        mIngredientsButton = (Button)findViewById(R.id.ingredientsButton);
-        mRecipesButton01 = (Button)findViewById(R.id.recipesButton01);
-        mRecipesButton02 = (Button)findViewById(R.id.recipesButton02);
-        
-        mMethodButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				flipper.showNext();
-			}});
-        
-        mIngredientsButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				flipper.showPrevious();
-			}
-        });
-        
-        mRecipesButton01.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				flipper.showPrevious();
-			}
-        });
-        
-        mRecipesButton02.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				flipper.showNext();
-			}
-        });
-        
-		selRecipe = (Recipe)mRecipeListView.getItemAtPosition(0);
-        mRecipeIngredientsView.setAdapter(new ArrayAdapter<String>(context, 
-																	android.R.layout.simple_list_item_1, 
-																	selRecipe.ingredients));
-        mRecipeMethodView.setAdapter(new ArrayAdapter<String>(context, 
-        														android.R.layout.simple_list_item_1, 
-        														selRecipe.methods));
-        
-        flipper=(ViewFlipper)findViewById(R.id.details);
-        
-        mRecipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-											int arg2, long arg3) {
-				selRecipe = (Recipe)mRecipeListView.getSelectedItem();
-				ArrayAdapter<?> adapter = (ArrayAdapter<?>)mRecipeIngredientsView.getAdapter();
-				adapter.notifyDataSetChanged();
-				adapter = (ArrayAdapter<?>)mRecipeMethodView.getAdapter();
-				adapter.notifyDataSetChanged();
-				flipper.showNext();
-			}
-        });
     }
 
-	@Override
+/*	@Override
 	protected void onResume() {
 		super.onResume();
 		Intent intent = getIntent();
@@ -130,6 +55,6 @@ public class Bites extends Activity {
 		}
 		//If the xml pullparser was successful and we have a new recipe object
 		mRecipeList.add(newRecipe);
-	}
+	}*/
     
 }

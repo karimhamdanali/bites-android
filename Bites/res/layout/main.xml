@@ -1,68 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<ViewFlipper android:id="@+id/details" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent">
-	<ListView android:id="@+id/recipeListView" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
-		android:textStyle="bold"
-		android:textColor="#FF00FF00"
-		android:text="This is the first panel"
-	/>
-	<LinearLayout android:orientation="vertical" 
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent" >
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content">
-			<Button android:id="@+id/recipesButton01" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:text="Recipes">
-			</Button>
-			<Button android:id="@+id/methodButton" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:text="Method">
-			</Button>
-		</LinearLayout>
-		<ListView android:id="@+id/recipeIngredientsView" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:textColor="#FFFF0000"
-			android:text="This is the second panel"
-		/>
-	</LinearLayout>
-	<LinearLayout android:orientation="vertical" 
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent" >
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" >
-			<Button android:id="@+id/recipesButton02" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:text="Recipes">
-			</Button>
-			<Button android:id="@+id/ingredientsButton" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:text="Ingredients">
-			</Button>
-		</LinearLayout>
-		<ListView android:id="@+id/recipeMethodView" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:textColor="#FFFFFF00"
-			android:text="This is the third panel"
-		/>
-	</LinearLayout>
-</ViewFlipper>
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@android:id/tabcontent" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+	<TextView android:id="@+id/view1"
+        android:background="#FF0000"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="tab1"/>
+
+    <TextView android:id="@+id/view2"
+        android:background="#00FF00"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="tab2"/>
+
+    <TextView android:id="@+id/view3"
+        android:background="#0000FF"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="tab3"/>
+</FrameLayout>
