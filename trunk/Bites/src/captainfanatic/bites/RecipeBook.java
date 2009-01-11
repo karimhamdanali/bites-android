@@ -79,4 +79,108 @@ public final class RecipeBook {
          */
         public static final String MODIFIED_DATE = "modified";
     }
+    
+    public static final class Ingredients implements BaseColumns {
+        // This class cannot be instantiated
+        private Ingredients() {}
+
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/ingredients");
+
+        /**
+         * The MIME type of {@link #CONTENT_URI} providing a directory of ingredients.
+         */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.captainfanatic.ingredient";
+
+        /**
+         * The MIME type of a {@link #CONTENT_URI} sub-directory of a single ingredient.
+         */
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.captainfanatic.ingredient";
+
+        /**
+         * The default sort order for this table
+         */
+        public static final String DEFAULT_SORT_ORDER = "modified DESC";
+
+        /**
+         * The ID of the recipe the ingredient belongs to
+         * <P>Type: INTEGER</P>
+         */
+        public static final String RECIPE = "recipe_ID";
+
+        /**
+         * The text of the ingredient
+         * <P>Type: TEXT</P>
+         */
+        public static final String TEXT = "text";
+
+        /**
+         * The timestamp for when the recipe was created
+         * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
+         */
+        public static final String CREATED_DATE = "created";
+
+        /**
+         * The timestamp for when the recipe was last modified
+         * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
+         */
+        public static final String MODIFIED_DATE = "modified";
+    }
+    
+    public static final class Methods implements BaseColumns {
+        // This class cannot be instantiated
+        private Methods() {}
+
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/methods");
+
+        /**
+         * The MIME type of {@link #CONTENT_URI} providing a directory of methods.
+         */
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.captainfanatic.methods";
+
+        /**
+         * The MIME type of a {@link #CONTENT_URI} sub-directory of a single method.
+         */
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.captainfanatic.method";
+
+        /**
+         * The default sort order for this table
+         */
+        public static final String DEFAULT_SORT_ORDER = "step DESC";
+
+        /**
+         * The recipe that the method belongs to
+         * <P>Type: INTEGER</P>
+         */
+        public static final String RECIPE = "recipe_id";
+
+        /**
+         * The step number of the method
+         * <P>Type: TEXT</P>
+         */
+        public static final String STEP = "step";
+
+        /**
+         * The text of the method
+         * <P>Type: TEXT</P>
+         */
+        public static final String TEXT = "text";
+
+        /**
+         * The timestamp for when the method was created
+         * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
+         */
+        public static final String CREATED_DATE = "created";
+
+        /**
+         * The timestamp for when the method was last modified
+         * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
+         */
+        public static final String MODIFIED_DATE = "modified";
+    }
 }
