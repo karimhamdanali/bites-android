@@ -2,7 +2,11 @@
 <resources>
     <string name="hello">Hello World, Bites</string>
     <string name="app_name">Bites</string>
-<string name="Tab_Recipes">Recipes</string>
-<string name="Tab_Ingredients">Ingredients</string>
-<string name="Tab_Methods">Method</string>
+
+
+
+<string name="dialog_recipename_title">Recipe Name</string>
+<string name="dialog_recipename_ok">OK</string>
+<string name="dialog_recipename_cancel">Cancel</string>
+<string name="dialog_recipename_prompt">Enter Recipe Name</string>
 </resources>
