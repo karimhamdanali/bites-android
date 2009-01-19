@@ -338,7 +338,6 @@ public class RecipeBookProvider extends ContentProvider {
         		throw new IllegalArgumentException("Unknown URI " + uri);
 
         }
-
         
     }
 
@@ -430,9 +429,13 @@ public class RecipeBookProvider extends ContentProvider {
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(RecipeBook.AUTHORITY, "notes", RECIPES);
-        sUriMatcher.addURI(RecipeBook.AUTHORITY, "notes/#", RECIPE_ID);
-
+        sUriMatcher.addURI(RecipeBook.AUTHORITY, "recipes/", RECIPES);
+        sUriMatcher.addURI(RecipeBook.AUTHORITY, "recipes/#", RECIPE_ID);
+        sUriMatcher.addURI(RecipeBook.AUTHORITY, "ingredients/", INGREDIENTS);
+        sUriMatcher.addURI(RecipeBook.AUTHORITY, "ingredients/#", INGREDIENT_ID);
+        sUriMatcher.addURI(RecipeBook.AUTHORITY, "methods/", METHODS);
+        sUriMatcher.addURI(RecipeBook.AUTHORITY, "methods/#", METHOD_ID);
+        
         sRecipesProjectionMap = new HashMap<String, String>();
         sRecipesProjectionMap.put(Recipes._ID, Recipes._ID);
         sRecipesProjectionMap.put(Recipes.TITLE, Recipes.TITLE);

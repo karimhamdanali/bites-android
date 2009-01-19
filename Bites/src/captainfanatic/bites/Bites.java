@@ -1,41 +1,40 @@
 package captainfanatic.bites;
 
+import captainfanatic.bites.RecipeBook.Recipes;
 import android.app.TabActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
 
 //TODO: handle sms message text in intent from SmsReceiver
 
 public class Bites extends TabActivity {
 	SmsReceiver sms;
-
-	
+		
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TabHost tabHost = getTabHost();
+               
+        final TabHost tabHost = getTabHost();
         
-        LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
-
         tabHost.addTab(tabHost.newTabSpec("tab1")
-                .setIndicator("tab 1")
-                .setContent(R.id.view1));
+                .setIndicator("Recipes")
+                .setContent(new Intent(this, RecipeList.class)));
         tabHost.addTab(tabHost.newTabSpec("tab3")
-                .setIndicator("tab 2")
-                .setContent(R.id.view2));
+                .setIndicator("Ingredients")
+                .setContent(new Intent(this, IngredientList.class)));
         tabHost.addTab(tabHost.newTabSpec("tab3")
-                .setIndicator("tab 3")
-                .setContent(R.id.view3));
-        
+                .setIndicator("Method")
+                .setContent(new Intent(this, MethodList.class)));  
+    
     }
 
-/*	@Override
+	/*@Override
 	protected void onResume() {
 		super.onResume();
-		Intent intent = getIntent();
+		
+				Intent intent = getIntent();
 		
 		//Check for new xml recipe from a text message etc.
 		if (!intent.hasExtra(SmsReceiver.KEY_MSG_TEXT)) {
@@ -55,6 +54,7 @@ public class Bites extends TabActivity {
 		}
 		//If the xml pullparser was successful and we have a new recipe object
 		mRecipeList.add(newRecipe);
-	}*/
-    
+				
+	}
+    */
 }
