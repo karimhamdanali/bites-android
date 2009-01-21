@@ -10,6 +10,8 @@ import android.widget.TabHost;
 
 public class Bites extends TabActivity {
 	SmsReceiver sms;
+	
+	int mRecipeId;
 		
     /** Called when the activity is first created. */
     @Override
@@ -17,11 +19,11 @@ public class Bites extends TabActivity {
         super.onCreate(savedInstanceState);
                
         final TabHost tabHost = getTabHost();
-        
+                
         tabHost.addTab(tabHost.newTabSpec("tab1")
                 .setIndicator("Recipes")
                 .setContent(new Intent(this, RecipeList.class)));
-        tabHost.addTab(tabHost.newTabSpec("tab3")
+        tabHost.addTab(tabHost.newTabSpec("tab2")
                 .setIndicator("Ingredients")
                 .setContent(new Intent(this, IngredientList.class)));
         tabHost.addTab(tabHost.newTabSpec("tab3")

@@ -129,9 +129,11 @@ public class RecipeList extends ListActivity {
         switch (item.getItemId()) {
         case MENU_ITEM_INSERT:
             // Insert a new item
+        	break;
 	    case MENU_ITEM_EDIT:
 	        // Edit an existing item
 			showDialog(DIALOG_RECIPE_NAME);
+			break;
 	    }
         return super.onOptionsItemSelected(item);
     }
