@@ -1,6 +1,5 @@
 package captainfanatic.bites;
 
-import captainfanatic.bites.RecipeBook.Recipes;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,7 @@ import android.widget.TabHost;
 public class Bites extends TabActivity {
 	SmsReceiver sms;
 	
-	int mRecipeId;
+	static long mRecipeId;
 		
     /** Called when the activity is first created. */
     @Override
@@ -59,4 +58,5 @@ public class Bites extends TabActivity {
 				
 	}
     */
+
 }

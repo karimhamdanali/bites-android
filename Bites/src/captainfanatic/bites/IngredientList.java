@@ -42,8 +42,6 @@ public class IngredientList extends ListActivity {
      */
     private static final int DIALOG_INGREDIENT = 1;
     
-    public static final String RECIPE_ID = "RecipeId";
-    private int mRecipeId;
     private Uri mUri;
 
 	@Override
@@ -54,13 +52,11 @@ public class IngredientList extends ListActivity {
         if (intent.getData() == null) {
             intent.setData(Ingredients.CONTENT_URI);
         }
-		
-		mRecipeId = getIntent().getIntExtra(RECIPE_ID, 1);
-		
+			
 		setContentView(R.layout.ingredients);
 		
 		Cursor cursor = managedQuery(Ingredients.CONTENT_URI, PROJECTION,
-									Ingredients.RECIPE + "=" + mRecipeId, 
+									Ingredients.RECIPE + "=" + Bites.mRecipeId, 
 									null, Ingredients.DEFAULT_SORT_ORDER);
 
         // Used to map notes entries from the database to views
@@ -98,7 +94,7 @@ public class IngredientList extends ListActivity {
         case MENU_ITEM_INSERT:
             // Insert a new item
         	ContentValues values = new ContentValues();
-        	values.put(Ingredients.RECIPE, mRecipeId);
+        	values.put(Ingredients.RECIPE, Bites.mRecipeId);
         	mUri = getContentResolver().insert(getIntent().getData(), values);
         	showDialog(DIALOG_INGREDIENT);
         	break;
