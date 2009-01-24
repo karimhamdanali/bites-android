@@ -1,5 +1,6 @@
 package captainfanatic.bites;
 
+import captainfanatic.bites.RecipeBook.Ingredients;
 import captainfanatic.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -68,6 +69,8 @@ public class RecipeList extends ListActivity {
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.recipelist_item, cursor,
                 new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
         setListAdapter(adapter);
+        cursor.moveToFirst();
+        Bites.mRecipeId = cursor.getLong(0);
 	}
 
 	@Override
@@ -129,6 +132,8 @@ public class RecipeList extends ListActivity {
         switch (item.getItemId()) {
         case MENU_ITEM_INSERT:
             // Insert a new item
+        	mUri = getContentResolver().insert(Recipes.CONTENT_URI,null);
+        	showDialog(DIALOG_RECIPE_NAME);
         	break;
 	    case MENU_ITEM_EDIT:
 	        // Edit an existing item
@@ -165,6 +170,7 @@ public class RecipeList extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		mUri = ContentUris.withAppendedId(getIntent().getData(), id);
+		Bites.mRecipeId = id;
 	}
 	
 	
