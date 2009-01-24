@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+	<LinearLayout android:id="@+id/recipes"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+		<ListView android:id="@+id/recipelist"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" />
+	    <TextView android:id="@android:id/empty"
+	    	android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+	    	android:text="No Recipes" />
+	</LinearLayout>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:id="@+id/ingredients"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+		<ListView android:id="@+id/ingredientlist"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" />
+	    <TextView android:id="@android:id/empty"
+	    	android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+	    	android:text="No Ingredients" />
+	</LinearLayout>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:id="@+id/methods"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+		<ListView android:id="@+id/methodlist"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" />
+	    <TextView android:id="@android:id/empty"
+	    	android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+	    	android:text="No Methods" />
+	</LinearLayout>
+</FrameLayout>
