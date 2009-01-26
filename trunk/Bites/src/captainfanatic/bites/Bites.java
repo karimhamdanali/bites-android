@@ -5,7 +5,6 @@ import captainfanatic.bites.RecipeBook.Methods;
 import captainfanatic.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ListActivity;
 import android.app.TabActivity;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -45,6 +44,8 @@ public class Bites extends TabActivity {
 	
 	private long mRecipeId;
 	
+	private Context context;
+	
 	private static final String[] PROJECTION_RECIPES = new String[] {
         Recipes._ID, // 0
         Recipes.TITLE, // 1
@@ -76,7 +77,7 @@ public class Bites extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
                
-        final Context context = this;
+        context = this;
         final TabHost tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.bites, tabHost.getTabContentView(), true);
                 
@@ -123,13 +124,13 @@ public class Bites extends TabActivity {
         
         mIngredientList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        		mUriIngredient = Uri.withAppendedPath(Ingredients.CONTENT_URI, Long.toString(mIngredientList.getSelectedItemId()));
+        		mUriIngredient = Uri.withAppendedPath(Ingredients.CONTENT_URI, mCurIngredient.getString(0));
         	}
         });
         
         mMethodList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        		mUriMethod = Uri.withAppendedPath(Methods.CONTENT_URI, Long.toString(mMethodList.getSelectedItemId()));
+        		mUriMethod = Uri.withAppendedPath(Methods.CONTENT_URI, mCurMethod.getString(0));
         	}
         });
         
@@ -210,7 +211,9 @@ public class Bites extends TabActivity {
 	        	break;
         	//Methods tab
         	case 2:
-        		mUriMethod = getContentResolver().insert(Methods.CONTENT_URI,null);
+        		ContentValues methodValues = new ContentValues();
+        		methodValues.put(Methods.RECIPE, mRecipeId);
+        		mUriMethod = getContentResolver().insert(Methods.CONTENT_URI,methodValues);
 	        	showDialog(DIALOG_METHOD);
 	        	break;
         	}
@@ -273,7 +276,7 @@ public class Bites extends TabActivity {
                         values.put(Ingredients.TEXT, ingredientName.getText().toString());
                         values.put(Ingredients.RECIPE, mRecipeId);
                         getContentResolver().update(mUriIngredient, values, null, null);
-                    }
+                	}
                 })
                 .setNegativeButton(R.string.dialog_ingredient_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -283,7 +286,27 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_METHOD:
-			break;
+			textEntryView = factory.inflate(R.layout.dialog_method, null);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_method_title)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.dialog_method_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                    	ContentValues values = new ContentValues();
+                    	EditText methodText = (EditText)textEntryView.findViewById(R.id.method_edit);
+                        values.put(Methods.TEXT, methodText.getText().toString());
+                        values.put(Methods.RECIPE, mRecipeId);
+                        getContentResolver().update(mUriMethod, values, null, null);
+                	}
+                })
+                .setNegativeButton(R.string.dialog_ingredient_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
 		}		
 		return null;
 	}
