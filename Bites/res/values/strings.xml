@@ -14,4 +14,8 @@
 
 <string name="dialog_ingredient_ok">OK</string>
 <string name="dialog_ingredient_cancel">Cancel</string>
+<string name="dialog_method_prompt">Method Step and Description</string>
+<string name="dialog_method_title">Edit Method</string>
+<string name="dialog_method_ok">OK</string>
+<string name="dialog_method_cancel">Cancel</string>
 </resources>
