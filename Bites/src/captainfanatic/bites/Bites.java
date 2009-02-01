@@ -68,9 +68,15 @@ public class Bites extends TabActivity {
     public static final int MENU_ITEM_INSERT = Menu.FIRST + 2;
     
     /** Dialog boxes to display */
-    private static final int DIALOG_RECIPE_NAME = 1;
-    private static final int DIALOG_INGREDIENT = 2;
-    private static final int DIALOG_METHOD = 3;
+    private static final int DIALOG_RECIPE_EDIT = 1;
+    private static final int DIALOG_INGREDIENT_EDIT = 2;
+    private static final int DIALOG_METHOD_EDIT = 3;
+    private static final int DIALOG_DELETE_RECIPE = 4;
+    private static final int DIALOG_DELETE_INGREDIENT = 5;
+    private static final int DIALOG_DELETE_METHOD = 6;
+    private static final int DIALOG_RECIPE_INSERT = 7;
+    private static final int DIALOG_INGREDIENT_INSERT = 8;
+    private static final int DIALOG_METHOD_INSERT = 9;
 		
     /** Called when the activity is first created. */
     @Override
@@ -99,7 +105,7 @@ public class Bites extends TabActivity {
         mRecipeList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				mRecipeId = id;
-				mUriRecipe = Uri.withAppendedPath(Recipes.CONTENT_URI, Long.toString(mRecipeList.getSelectedItemId()));
+				mUriRecipe = Uri.withAppendedPath(Recipes.CONTENT_URI, mCurRecipe.getString(0));
 				mCurIngredient = managedQuery(Ingredients.CONTENT_URI, 
 						PROJECTION_INGREDIENTS, 
 						Ingredients.RECIPE + "=" + mRecipeId, 
@@ -143,8 +149,9 @@ public class Bites extends TabActivity {
         SimpleCursorAdapter recipeAdapter = new SimpleCursorAdapter(this, R.layout.recipelist_item, mCurRecipe,
                 new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
         mRecipeList.setAdapter(recipeAdapter);
-        mRecipeId = mCurRecipe.getLong(0);
         
+        mCurRecipe.moveToFirst();
+                
         mCurIngredient = managedQuery(Ingredients.CONTENT_URI, 
         								PROJECTION_INGREDIENTS, 
         								Ingredients.RECIPE + "=" + mRecipeId, 
@@ -186,6 +193,9 @@ public class Bites extends TabActivity {
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, Bites.class), null, intent, 0, null);
+        
+        menu.add(0, MENU_ITEM_DELETE, 0, "delete")
+        .setIcon(android.R.drawable.ic_menu_delete);
        
         return true;
 	}
@@ -199,40 +209,52 @@ public class Bites extends TabActivity {
         	switch (selTab) {
         	//Recipes tab
         	case 0:
-        		mUriRecipe = getContentResolver().insert(Recipes.CONTENT_URI,null);
-	        	showDialog(DIALOG_RECIPE_NAME);
+	        	showDialog(DIALOG_RECIPE_INSERT);
 	        	break;
         	//Ingredients tab
         	case 1:
-        		ContentValues values = new ContentValues();
-        		values.put(Ingredients.RECIPE, mRecipeId);
-        		mUriIngredient = getContentResolver().insert(Ingredients.CONTENT_URI,values);
-	        	showDialog(DIALOG_INGREDIENT);
+	        	showDialog(DIALOG_INGREDIENT_INSERT);
 	        	break;
         	//Methods tab
         	case 2:
-        		ContentValues methodValues = new ContentValues();
-        		methodValues.put(Methods.RECIPE, mRecipeId);
-        		mUriMethod = getContentResolver().insert(Methods.CONTENT_URI,methodValues);
-	        	showDialog(DIALOG_METHOD);
+	        	showDialog(DIALOG_METHOD_INSERT);
 	        	break;
         	}
+        	break;
 	    case MENU_ITEM_EDIT:
 	        // Edit an existing item
 	    	switch (selTab) {
 	    	//Recipe tab
 	    	case 0:
-	    		showDialog(DIALOG_RECIPE_NAME);
+	    		showDialog(DIALOG_RECIPE_EDIT);
 				break;
 			//Ingredients tab
 	    	case 1:
-				showDialog(DIALOG_INGREDIENT);
+				showDialog(DIALOG_INGREDIENT_EDIT);
 				break;
 			//Methods tab
 	    	case 2:
-				showDialog(DIALOG_METHOD);
+				showDialog(DIALOG_METHOD_EDIT);
 				break;
 	    	}
+	    	break;
+	    case MENU_ITEM_DELETE:
+	    	switch (selTab) {
+	    	//Delete an item
+	    	//Delete called from Recipe Tab
+	    	case 0:
+	    		showDialog(DIALOG_DELETE_RECIPE);
+		    	break;
+		    //Delete called from Ingredient Tab
+	    	case 1:
+	    		showDialog(DIALOG_DELETE_INGREDIENT);
+	    		break;
+	    	//Delete called from Method Tab
+	    	case 2:
+	    		showDialog(DIALOG_DELETE_METHOD);
+	    		break;
+	    	}
+	    	break;
 	    }
         return super.onOptionsItemSelected(item);
 	}
@@ -242,7 +264,7 @@ public class Bites extends TabActivity {
 		LayoutInflater factory = LayoutInflater.from(this);
 		final View textEntryView;
 		switch (id) {
-		case DIALOG_RECIPE_NAME:
+		case DIALOG_RECIPE_EDIT:
             textEntryView = factory.inflate(R.layout.dialog_recipename, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_recipename_title)
@@ -263,7 +285,7 @@ public class Bites extends TabActivity {
                     }
                 })
                 .create();
-		case DIALOG_INGREDIENT:
+		case DIALOG_INGREDIENT_EDIT:
             textEntryView = factory.inflate(R.layout.dialog_ingredient, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
@@ -285,7 +307,7 @@ public class Bites extends TabActivity {
                     }
                 })
                 .create();
-		case DIALOG_METHOD:
+		case DIALOG_METHOD_EDIT:
 			textEntryView = factory.inflate(R.layout.dialog_method, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
@@ -302,11 +324,141 @@ public class Bites extends TabActivity {
                 })
                 .setNegativeButton(R.string.dialog_ingredient_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
+		case DIALOG_DELETE_RECIPE:
+			textEntryView = factory.inflate(R.layout.dialog_confirm, null);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_delete_recipe_title)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                		getContentResolver().delete(Ingredients.CONTENT_URI, 
+								Ingredients._ID + "=" + mRecipeId, 
+								null);
+                		getContentResolver().delete(Methods.CONTENT_URI, 
+								Methods._ID + "=" + mRecipeId, null);
+                		getContentResolver().delete(mUriRecipe, null, null);
+                		mCurRecipe.moveToFirst();
+                		mRecipeList.performItemClick(mRecipeList, mCurRecipe.getPosition(), mCurRecipe.getLong(0));
+                	}
+                })
+                .setNegativeButton(R.string.dialog_confirm_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	
+                    }
+                })
+                .create();
+		case DIALOG_DELETE_INGREDIENT:
+			textEntryView = factory.inflate(R.layout.dialog_confirm, null);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_delete_ingredient_title)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                		getContentResolver().delete(mUriIngredient, null, null);
+                		mCurIngredient.moveToFirst();
+                	}
+                })
+                .setNegativeButton(R.string.dialog_confirm_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	
+                    }
+                })
+                .create();
+		case DIALOG_DELETE_METHOD:
+			textEntryView = factory.inflate(R.layout.dialog_confirm, null);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_delete_method_title)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                		getContentResolver().delete(mUriMethod, null, null);
+                		mCurMethod.moveToFirst();
+                	}
+                })
+                .setNegativeButton(R.string.dialog_confirm_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	
+                    }
+                })
+                .create();
+		case DIALOG_RECIPE_INSERT:
+            textEntryView = factory.inflate(R.layout.dialog_recipename, null);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_recipename_title)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.dialog_recipename_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                		mUriRecipe = getContentResolver().insert(Recipes.CONTENT_URI,null);
+                    	ContentValues values = new ContentValues();
+                    	EditText recipeName = (EditText)textEntryView.findViewById(R.id.recipename_edit);
+                        values.put(Recipes.TITLE, recipeName.getText().toString());
+                        getContentResolver().update(mUriRecipe, values, null, null);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_recipename_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
 
                         /* User clicked cancel so do some stuff */
                     }
                 })
                 .create();
+		case DIALOG_INGREDIENT_INSERT:
+            textEntryView = factory.inflate(R.layout.dialog_ingredient, null);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_ingredient_title)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.dialog_ingredient_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                		ContentValues values = new ContentValues();
+                		values.put(Ingredients.RECIPE, mRecipeId);
+                		mUriIngredient = getContentResolver().insert(Ingredients.CONTENT_URI,values);
+                    	EditText ingredientName = (EditText)textEntryView.findViewById(R.id.ingredient_edit);
+                        values.put(Ingredients.TEXT, ingredientName.getText().toString());
+                        values.put(Ingredients.RECIPE, mRecipeId);
+                        getContentResolver().update(mUriIngredient, values, null, null);
+                	}
+                })
+                .setNegativeButton(R.string.dialog_ingredient_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
+		case DIALOG_METHOD_INSERT:
+			textEntryView = factory.inflate(R.layout.dialog_method, null);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_method_title)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.dialog_method_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                		ContentValues values = new ContentValues();
+                		values.put(Methods.RECIPE, mRecipeId);
+                		mUriMethod = getContentResolver().insert(Methods.CONTENT_URI,values);
+                    	EditText methodText = (EditText)textEntryView.findViewById(R.id.method_edit);
+                        values.put(Methods.TEXT, methodText.getText().toString());
+                        values.put(Methods.RECIPE, mRecipeId);
+                        getContentResolver().update(mUriMethod, values, null, null);
+                	}
+                })
+                .setNegativeButton(R.string.dialog_ingredient_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
+
+
 		}		
 		return null;
 	}
