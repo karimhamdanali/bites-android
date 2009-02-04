@@ -112,11 +112,7 @@ public class Bites extends TabActivity {
         mRecipeHeader = (TextView)findViewById(R.id.recipeheader);
         mIngredientHeader = (TextView)findViewById(R.id.ingredientheader);
         mMethodHeader = (TextView)findViewById(R.id.methodheader);      
-        
-        mRecipeList.setBackgroundResource(R.drawable.bites_image);
-        ((BitmapDrawable)mRecipeList.getBackground()).setGravity(Gravity.CENTER);
-        
-        
+                
         mRecipeList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				mRecipeId = id;
@@ -283,9 +279,12 @@ public class Bites extends TabActivity {
 	protected Dialog onCreateDialog(int id) {
 		LayoutInflater factory = LayoutInflater.from(this);
 		final View textEntryView;
+		final EditText edit;
 		switch (id) {
 		case DIALOG_RECIPE_EDIT:
             textEntryView = factory.inflate(R.layout.dialog_recipename, null);
+            edit = (EditText)textEntryView.findViewById(R.id.recipename_edit);
+            edit.setText(mCurRecipe.getString(1));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_recipename_title)
                 .setView(textEntryView)
@@ -293,8 +292,7 @@ public class Bites extends TabActivity {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
-                    	EditText recipeName = (EditText)textEntryView.findViewById(R.id.recipename_edit);
-                        values.put(Recipes.TITLE, recipeName.getText().toString());
+                        values.put(Recipes.TITLE, edit.getText().toString());
                         getContentResolver().update(mUriRecipe, values, null, null);
                     }
                 })
@@ -307,6 +305,8 @@ public class Bites extends TabActivity {
                 .create();
 		case DIALOG_INGREDIENT_EDIT:
             textEntryView = factory.inflate(R.layout.dialog_ingredient, null);
+            edit = (EditText)textEntryView.findViewById(R.id.ingredient_edit);
+            edit.setText(mCurIngredient.getString(2));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
                 .setView(textEntryView)
@@ -314,8 +314,7 @@ public class Bites extends TabActivity {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
-                    	EditText ingredientName = (EditText)textEntryView.findViewById(R.id.ingredient_edit);
-                        values.put(Ingredients.TEXT, ingredientName.getText().toString());
+                        values.put(Ingredients.TEXT, edit.getText().toString());
                         values.put(Ingredients.RECIPE, mRecipeId);
                         getContentResolver().update(mUriIngredient, values, null, null);
                 	}
@@ -329,6 +328,8 @@ public class Bites extends TabActivity {
                 .create();
 		case DIALOG_METHOD_EDIT:
 			textEntryView = factory.inflate(R.layout.dialog_method, null);
+			edit = (EditText)textEntryView.findViewById(R.id.method_edit);
+            edit.setText(mCurMethod.getString(2));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
                 .setView(textEntryView)
@@ -336,8 +337,7 @@ public class Bites extends TabActivity {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
-                    	EditText methodText = (EditText)textEntryView.findViewById(R.id.method_edit);
-                        values.put(Methods.TEXT, methodText.getText().toString());
+                        values.put(Methods.TEXT, edit.getText().toString());
                         values.put(Methods.RECIPE, mRecipeId);
                         getContentResolver().update(mUriMethod, values, null, null);
                 	}
