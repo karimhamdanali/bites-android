@@ -12,8 +12,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 //TODO: handle sms message text in intent from SmsReceiver
@@ -33,6 +36,10 @@ public class Bites extends TabActivity {
 	private ListView mRecipeList;
 	private ListView mIngredientList;
 	private ListView mMethodList;
+	
+	private TextView mRecipeHeader;
+	private TextView mIngredientHeader;
+	private TextView mMethodHeader;
 	
 	private Cursor mCurRecipe;
 	private Cursor mCurIngredient;
@@ -102,6 +109,14 @@ public class Bites extends TabActivity {
         mIngredientList = (ListView)findViewById(R.id.ingredientlist);
         mMethodList = (ListView)findViewById(R.id.methodlist);
         
+        mRecipeHeader = (TextView)findViewById(R.id.recipeheader);
+        mIngredientHeader = (TextView)findViewById(R.id.ingredientheader);
+        mMethodHeader = (TextView)findViewById(R.id.methodheader);      
+        
+        mRecipeList.setBackgroundResource(R.drawable.bites_image);
+        ((BitmapDrawable)mRecipeList.getBackground()).setGravity(Gravity.CENTER);
+        
+        
         mRecipeList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				mRecipeId = id;
@@ -125,6 +140,11 @@ public class Bites extends TabActivity {
 		        SimpleCursorAdapter methodAdapter = new SimpleCursorAdapter(context, R.layout.methodlist_item, mCurMethod,
 		        										new String[] { Methods.TEXT}, new int[] { R.id.methodtext});
 		        mMethodList.setAdapter(methodAdapter);
+		        
+		        String recipeName = mCurRecipe.getString(1);
+		        mRecipeHeader.setText(recipeName);
+		        mIngredientHeader.setText(recipeName);
+		        mMethodHeader.setText(recipeName);
 			}
         });
         

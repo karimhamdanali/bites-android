@@ -9,12 +9,11 @@
 		<TextView android:id="@+id/recipeheader"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Recipe Name" />
+			android:text="" />
 		<ListView android:id="@+id/recipelist"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:choiceMode="singleChoice"
-	        android:background="@drawable/bites_image"
         	android:cacheColorHint="#00000000" />
 	    <TextView android:id="@android:id/empty"
 	    	android:layout_width="fill_parent"
@@ -29,7 +28,7 @@
 		<TextView android:id="@+id/ingredientheader"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Recipe Name" />
+			android:text="" />
 		<ListView android:id="@+id/ingredientlist"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
@@ -49,7 +48,7 @@
 		<TextView android:id="@+id/methodheader"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Recipe Name" />
+			android:text="" />
 		<ListView android:id="@+id/methodlist"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
