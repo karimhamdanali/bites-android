@@ -49,6 +49,9 @@ public class Bites extends TabActivity {
 	private Uri mUriIngredient;
 	private Uri mUriMethod;
 	
+	private EditText mDialogEdit;
+	private View mDialogView;
+	
 	private long mRecipeId;
 	
 	private Context context;
@@ -226,14 +229,17 @@ public class Bites extends TabActivity {
         	//Recipes tab
         	case 0:
 	        	showDialog(DIALOG_RECIPE_INSERT);
+	        	mDialogEdit.setText("");
 	        	break;
         	//Ingredients tab
         	case 1:
 	        	showDialog(DIALOG_INGREDIENT_INSERT);
+	        	mDialogEdit.setText("");
 	        	break;
         	//Methods tab
         	case 2:
 	        	showDialog(DIALOG_METHOD_INSERT);
+	        	mDialogEdit.setText("");
 	        	break;
         	}
         	break;
@@ -278,21 +284,19 @@ public class Bites extends TabActivity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		LayoutInflater factory = LayoutInflater.from(this);
-		final View textEntryView;
-		final EditText edit;
 		switch (id) {
 		case DIALOG_RECIPE_EDIT:
-            textEntryView = factory.inflate(R.layout.dialog_recipename, null);
-            edit = (EditText)textEntryView.findViewById(R.id.recipename_edit);
-            edit.setText(mCurRecipe.getString(1));
+            mDialogView = factory.inflate(R.layout.dialog_recipename, null);
+            mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
+            mDialogEdit.setText(mCurRecipe.getString(1));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_recipename_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_recipename_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
-                        values.put(Recipes.TITLE, edit.getText().toString());
+                        values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                         getContentResolver().update(mUriRecipe, values, null, null);
                     }
                 })
@@ -304,17 +308,17 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_INGREDIENT_EDIT:
-            textEntryView = factory.inflate(R.layout.dialog_ingredient, null);
-            edit = (EditText)textEntryView.findViewById(R.id.ingredient_edit);
-            edit.setText(mCurIngredient.getString(2));
+            mDialogView = factory.inflate(R.layout.dialog_ingredient, null);
+            mDialogEdit = (EditText)mDialogView.findViewById(R.id.ingredient_edit);
+            mDialogEdit.setText(mCurIngredient.getString(2));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ingredient_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
-                        values.put(Ingredients.TEXT, edit.getText().toString());
+                        values.put(Ingredients.TEXT, mDialogEdit.getText().toString());
                         values.put(Ingredients.RECIPE, mRecipeId);
                         getContentResolver().update(mUriIngredient, values, null, null);
                 	}
@@ -327,17 +331,17 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_METHOD_EDIT:
-			textEntryView = factory.inflate(R.layout.dialog_method, null);
-			edit = (EditText)textEntryView.findViewById(R.id.method_edit);
-            edit.setText(mCurMethod.getString(2));
+			mDialogView = factory.inflate(R.layout.dialog_method, null);
+			mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
+            mDialogEdit.setText(mCurMethod.getString(2));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_method_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
-                        values.put(Methods.TEXT, edit.getText().toString());
+                        values.put(Methods.TEXT, mDialogEdit.getText().toString());
                         values.put(Methods.RECIPE, mRecipeId);
                         getContentResolver().update(mUriMethod, values, null, null);
                 	}
@@ -349,10 +353,10 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_DELETE_RECIPE:
-			textEntryView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_recipe_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
@@ -373,10 +377,10 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_DELETE_INGREDIENT:
-			textEntryView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_ingredient_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
@@ -391,10 +395,10 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_DELETE_METHOD:
-			textEntryView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_method_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
@@ -409,17 +413,17 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_RECIPE_INSERT:
-            textEntryView = factory.inflate(R.layout.dialog_recipename, null);
+            mDialogView = factory.inflate(R.layout.dialog_recipename, null);
+            mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_recipename_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_recipename_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                 		mUriRecipe = getContentResolver().insert(Recipes.CONTENT_URI,null);
                     	ContentValues values = new ContentValues();
-                    	EditText recipeName = (EditText)textEntryView.findViewById(R.id.recipename_edit);
-                        values.put(Recipes.TITLE, recipeName.getText().toString());
+                        values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                         getContentResolver().update(mUriRecipe, values, null, null);
                     }
                 })
@@ -431,17 +435,17 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_INGREDIENT_INSERT:
-            textEntryView = factory.inflate(R.layout.dialog_ingredient, null);
+            mDialogView = factory.inflate(R.layout.dialog_ingredient, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ingredient_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                 		ContentValues values = new ContentValues();
                 		values.put(Ingredients.RECIPE, mRecipeId);
                 		mUriIngredient = getContentResolver().insert(Ingredients.CONTENT_URI,values);
-                    	EditText ingredientName = (EditText)textEntryView.findViewById(R.id.ingredient_edit);
+                    	EditText ingredientName = (EditText)mDialogView.findViewById(R.id.ingredient_edit);
                         values.put(Ingredients.TEXT, ingredientName.getText().toString());
                         values.put(Ingredients.RECIPE, mRecipeId);
                         getContentResolver().update(mUriIngredient, values, null, null);
@@ -455,17 +459,17 @@ public class Bites extends TabActivity {
                 })
                 .create();
 		case DIALOG_METHOD_INSERT:
-			textEntryView = factory.inflate(R.layout.dialog_method, null);
+			mDialogView = factory.inflate(R.layout.dialog_method, null);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
-                .setView(textEntryView)
+                .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_method_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                 		ContentValues values = new ContentValues();
                 		values.put(Methods.RECIPE, mRecipeId);
                 		mUriMethod = getContentResolver().insert(Methods.CONTENT_URI,values);
-                    	EditText methodText = (EditText)textEntryView.findViewById(R.id.method_edit);
+                    	EditText methodText = (EditText)mDialogView.findViewById(R.id.method_edit);
                         values.put(Methods.TEXT, methodText.getText().toString());
                         values.put(Methods.RECIPE, mRecipeId);
                         getContentResolver().update(mUriMethod, values, null, null);
