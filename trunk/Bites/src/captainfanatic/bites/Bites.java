@@ -12,10 +12,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,8 +47,10 @@ public class Bites extends TabActivity {
 	private Uri mUriIngredient;
 	private Uri mUriMethod;
 	
+	//Use private members for dialog textview to prevent weird persistence problem
 	private EditText mDialogEdit;
 	private View mDialogView;
+	private TextView mDialogText;	
 	
 	private long mRecipeId;
 	
@@ -87,6 +87,7 @@ public class Bites extends TabActivity {
     private static final int DIALOG_RECIPE_INSERT = 7;
     private static final int DIALOG_INGREDIENT_INSERT = 8;
     private static final int DIALOG_METHOD_INSERT = 9;
+
 		
     /** Called when the activity is first created. */
     @Override
@@ -97,6 +98,7 @@ public class Bites extends TabActivity {
         final TabHost tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.bites, tabHost.getTabContentView(), true);
                 
+        //Create the tabs and set their layouts
         tabHost.addTab(tabHost.newTabSpec("tab1")
                 .setIndicator("Recipes")
                 .setContent(R.id.recipes));
@@ -107,15 +109,17 @@ public class Bites extends TabActivity {
                 .setIndicator("Method")
                 .setContent(R.id.methods));  
     
-        
+        //Set the listviews to their views in bites.xml
         mRecipeList = (ListView)findViewById(R.id.recipelist);
         mIngredientList = (ListView)findViewById(R.id.ingredientlist);
         mMethodList = (ListView)findViewById(R.id.methodlist);
         
+        //Set the header text on each tab to its view
         mRecipeHeader = (TextView)findViewById(R.id.recipeheader);
         mIngredientHeader = (TextView)findViewById(R.id.ingredientheader);
         mMethodHeader = (TextView)findViewById(R.id.methodheader);      
                 
+        //The action to perform when an item in the recipe list is clicked
         mRecipeList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				mRecipeId = id;
@@ -147,18 +151,21 @@ public class Bites extends TabActivity {
 			}
         });
         
+        //The action to perform when an item in the ingredient list is clicked
         mIngredientList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		mUriIngredient = Uri.withAppendedPath(Ingredients.CONTENT_URI, mCurIngredient.getString(0));
         	}
         });
         
+        //The action to perform when an item in the method list is clicked
         mMethodList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		mUriMethod = Uri.withAppendedPath(Methods.CONTENT_URI, mCurMethod.getString(0));
         	}
         });
         
+        //Create the managed cursor for the recipe list objects
         mCurRecipe = managedQuery(Recipes.CONTENT_URI, 
         							PROJECTION_RECIPES, 
         							null, 
@@ -169,8 +176,7 @@ public class Bites extends TabActivity {
                 new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
         mRecipeList.setAdapter(recipeAdapter);
         
-        mCurRecipe.moveToFirst();
-                
+        //Create the managed cursor for the ingredient list objects
         mCurIngredient = managedQuery(Ingredients.CONTENT_URI, 
         								PROJECTION_INGREDIENTS, 
         								Ingredients.RECIPE + "=" + mRecipeId, 
@@ -181,6 +187,7 @@ public class Bites extends TabActivity {
                 new String[] { Ingredients.TEXT}, new int[] { R.id.ingredienttext});
         mIngredientList.setAdapter(ingredientAdapter);
         
+        //Create the managed cursor for the method list objects
         mCurMethod = managedQuery(Methods.CONTENT_URI, 
 				PROJECTION_METHODS, 
 				Methods.RECIPE + "=" + mRecipeId, 
@@ -191,7 +198,9 @@ public class Bites extends TabActivity {
         										new String[] { Methods.TEXT}, new int[] { R.id.methodtext});
         mMethodList.setAdapter(methodAdapter);
         
-        
+        //By default select the first row and perform a click on it to initialise the header text and recipe id
+        if (mCurRecipe.moveToFirst())
+        	mRecipeList.performItemClick(null, mCurRecipe.getPosition(), mCurRecipe.getLong(0));
     }
 
 	@Override
@@ -229,6 +238,8 @@ public class Bites extends TabActivity {
         	//Recipes tab
         	case 0:
 	        	showDialog(DIALOG_RECIPE_INSERT);
+	        	//Have to set text from here to get around weird 
+	        	//dialog persistence issue...
 	        	mDialogEdit.setText("");
 	        	break;
         	//Ingredients tab
@@ -249,14 +260,17 @@ public class Bites extends TabActivity {
 	    	//Recipe tab
 	    	case 0:
 	    		showDialog(DIALOG_RECIPE_EDIT);
+	            mDialogEdit.setText(mCurRecipe.getString(1));
 				break;
 			//Ingredients tab
 	    	case 1:
 				showDialog(DIALOG_INGREDIENT_EDIT);
+	            mDialogEdit.setText(mCurIngredient.getString(2));
 				break;
 			//Methods tab
 	    	case 2:
 				showDialog(DIALOG_METHOD_EDIT);
+	            mDialogEdit.setText(mCurMethod.getString(2));
 				break;
 	    	}
 	    	break;
@@ -266,14 +280,17 @@ public class Bites extends TabActivity {
 	    	//Delete called from Recipe Tab
 	    	case 0:
 	    		showDialog(DIALOG_DELETE_RECIPE);
+	    		mDialogText.setText(mCurRecipe.getString(1));
 		    	break;
 		    //Delete called from Ingredient Tab
 	    	case 1:
 	    		showDialog(DIALOG_DELETE_INGREDIENT);
+	    		mDialogText.setText(mCurIngredient.getString(2));
 	    		break;
 	    	//Delete called from Method Tab
 	    	case 2:
 	    		showDialog(DIALOG_DELETE_METHOD);
+	    		mDialogText.setText(mCurMethod.getString(2));
 	    		break;
 	    	}
 	    	break;
@@ -288,7 +305,6 @@ public class Bites extends TabActivity {
 		case DIALOG_RECIPE_EDIT:
             mDialogView = factory.inflate(R.layout.dialog_recipename, null);
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
-            mDialogEdit.setText(mCurRecipe.getString(1));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_recipename_title)
                 .setView(mDialogView)
@@ -310,7 +326,6 @@ public class Bites extends TabActivity {
 		case DIALOG_INGREDIENT_EDIT:
             mDialogView = factory.inflate(R.layout.dialog_ingredient, null);
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.ingredient_edit);
-            mDialogEdit.setText(mCurIngredient.getString(2));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
                 .setView(mDialogView)
@@ -333,7 +348,6 @@ public class Bites extends TabActivity {
 		case DIALOG_METHOD_EDIT:
 			mDialogView = factory.inflate(R.layout.dialog_method, null);
 			mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
-            mDialogEdit.setText(mCurMethod.getString(2));
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
                 .setView(mDialogView)
@@ -354,6 +368,7 @@ public class Bites extends TabActivity {
                 .create();
 		case DIALOG_DELETE_RECIPE:
 			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_recipe_title)
                 .setView(mDialogView)
@@ -366,6 +381,7 @@ public class Bites extends TabActivity {
                 		getContentResolver().delete(Methods.CONTENT_URI, 
 								Methods._ID + "=" + mRecipeId, null);
                 		getContentResolver().delete(mUriRecipe, null, null);
+                		mCurRecipe.requery();
                 		mCurRecipe.moveToFirst();
                 		mRecipeList.performItemClick(mRecipeList, mCurRecipe.getPosition(), mCurRecipe.getLong(0));
                 	}
@@ -378,6 +394,7 @@ public class Bites extends TabActivity {
                 .create();
 		case DIALOG_DELETE_INGREDIENT:
 			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_ingredient_title)
                 .setView(mDialogView)
@@ -396,6 +413,7 @@ public class Bites extends TabActivity {
                 .create();
 		case DIALOG_DELETE_METHOD:
 			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_method_title)
                 .setView(mDialogView)
@@ -436,6 +454,7 @@ public class Bites extends TabActivity {
                 .create();
 		case DIALOG_INGREDIENT_INSERT:
             mDialogView = factory.inflate(R.layout.dialog_ingredient, null);
+            mDialogEdit = (EditText)mDialogView.findViewById(R.id.ingredient_edit);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
                 .setView(mDialogView)
@@ -445,8 +464,7 @@ public class Bites extends TabActivity {
                 		ContentValues values = new ContentValues();
                 		values.put(Ingredients.RECIPE, mRecipeId);
                 		mUriIngredient = getContentResolver().insert(Ingredients.CONTENT_URI,values);
-                    	EditText ingredientName = (EditText)mDialogView.findViewById(R.id.ingredient_edit);
-                        values.put(Ingredients.TEXT, ingredientName.getText().toString());
+                        values.put(Ingredients.TEXT, mDialogEdit.getText().toString());
                         values.put(Ingredients.RECIPE, mRecipeId);
                         getContentResolver().update(mUriIngredient, values, null, null);
                 	}
@@ -460,6 +478,7 @@ public class Bites extends TabActivity {
                 .create();
 		case DIALOG_METHOD_INSERT:
 			mDialogView = factory.inflate(R.layout.dialog_method, null);
+			mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
                 .setView(mDialogView)
@@ -469,8 +488,7 @@ public class Bites extends TabActivity {
                 		ContentValues values = new ContentValues();
                 		values.put(Methods.RECIPE, mRecipeId);
                 		mUriMethod = getContentResolver().insert(Methods.CONTENT_URI,values);
-                    	EditText methodText = (EditText)mDialogView.findViewById(R.id.method_edit);
-                        values.put(Methods.TEXT, methodText.getText().toString());
+                        values.put(Methods.TEXT, mDialogEdit.getText().toString());
                         values.put(Methods.RECIPE, mRecipeId);
                         getContentResolver().update(mUriMethod, values, null, null);
                 	}
