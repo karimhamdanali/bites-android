@@ -90,6 +90,7 @@ public class RecipeBookProvider extends ContentProvider {
             db.execSQL("CREATE TABLE " + METHOD_TABLE_NAME + " ("
                     + Methods._ID + " INTEGER PRIMARY KEY,"
                     + Methods.RECIPE + " INTEGER,"
+                    + Methods.STEP + " TEXT,"
                     + Methods.TEXT + " TEXT,"
                     + Methods.CREATED_DATE + " INTEGER,"
                     + Methods.MODIFIED_DATE + " INTEGER"
@@ -308,6 +309,11 @@ public class RecipeBookProvider extends ContentProvider {
                 if (values.containsKey(RecipeBook.Methods.MODIFIED_DATE) == false) {
                     values.put(RecipeBook.Methods.MODIFIED_DATE, now);
                 }
+
+                //Default to step "1" if no step number given
+                if (values.containsKey(RecipeBook.Methods.STEP) == false) {
+                    values.put(RecipeBook.Methods.STEP, "1");
+                }
                 
                 if (values.containsKey(RecipeBook.Methods.TEXT) == false) {
                     Resources r = Resources.getSystem();
@@ -443,6 +449,7 @@ public class RecipeBookProvider extends ContentProvider {
         sRecipesProjectionMap.put(Ingredients.MODIFIED_DATE, Ingredients.MODIFIED_DATE);
         sRecipesProjectionMap.put(Methods._ID, Methods._ID);
         sRecipesProjectionMap.put(Methods.RECIPE, Methods.RECIPE);
+        sRecipesProjectionMap.put(Methods.STEP, Methods.STEP);
         sRecipesProjectionMap.put(Methods.TEXT, Methods.TEXT);
         sRecipesProjectionMap.put(Methods.CREATED_DATE, Methods.CREATED_DATE);
         sRecipesProjectionMap.put(Methods.MODIFIED_DATE, Methods.MODIFIED_DATE);
