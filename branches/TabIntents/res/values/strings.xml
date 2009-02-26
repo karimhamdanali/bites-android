@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Bites</string>
+    <string name="app_name">Bites</string>
+
+
+
+<string name="dialog_recipename_title">Recipe Name</string>
+<string name="dialog_recipename_ok">OK</string>
+<string name="dialog_recipename_cancel">Cancel</string>
+<string name="dialog_recipename_prompt">Enter Recipe Name</string>
+<string name="dialog_ingredient_title">Edit Ingredient</string>
+<string name="dialog_ingredient_prompt">Ingredient Name &amp; Quantity</string>
+
+<string name="dialog_ingredient_ok">OK</string>
+<string name="dialog_ingredient_cancel">Cancel</string>
+</resources>
