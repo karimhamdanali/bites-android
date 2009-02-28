@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 public class RecipeList extends ListActivity {
 	private static final String TAG = "RecipeList";
@@ -48,9 +49,11 @@ public class RecipeList extends ListActivity {
     /** The index of the title column */
     private static final int COLUMN_INDEX_TITLE = 1;
 	
-    private Cursor cursor;
+    private Cursor mCursor;
     
     private Uri mUri;
+    
+    private TextView mHeader;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +64,25 @@ public class RecipeList extends ListActivity {
         if (intent.getData() == null) {
             intent.setData(Recipes.CONTENT_URI);
         }
+        
+        setContentView(R.layout.recipes);
+        
+        mHeader = (TextView)findViewById(R.id.recipeheader);
 	
-		cursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
+		mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
                 Recipes.DEFAULT_SORT_ORDER);
 
         // Used to map notes entries from the database to views
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.recipelist_item, cursor,
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.recipelist_item, mCursor,
                 new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
         setListAdapter(adapter);
-        cursor.moveToFirst();
-        Bites.mRecipeId = cursor.getLong(0);
+        mCursor.moveToFirst();
+        Bites.mRecipeId = mCursor.getLong(0);
+        Bites.mRecipeName = mCursor.getString(1);
+        
+        mHeader.setText(Bites.mRecipeName);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -171,6 +181,9 @@ public class RecipeList extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		mUri = ContentUris.withAppendedId(getIntent().getData(), id);
 		Bites.mRecipeId = id;
+		Bites.mRecipeName = mCursor.getString(1);
+		//Update the header text with the current recipe name
+		mHeader.setText(Bites.mRecipeName);
 	}
 	
 	
