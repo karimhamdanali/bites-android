@@ -11,6 +11,7 @@ public class Bites extends TabActivity {
 	SmsReceiver sms;
 	
 	static long mRecipeId;
+	static String mRecipeName;
 		
     /** Called when the activity is first created. */
     @Override
