@@ -8,6 +8,7 @@ import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -36,7 +37,9 @@ public class RecipeList extends ListActivity {
     /**
      * Case selections for the type of dialog box displayed
      */
-    private static final int DIALOG_RECIPE_NAME = 1;
+    private static final int DIALOG_EDIT = 1;
+    private static final int DIALOG_DELETE = 2;
+    private static final int DIALOG_INSERT = 3;
 
 	/**
      * The columns we are interested in from the database
@@ -53,7 +56,13 @@ public class RecipeList extends ListActivity {
     
     private Uri mUri;
     
+    //Use private members for dialog textview to prevent weird persistence problem
+	private EditText mDialogEdit;
+	private View mDialogView;
+	private TextView mDialogText;
     private TextView mHeader;
+    
+    private Context mContext;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +75,7 @@ public class RecipeList extends ListActivity {
         }
         
         setContentView(R.layout.recipes);
+        mContext = this;
         
         mHeader = (TextView)findViewById(R.id.recipeheader);
 	
@@ -103,51 +113,30 @@ public class RecipeList extends ListActivity {
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, RecipeList.class), null, intent, 0, null);
        
+        menu.add(0, MENU_ITEM_DELETE, 0, "delete")
+        .setIcon(android.R.drawable.ic_menu_delete);
+        
         return true;
 	}
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-		final boolean haveItems = getListAdapter().getCount() > 0;
-		
-		if (haveItems) {
-            // This is the selected item.
-            Uri uri = ContentUris.withAppendedId(getIntent().getData(), getSelectedItemId());
-
-            // Build menu...  always starts with the EDIT action...
-            Intent[] specifics = new Intent[1];
-            specifics[0] = new Intent(Intent.ACTION_EDIT, uri);
-            MenuItem[] items = new MenuItem[1];
-
-            // ... is followed by whatever other actions are available...
-            Intent intent = new Intent(null, uri);
-            intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0, null, specifics, intent, 0,
-                    items);
-
-            // Give a shortcut to the edit action.
-            if (items[0] != null) {
-                items[0].setShortcut('1', 'e');
-            }
-        } else {
-            menu.removeGroup(Menu.CATEGORY_ALTERNATIVE);
-        }
-		
-		return true;
-	}
 	
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case MENU_ITEM_INSERT:
             // Insert a new item
-        	mUri = getContentResolver().insert(Recipes.CONTENT_URI,null);
-        	showDialog(DIALOG_RECIPE_NAME);
+        	showDialog(DIALOG_INSERT);
+        	mDialogEdit.setText("");
         	break;
 	    case MENU_ITEM_EDIT:
 	        // Edit an existing item
-			showDialog(DIALOG_RECIPE_NAME);
+			showDialog(DIALOG_EDIT);
+			mDialogEdit.setText(mCursor.getString(1));
+			break;
+	    case MENU_ITEM_DELETE:
+	        // Edit an existing item
+			showDialog(DIALOG_DELETE);
+			mDialogText.setText(mCursor.getString(1));
 			break;
 	    }
         return super.onOptionsItemSelected(item);
@@ -189,25 +178,66 @@ public class RecipeList extends ListActivity {
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
+		LayoutInflater factory = LayoutInflater.from(this);
 		switch (id) {
-		case DIALOG_RECIPE_NAME:
-			LayoutInflater factory = LayoutInflater.from(this);
-            final View textEntryView = factory.inflate(R.layout.dialog_recipename, null);
+		case DIALOG_INSERT:
+			mDialogView = factory.inflate(R.layout.dialog_recipename, null);
+			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_recipename_title)
-                .setView(textEntryView)
-                .setPositiveButton(R.string.dialog_recipename_ok, new DialogInterface.OnClickListener() {
+                .setView(mDialogView)
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
-                    	EditText recipeName = (EditText)textEntryView.findViewById(R.id.recipename_edit);
-                        values.put(Recipes.TITLE, recipeName.getText().toString());
+                    	values.put(Recipes.TITLE, mDialogEdit.getText().toString());
+                    	mUri = getContentResolver().insert(Recipes.CONTENT_URI,values);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
+		case DIALOG_EDIT:
+			mDialogView = factory.inflate(R.layout.dialog_recipename, null);
+			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_recipename_title)
+                .setView(mDialogView)
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                    	ContentValues values = new ContentValues();
+                        values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                         getContentResolver().update(mUri, values, null, null);
                     }
                 })
-                .setNegativeButton(R.string.dialog_recipename_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
+		case DIALOG_DELETE:
+			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_delete_recipe_title)
+                .setView(mDialogView)
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                        getContentResolver().delete(mUri, null, null);
+                        //Requery cursor to update with removed row
+                        mCursor.requery();
+                        mCursor.moveToFirst();
+                        getListView().performItemClick(null, 0, mCursor.getLong(0));
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
                         /* User clicked cancel so do some stuff */
                     }
                 })
@@ -215,5 +245,4 @@ public class RecipeList extends ListActivity {
 		}
 		return null;
 	}
-	
 }
