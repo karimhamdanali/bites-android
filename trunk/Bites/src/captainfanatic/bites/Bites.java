@@ -101,7 +101,7 @@ public class Bites extends TabActivity {
         //Create the tabs and set their layouts
         tabHost.addTab(tabHost.newTabSpec("tab1")
                 .setIndicator("Recipes")
-                .setContent(R.id.recipes));
+                .setContent(new Intent(this,RecipeList.class)));
         tabHost.addTab(tabHost.newTabSpec("tab2")
                 .setIndicator("Ingredients")
                 .setContent(R.id.ingredients));
