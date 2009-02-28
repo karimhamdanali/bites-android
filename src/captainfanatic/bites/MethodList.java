@@ -81,7 +81,7 @@ public class MethodList extends ListActivity {
 		 * A new recipe can only be selected from the recipelist activity and 
 		 * this activity has to be resumed to display again so this should work fine. 
 		 */
-		mCursor = managedQuery(Ingredients.CONTENT_URI, PROJECTION,
+		mCursor = managedQuery(Methods.CONTENT_URI, PROJECTION,
 				Methods.RECIPE + "=" + Bites.mRecipeId, 
 				null, Methods.DEFAULT_SORT_ORDER);
 
@@ -156,9 +156,9 @@ public class MethodList extends ListActivity {
             mDialogView = factory.inflate(R.layout.dialog_method, null);
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_ingredient_title)
+                .setTitle(R.string.dialog_method_title)
                 .setView(mDialogView)
-                .setPositiveButton(R.string.dialog_ingredient_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
@@ -167,7 +167,7 @@ public class MethodList extends ListActivity {
                         getContentResolver().update(mUri, values, null, null);
                 	}
                 })
-                .setNegativeButton(R.string.dialog_method_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         /* User clicked cancel so do some stuff */
@@ -180,13 +180,13 @@ public class MethodList extends ListActivity {
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_method_title)
                 .setView(mDialogView)
-                .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                 		getContentResolver().delete(mUri, null, null);
                 	}
                 })
-                .setNegativeButton(R.string.dialog_confirm_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     	
                     }
@@ -198,7 +198,7 @@ public class MethodList extends ListActivity {
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
                 .setView(mDialogView)
-                .setPositiveButton(R.string.dialog_method_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                 		ContentValues values = new ContentValues();
@@ -209,7 +209,7 @@ public class MethodList extends ListActivity {
                         getContentResolver().update(mUri, values, null, null);
                 	}
                 })
-                .setNegativeButton(R.string.dialog_method_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         /* User clicked cancel so do some stuff */

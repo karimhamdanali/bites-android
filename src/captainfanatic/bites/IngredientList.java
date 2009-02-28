@@ -70,9 +70,7 @@ public class IngredientList extends ListActivity {
 		mHeader = (TextView)findViewById(R.id.ingredientheader);
 		
 	}
-	
-	
-	
+		
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -94,7 +92,6 @@ public class IngredientList extends ListActivity {
 		mHeader.setText(Bites.mRecipeName);
 		
 	}
-
 
 
 	@Override
@@ -160,7 +157,7 @@ public class IngredientList extends ListActivity {
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
                 .setView(mDialogView)
-                .setPositiveButton(R.string.dialog_ingredient_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
@@ -169,7 +166,7 @@ public class IngredientList extends ListActivity {
                         getContentResolver().update(mUri, values, null, null);
                 	}
                 })
-                .setNegativeButton(R.string.dialog_ingredient_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         /* User clicked cancel so do some stuff */
@@ -182,13 +179,13 @@ public class IngredientList extends ListActivity {
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_ingredient_title)
                 .setView(mDialogView)
-                .setPositiveButton(R.string.dialog_confirm_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                 		getContentResolver().delete(mUri, null, null);
                 	}
                 })
-                .setNegativeButton(R.string.dialog_confirm_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     	
                     }
@@ -200,7 +197,7 @@ public class IngredientList extends ListActivity {
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_ingredient_title)
                 .setView(mDialogView)
-                .setPositiveButton(R.string.dialog_ingredient_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                 		ContentValues values = new ContentValues();
@@ -211,7 +208,7 @@ public class IngredientList extends ListActivity {
                         getContentResolver().update(mUri, values, null, null);
                 	}
                 })
-                .setNegativeButton(R.string.dialog_ingredient_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         /* User clicked cancel so do some stuff */

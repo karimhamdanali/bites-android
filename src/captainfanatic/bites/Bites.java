@@ -2,6 +2,7 @@ package captainfanatic.bites;
 
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.TabHost;
 
@@ -19,15 +20,16 @@ public class Bites extends TabActivity {
         super.onCreate(savedInstanceState);
                
         final TabHost tabHost = getTabHost();
-                
-        tabHost.addTab(tabHost.newTabSpec("tab1")
-                .setIndicator("Recipes")
+
+        
+        tabHost.addTab(tabHost.newTabSpec("tab_recipes")
+                .setIndicator(getResources().getText(R.string.tab_recipes))
                 .setContent(new Intent(this, RecipeList.class)));
-        tabHost.addTab(tabHost.newTabSpec("tab2")
-                .setIndicator("Ingredients")
+        tabHost.addTab(tabHost.newTabSpec("tab_ingredients")
+                .setIndicator(getResources().getText(R.string.tab_ingredients))
                 .setContent(new Intent(this, IngredientList.class)));
-        tabHost.addTab(tabHost.newTabSpec("tab3")
-                .setIndicator("Method")
+        tabHost.addTab(tabHost.newTabSpec("tab_method")
+                .setIndicator(getResources().getText(R.string.tab_method))
                 .setContent(new Intent(this, MethodList.class)));  
     
     }
