@@ -12,14 +12,20 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.SimpleCursorAdapter.ViewBinder;
 
 public class IngredientList extends ListActivity {
 	
@@ -29,6 +35,7 @@ public class IngredientList extends ListActivity {
 	public static final int MENU_ITEM_EDIT = Menu.FIRST;
 	public static final int MENU_ITEM_DELETE = Menu.FIRST + 1;
     public static final int MENU_ITEM_INSERT = Menu.FIRST + 2;
+    public static final int MENU_ITEM_CHECK = Menu.FIRST + 3;
 	
 	/**
      * The columns we are interested in from the database
@@ -38,6 +45,14 @@ public class IngredientList extends ListActivity {
             Ingredients.RECIPE, // 1
             Ingredients.TEXT, // 2
     };
+    
+    /**
+     * Column indexes
+     */
+    private static final int COLUMN_INDEX_ID = 0;
+    private static final int COLUMN_INDEX_RECIPE = 1;
+    private static final int COLUMN_INDEX_INGREDIENT = 2;
+    private static final int COLUMN_INDEX_CHECKED = 3;
     
     /**
      * Case selections for the type of dialog box displayed
@@ -69,6 +84,7 @@ public class IngredientList extends ListActivity {
 		
 		mHeader = (TextView)findViewById(R.id.ingredientheader);
 		
+		getListView().setOnCreateContextMenuListener(this);		
 	}
 		
 	@Override
@@ -88,11 +104,81 @@ public class IngredientList extends ListActivity {
 		new String[] { Ingredients.TEXT}, new int[] { R.id.ingredienttext});
 		setListAdapter(adapter);
 		
+		/*adapter.setViewBinder(new ViewBinder() {
+			public boolean setViewValue(View view, Cursor cursor,
+					int columnIndex) {
+				if (columnIndex==COLUMN_INDEX_CHECKED) {
+					CheckBox cb = (CheckBox)view;
+					boolean checked = (cursor.getInt(COLUMN_INDEX_CHECKED) != 0);
+					cb.setChecked(checked);
+					return true;
+				}
+				return false;
+			}
+		});*/
+		
 		//Set the header text to the current recipe name
 		mHeader.setText(Bites.mRecipeName);
 		
 	}
 
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		AdapterView.AdapterContextMenuInfo info;
+        try {
+             info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return;
+        }
+		Cursor cursor = (Cursor)getListAdapter().getItem(info.position);
+		if (cursor == null) {
+            // For some reason the requested item isn't available, do nothing
+            return;
+        }
+        // Setup the menu header
+        menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_INGREDIENT));
+        // Add a menu item to delete the note
+        menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_ingredient);
+        menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_ingredient);
+        
+	}	
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info;
+        try {
+             info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return false;
+        }
+        
+        Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
+        if (cursor == null) {
+            // For some reason the requested item isn't available, do nothing
+            return false;
+        }
+        
+        mUri = ContentUris.withAppendedId(getIntent().getData(), cursor.getLong(COLUMN_INDEX_ID));
+
+        switch (item.getItemId()) {
+	        case MENU_ITEM_EDIT: {
+                // Edit the ingredient that the context menu is for
+	        	showDialog(DIALOG_EDIT);
+				mDialogEdit.setText(cursor.getString(COLUMN_INDEX_INGREDIENT));
+                return true;	        	
+	        }    
+	        case MENU_ITEM_DELETE: {
+                // Delete the note that the context menu is for
+	        	showDialog(DIALOG_DELETE);
+				mDialogText.setText(cursor.getString(COLUMN_INDEX_INGREDIENT));
+                return true;
+            }
+        }
+        return false;
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,12 +217,12 @@ public class IngredientList extends ListActivity {
 	    case MENU_ITEM_EDIT:
 	        // Edit an existing item
 			showDialog(DIALOG_EDIT);
-			mDialogEdit.setText(mCursor.getString(2));
+			mDialogEdit.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
 			break;
 	    case MENU_ITEM_DELETE:
 	        // Edit an existing item
 			showDialog(DIALOG_DELETE);
-			mDialogText.setText(mCursor.getString(2));
+			mDialogText.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
 			break;
 	    }
         return super.onOptionsItemSelected(item);
@@ -145,6 +231,8 @@ public class IngredientList extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		mUri = ContentUris.withAppendedId(getIntent().getData(), id);
+		CheckBox cb = (CheckBox)v.findViewById(R.id.ingredientcheck);
+		cb.toggle();
 	}
 	
 	@Override

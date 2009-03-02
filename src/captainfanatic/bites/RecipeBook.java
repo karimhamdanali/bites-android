@@ -115,6 +115,12 @@ public final class RecipeBook {
          * <P>Type: TEXT</P>
          */
         public static final String TEXT = "text";
+        
+        /**
+         * The checked state of the ingredient
+         * <P>Type: INTEGER</P>
+         */
+        public static final String CHECKED = "checked";
 
         /**
          * The timestamp for when the recipe was created

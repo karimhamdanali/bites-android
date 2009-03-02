@@ -28,4 +28,7 @@
 <string name="tab_recipes">Recipes</string>
 <string name="tab_ingredients">Ingredients</string>
 <string name="tab_method">Method</string>
+<string name="delete_ingredient">Delete Ingredient</string>
+<string name="check_ingredient">Check Ingredient</string>
+<string name="edit_ingredient">Edit Ingredient</string>
 </resources>
