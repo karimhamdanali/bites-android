@@ -52,7 +52,6 @@ public class IngredientList extends ListActivity {
     private static final int COLUMN_INDEX_ID = 0;
     private static final int COLUMN_INDEX_RECIPE = 1;
     private static final int COLUMN_INDEX_INGREDIENT = 2;
-    private static final int COLUMN_INDEX_CHECKED = 3;
     
     /**
      * Case selections for the type of dialog box displayed
@@ -103,20 +102,7 @@ public class IngredientList extends ListActivity {
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.ingredientlist_item, mCursor,
 		new String[] { Ingredients.TEXT}, new int[] { R.id.ingredienttext});
 		setListAdapter(adapter);
-		
-		/*adapter.setViewBinder(new ViewBinder() {
-			public boolean setViewValue(View view, Cursor cursor,
-					int columnIndex) {
-				if (columnIndex==COLUMN_INDEX_CHECKED) {
-					CheckBox cb = (CheckBox)view;
-					boolean checked = (cursor.getInt(COLUMN_INDEX_CHECKED) != 0);
-					cb.setChecked(checked);
-					return true;
-				}
-				return false;
-			}
-		});*/
-		
+			
 		//Set the header text to the current recipe name
 		mHeader.setText(Bites.mRecipeName);
 		
