@@ -84,7 +84,6 @@ public class RecipeBookProvider extends ContentProvider {
                     + Ingredients._ID + " INTEGER PRIMARY KEY,"
                     + Ingredients.RECIPE + " INTEGER,"
                     + Ingredients.TEXT + " TEXT,"
-                    + Ingredients.CHECKED + " INTEGER,"
                     + Ingredients.CREATED_DATE + " INTEGER,"
                     + Ingredients.MODIFIED_DATE + " INTEGER"
                     + ");");
