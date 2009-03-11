@@ -7,7 +7,6 @@ import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -163,8 +162,8 @@ public class RecipeList extends ListActivity {
         // Setup the menu header
         menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_TITLE));
         // Add a menu item to delete the note
-        menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_ingredient);
-        menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_ingredient);
+        menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_recipe);
+        menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_recipe);
 	}
 	
 	
