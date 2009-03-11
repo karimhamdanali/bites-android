@@ -22,6 +22,7 @@
 	<EditText
         android:id="@+id/method_step"
         android:hint="@string/dialog_method_step_hint"
+        android:numeric="integer"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:layout_marginLeft="20dip"

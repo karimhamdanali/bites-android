@@ -203,16 +203,18 @@ public class MethodList extends ListActivity {
             // Insert a new item
         	showDialog(DIALOG_INSERT);
         	mDialogEdit.setText("");
+        	mDialogStep.setText("");
         	break;
 	    case MENU_ITEM_EDIT:
 	        // Edit an existing item
 			showDialog(DIALOG_EDIT);
-			mDialogEdit.setText(mCursor.getString(2));
+			mDialogEdit.setText(mCursor.getString(COLUMN_INDEX_METHOD));
+			mDialogStep.setText(mCursor.getString(COLUMN_INDEX_STEP));
 			break;
 	    case MENU_ITEM_DELETE:
 	        // Edit an existing item
 			showDialog(DIALOG_DELETE);
-			mDialogText.setText(mCursor.getString(2));
+			mDialogText.setText(mCursor.getString(COLUMN_INDEX_METHOD));
 			break;
 	    }
         return super.onOptionsItemSelected(item);
@@ -291,7 +293,6 @@ public class MethodList extends ListActivity {
                     	/* User clicked OK so do some stuff */
                 		ContentValues values = new ContentValues();
                 		values.put(Methods.RECIPE, Bites.mRecipeId);
-                		mUri = getContentResolver().insert(Methods.CONTENT_URI,values);
                         values.put(Methods.TEXT, mDialogEdit.getText().toString());
                         /**
                          * Get the step number. 
@@ -305,7 +306,7 @@ public class MethodList extends ListActivity {
                         	values.put(Methods.STEP, stepNum);
                         }
                         values.put(Methods.RECIPE, Bites.mRecipeId);
-                        getContentResolver().update(mUri, values, null, null);
+                        mUri = getContentResolver().insert(Methods.CONTENT_URI,values);
                 	}
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

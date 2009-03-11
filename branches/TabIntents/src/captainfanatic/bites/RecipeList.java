@@ -76,7 +76,15 @@ public class RecipeList extends ListActivity {
         setContentView(R.layout.recipes);
         
         mHeader = (TextView)findViewById(R.id.recipeheader);
+	        
+        getListView().setOnCreateContextMenuListener(this);
+	}
 	
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 		mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
                 Recipes.DEFAULT_SORT_ORDER);
 
@@ -84,17 +92,21 @@ public class RecipeList extends ListActivity {
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.recipelist_item, mCursor,
                 new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
         setListAdapter(adapter);
-        mCursor.moveToFirst();
-        Bites.mRecipeId = mCursor.getLong(0);
-        Bites.mRecipeName = mCursor.getString(1);
-        
+        if (mCursor.moveToFirst())
+        {
+	        Bites.mRecipeId = mCursor.getLong(COLUMN_INDEX_ID);
+	        Bites.mRecipeName = mCursor.getString(COLUMN_INDEX_TITLE);
+        }
+        else
+        {
+        	Bites.mRecipeId = 0;
+        	Bites.mRecipeName = "";
+        }
         mHeader.setText(Bites.mRecipeName);
-        
-        getListView().setOnCreateContextMenuListener(this);
 	}
-	
-	
-	
+
+
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -271,8 +283,10 @@ public class RecipeList extends ListActivity {
                         getContentResolver().delete(mUri, null, null);
                         //Requery cursor to update with removed row
                         mCursor.requery();
-                        mCursor.moveToFirst();
-                        getListView().performItemClick(null, 0, mCursor.getLong(0));
+                        if (mCursor.moveToFirst()) 
+                        {
+                        	getListView().performItemClick(null, 0, mCursor.getLong(0));
+                        }
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

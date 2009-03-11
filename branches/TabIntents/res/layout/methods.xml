@@ -16,6 +16,8 @@
         android:cacheColorHint="#00000000" />
     <TextView android:id="@android:id/empty"
     	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:text="@string/no_methods" />
+    	android:layout_height="fill_parent"
+    	android:text="@string/no_methods" 
+    	android:background="@drawable/bites_image"
+        android:cacheColorHint="#00000000" />
 </LinearLayout>
