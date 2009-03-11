@@ -1,6 +1,5 @@
 package captainfanatic.bites;
 
-import captainfanatic.bites.RecipeBook.Ingredients;
 import captainfanatic.bites.RecipeBook.Methods;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -129,8 +128,8 @@ public class MethodList extends ListActivity {
         // Setup the menu header
         menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_METHOD));
         // Add a menu item to delete the note
-        menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_ingredient);
-        menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_ingredient);
+        menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_method);
+        menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_method);
         
 	}
 	

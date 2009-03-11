@@ -8,6 +8,8 @@
 <string name="dialog_recipename_title">Recipe Name</string>
 <string name="dialog_recipename_hint">Recipe Name</string>
 <string name="dialog_delete_recipe_title">Delete Recipe</string>
+<string name="edit_recipe">Edit Recipe</string>
+<string name="delete_recipe">Delete Recipe</string>
 
 <string name="tab_ingredients">Ingredients</string>
 <string name="dialog_ingredient_title">Edit Ingredient</string>
@@ -24,6 +26,8 @@
 <string name="dialog_method_text_hint">Method</string>
 <string name="dialog_delete_method_title">Delete Method</string>
 <string name="no_methods">No Methods</string>
+<string name="edit_method">Edit Method</string>
+<string name="delete_method">Delete Method</string>
 
 <string name="dialog_ok">OK</string>
 <string name="dialog_cancel">Cancel</string>
