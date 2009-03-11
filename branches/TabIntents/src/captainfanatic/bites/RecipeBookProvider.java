@@ -90,6 +90,7 @@ public class RecipeBookProvider extends ContentProvider {
             db.execSQL("CREATE TABLE " + METHOD_TABLE_NAME + " ("
                     + Methods._ID + " INTEGER PRIMARY KEY,"
                     + Methods.RECIPE + " INTEGER,"
+                    + Methods.STEP + " INTEGER,"
                     + Methods.TEXT + " TEXT,"
                     + Methods.CREATED_DATE + " INTEGER,"
                     + Methods.MODIFIED_DATE + " INTEGER"
@@ -313,6 +314,10 @@ public class RecipeBookProvider extends ContentProvider {
                     Resources r = Resources.getSystem();
                     values.put(RecipeBook.Methods.TEXT, r.getString(android.R.string.untitled));
                 }
+                
+                if (values.containsKey(RecipeBook.Methods.STEP) == false) {
+                	values.put(RecipeBook.Methods.STEP, 0);
+                }
 
                 //Don't allow methods without parent recipes
                 if (values.containsKey(RecipeBook.Methods.RECIPE) == false) {
@@ -443,6 +448,7 @@ public class RecipeBookProvider extends ContentProvider {
         sRecipesProjectionMap.put(Ingredients.MODIFIED_DATE, Ingredients.MODIFIED_DATE);
         sRecipesProjectionMap.put(Methods._ID, Methods._ID);
         sRecipesProjectionMap.put(Methods.RECIPE, Methods.RECIPE);
+        sRecipesProjectionMap.put(Methods.STEP, Methods.STEP);
         sRecipesProjectionMap.put(Methods.TEXT, Methods.TEXT);
         sRecipesProjectionMap.put(Methods.CREATED_DATE, Methods.CREATED_DATE);
         sRecipesProjectionMap.put(Methods.MODIFIED_DATE, Methods.MODIFIED_DATE);
