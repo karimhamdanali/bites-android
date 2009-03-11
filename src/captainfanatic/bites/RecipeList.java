@@ -1,6 +1,5 @@
 package captainfanatic.bites;
 
-import captainfanatic.bites.RecipeBook.Ingredients;
 import captainfanatic.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -40,6 +39,12 @@ public class RecipeList extends ListActivity {
     private static final int DIALOG_EDIT = 1;
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
+    
+    /**
+     * Column indexes
+     */
+    private static final int COLUMN_INDEX_ID = 0;
+    private static final int COLUMN_INDEX_TITLE = 1;
 
 	/**
      * The columns we are interested in from the database
@@ -48,10 +53,7 @@ public class RecipeList extends ListActivity {
             Recipes._ID, // 0
             Recipes.TITLE, // 1
     };
-    
-    /** The index of the title column */
-    private static final int COLUMN_INDEX_TITLE = 1;
-	
+    	
     private Cursor mCursor;
     
     private Uri mUri;
@@ -62,8 +64,6 @@ public class RecipeList extends ListActivity {
 	private TextView mDialogText;
     private TextView mHeader;
     
-    private Context mContext;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -75,7 +75,6 @@ public class RecipeList extends ListActivity {
         }
         
         setContentView(R.layout.recipes);
-        mContext = this;
         
         mHeader = (TextView)findViewById(R.id.recipeheader);
 	
@@ -91,7 +90,11 @@ public class RecipeList extends ListActivity {
         Bites.mRecipeName = mCursor.getString(1);
         
         mHeader.setText(Bites.mRecipeName);
+        
+        getListView().setOnCreateContextMenuListener(this);
 	}
+	
+	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,19 +155,56 @@ public class RecipeList extends ListActivity {
             Log.e(TAG, "bad menuInfo", e);
             return;
         }
-
-        Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
-        if (cursor == null) {
+		Cursor cursor = (Cursor)getListAdapter().getItem(info.position);
+		if (cursor == null) {
             // For some reason the requested item isn't available, do nothing
             return;
         }
-
         // Setup the menu header
         menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_TITLE));
-
         // Add a menu item to delete the note
-        menu.add(0, MENU_ITEM_DELETE, 0, "Delete");
+        menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_ingredient);
+        menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_ingredient);
 	}
+	
+	
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info;
+        try {
+             info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return false;
+        }
+        
+        Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
+        if (cursor == null) {
+            // For some reason the requested item isn't available, do nothing
+            return false;
+        }
+        
+        mUri = ContentUris.withAppendedId(getIntent().getData(), cursor.getLong(COLUMN_INDEX_ID));
+
+        switch (item.getItemId()) {
+	        case MENU_ITEM_EDIT: {
+                // Edit the ingredient that the context menu is for
+	        	showDialog(DIALOG_EDIT);
+				mDialogEdit.setText(cursor.getString(COLUMN_INDEX_TITLE));
+                return true;	        	
+	        }    
+	        case MENU_ITEM_DELETE: {
+                // Delete the note that the context menu is for
+	        	showDialog(DIALOG_DELETE);
+				mDialogText.setText(cursor.getString(COLUMN_INDEX_TITLE));
+                return true;
+            }
+        }
+        return false;
+	}
+
+
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {

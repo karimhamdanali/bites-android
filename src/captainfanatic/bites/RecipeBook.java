@@ -151,7 +151,7 @@ public final class RecipeBook {
         /**
          * The default sort order for this table
          */
-        public static final String DEFAULT_SORT_ORDER = "text ASC";
+        public static final String DEFAULT_SORT_ORDER = "step ASC";
 
         /**
          * The recipe that the method belongs to
@@ -159,6 +159,12 @@ public final class RecipeBook {
          */
         public static final String RECIPE = "recipe_id";
 
+        /**
+         * The recipe that the method belongs to
+         * <P>Type: INTEGER</P>
+         */
+        public static final String STEP = "step";
+        
          /**
          * The text of the method
          * <P>Type: TEXT</P>

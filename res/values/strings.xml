@@ -4,31 +4,28 @@
     <string name="app_name">Bites</string>
 
 
-
-<string name="dialog_recipename_title">Recipe Name</string>
-
-
-<string name="dialog_recipename_prompt">Enter Recipe Name</string>
-<string name="dialog_ingredient_title">Edit Ingredient</string>
-<string name="dialog_ingredient_prompt">Ingredient Name &amp; Quantity</string>
-
-
-
-<string name="dialog_method_prompt">Method Step and Description</string>
-<string name="dialog_method_title">Edit Method</string>
-
-
-<string name="dialog_delete_recipe_title">Delete Recipe</string>
-<string name="dialog_ok">OK</string>
-<string name="dialog_cancel">Cancel</string>
-<string name="dialog_delete_ingredient_title">Delete Ingredient</string>
-<string name="dialog_delete_method_title">Delete Method</string>
-<string name="no_ingredients">No Ingredients</string>
-<string name="no_methods">No Methods</string>
 <string name="tab_recipes">Recipes</string>
+<string name="dialog_recipename_title">Recipe Name</string>
+<string name="dialog_recipename_hint">Recipe Name</string>
+<string name="dialog_delete_recipe_title">Delete Recipe</string>
+
 <string name="tab_ingredients">Ingredients</string>
-<string name="tab_method">Method</string>
+<string name="dialog_ingredient_title">Edit Ingredient</string>
+<string name="dialog_ingredient_hint">Ingredient</string>
+<string name="dialog_delete_ingredient_title">Delete Ingredient</string>
 <string name="delete_ingredient">Delete Ingredient</string>
+<string name="no_ingredients">No Ingredients</string>
 <string name="check_ingredient">Check Ingredient</string>
 <string name="edit_ingredient">Edit Ingredient</string>
+
+<string name="tab_method">Method</string>
+<string name="dialog_method_title">Edit Method</string>
+<string name="dialog_method_step_hint">Step Number</string>
+<string name="dialog_method_text_hint">Method</string>
+<string name="dialog_delete_method_title">Delete Method</string>
+<string name="no_methods">No Methods</string>
+
+<string name="dialog_ok">OK</string>
+<string name="dialog_cancel">Cancel</string>
+
 </resources>

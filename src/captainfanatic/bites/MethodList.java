@@ -13,10 +13,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -37,7 +41,8 @@ public class MethodList extends ListActivity {
     private static final String[] PROJECTION = new String[] {
             Methods._ID, // 0
             Methods.RECIPE, // 1
-            Methods.TEXT, // 2
+            Methods.STEP, // 2
+            Methods.TEXT, // 3
     };
     
     /**
@@ -47,12 +52,20 @@ public class MethodList extends ListActivity {
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
     
+    /**
+     * Column indexes
+     */
+    private static final int COLUMN_INDEX_ID = 0;
+    private static final int COLUMN_INDEX_RECIPE = 1;
+    private static final int COLUMN_INDEX_STEP = 2;
+    private static final int COLUMN_INDEX_METHOD = 3;
+    
     private Uri mUri;
     
   //Use private members for dialog textview to prevent weird persistence problem
 	private EditText mDialogEdit;
 	private View mDialogView;
-	private TextView mDialogText;
+	private TextView mDialogText, mDialogStep;
 	private TextView mHeader;
 
 	private Cursor mCursor;	
@@ -69,6 +82,8 @@ public class MethodList extends ListActivity {
 		setContentView(R.layout.methods);
 		
 		mHeader = (TextView)findViewById(R.id.methodheader);
+		
+		getListView().setOnCreateContextMenuListener(this);
 		
 	}
 	
@@ -87,13 +102,74 @@ public class MethodList extends ListActivity {
 
 		// Used to map notes entries from the database to views
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.methodlist_item, mCursor,
-		new String[] { Methods.TEXT}, new int[] { R.id.methodtext});
+			new String[] { Methods.STEP, Methods.TEXT}, 
+			new int[] { R.id.methodstep, R.id.methodtext});
 		setListAdapter(adapter);
 		
 		//Set the header text to the current recipe name
 		mHeader.setText(Bites.mRecipeName);
 		
 	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		AdapterView.AdapterContextMenuInfo info;
+        try {
+             info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return;
+        }
+		Cursor cursor = (Cursor)getListAdapter().getItem(info.position);
+		if (cursor == null) {
+            // For some reason the requested item isn't available, do nothing
+            return;
+        }
+        // Setup the menu header
+        menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_METHOD));
+        // Add a menu item to delete the note
+        menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_ingredient);
+        menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_ingredient);
+        
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info;
+        try {
+             info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        } catch (ClassCastException e) {
+            Log.e(TAG, "bad menuInfo", e);
+            return false;
+        }
+        
+        Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
+        if (cursor == null) {
+            // For some reason the requested item isn't available, do nothing
+            return false;
+        }
+        
+        mUri = ContentUris.withAppendedId(getIntent().getData(), cursor.getLong(COLUMN_INDEX_ID));
+
+        switch (item.getItemId()) {
+	        case MENU_ITEM_EDIT: {
+                // Edit the ingredient that the context menu is for
+	        	showDialog(DIALOG_EDIT);
+				mDialogStep.setText(cursor.getString(COLUMN_INDEX_STEP));
+				mDialogEdit.setText(cursor.getString(COLUMN_INDEX_METHOD));
+                return true;	        	
+	        }    
+	        case MENU_ITEM_DELETE: {
+                // Delete the note that the context menu is for
+	        	showDialog(DIALOG_DELETE);
+				mDialogText.setText(cursor.getString(COLUMN_INDEX_METHOD));
+                return true;
+            }
+        }
+        return false;
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,6 +231,7 @@ public class MethodList extends ListActivity {
 		case DIALOG_EDIT:
             mDialogView = factory.inflate(R.layout.dialog_method, null);
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
+            mDialogStep = (EditText)mDialogView.findViewById(R.id.method_step);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
                 .setView(mDialogView)
@@ -163,6 +240,17 @@ public class MethodList extends ListActivity {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
                         values.put(Methods.TEXT, mDialogEdit.getText().toString());
+                        /**
+                         * Get the step number. 
+                         * If step number is not a valid integer then default to 0
+                         */
+                        int stepNum = 0;
+                        try {
+                        	stepNum = Integer.valueOf(mDialogStep.getText().toString());
+                        }
+                        finally {
+                        	values.put(Methods.STEP, stepNum);
+                        }
                         values.put(Methods.RECIPE, Bites.mRecipeId);
                         getContentResolver().update(mUri, values, null, null);
                 	}
@@ -195,6 +283,7 @@ public class MethodList extends ListActivity {
 		case DIALOG_INSERT:
             mDialogView = factory.inflate(R.layout.dialog_method, null);
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
+            mDialogStep = (EditText)mDialogView.findViewById(R.id.method_step);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_method_title)
                 .setView(mDialogView)
@@ -205,6 +294,17 @@ public class MethodList extends ListActivity {
                 		values.put(Methods.RECIPE, Bites.mRecipeId);
                 		mUri = getContentResolver().insert(Methods.CONTENT_URI,values);
                         values.put(Methods.TEXT, mDialogEdit.getText().toString());
+                        /**
+                         * Get the step number. 
+                         * If step number is not a valid integer then default to 0
+                         */
+                        int stepNum = 0;
+                        try {
+                        	stepNum = Integer.valueOf(mDialogStep.getText().toString());
+                        }
+                        finally {
+                        	values.put(Methods.STEP, stepNum);
+                        }
                         values.put(Methods.RECIPE, Bites.mRecipeId);
                         getContentResolver().update(mUri, values, null, null);
                 	}
