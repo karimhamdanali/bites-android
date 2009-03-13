@@ -3,17 +3,6 @@
 
 = Installation =
 
-Phones with the Android OS have not been released yet, so Bites has only been run on an Android emulator. 
-The emulator is available as part of the Android SDK available for download from [http://code.google.com/android/download.html]
+Bites will soon be released as a free beta on one of the android application market place sites, more details will be available here when that happens.
 
-Once you have installed the Android SDK, and downloaded the latest release of the bites.apk file (from the [http://code.google.com/p/bites-android/downloads/list Downloads] tab) open up a command prompt and type:
-
-`emulator`
-
-You should see the emulator appear and display a startup screen.
-
-Now open another prompt and type:
-
-`adb install <path to Bites.apk>`
-
-If all goes well you should see the Bites icon on the home page of the emulator, click it and take a look at the [QuickStart quickstart guide].
+So far Bites has only been run on an Android emulator. If you want to try it out, you can get the [http://developer.android.com/ emulator] from http://developer.android.com/ and follow the instructions there to install an application.
