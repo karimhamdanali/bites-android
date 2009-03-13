@@ -1,8 +1,0 @@
-#summary Installation Instructions.
-#labels Featured
-
-= Installation =
-
-Bites will soon be released as a free beta on one of the android application market place sites, more details will be available here when that happens.
-
-So far Bites has only been run on an Android emulator. If you want to try it out, you can get the [http://developer.android.com/ emulator] from http://developer.android.com/ and follow the instructions there to install an application.
