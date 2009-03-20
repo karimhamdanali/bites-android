@@ -347,12 +347,24 @@ public class RecipeBookProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
         case RECIPES:
             count = db.delete(RECIPE_TABLE_NAME, where, whereArgs);
+            /**
+             * Delete all ingredients and methods without a parent recipe in the recipe table
+             * This is a continuous cleanup strategy to stop cluttering with orphans
+             */
+            db.execSQL(getContext().getString(R.string.sql_delete_orphan_ingredients));
+            db.execSQL(getContext().getString(R.string.sql_delete_orphan_methods));
             break;
 
         case RECIPE_ID:
             String recipeId = uri.getPathSegments().get(1);
             count = db.delete(RECIPE_TABLE_NAME, Recipes._ID + "=" + recipeId
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
+            /**
+             * Delete all ingredients and methods without a parent recipe in the recipe table
+             * This is a continuous cleanup strategy to stop cluttering with orphans
+             */
+            db.execSQL(getContext().getString(R.string.sql_delete_orphan_ingredients));
+            db.execSQL(getContext().getString(R.string.sql_delete_orphan_methods));
             break;
 
         case INGREDIENTS:
