@@ -76,7 +76,6 @@ public class RecipeBookProvider extends ContentProvider {
             db.execSQL("CREATE TABLE " + RECIPE_TABLE_NAME + " ("
                     + Recipes._ID + " INTEGER PRIMARY KEY,"
                     + Recipes.TITLE + " TEXT,"
-                    + Recipes.RECIPE + " TEXT,"
                     + Recipes.CREATED_DATE + " INTEGER,"
                     + Recipes.MODIFIED_DATE + " INTEGER"
                     + ");");
@@ -258,11 +257,7 @@ public class RecipeBookProvider extends ContentProvider {
                     values.put(RecipeBook.Recipes.TITLE, r.getString(android.R.string.untitled));
                 }
 
-                if (values.containsKey(RecipeBook.Recipes.RECIPE) == false) {
-                    values.put(RecipeBook.Recipes.RECIPE, "");
-                }
-
-                rowId = db.insert(RECIPE_TABLE_NAME, Recipes.RECIPE, values);
+                rowId = db.insert(RECIPE_TABLE_NAME, Recipes.TITLE, values);
                 if (rowId > 0) {
                     Uri noteUri = ContentUris.withAppendedId(RecipeBook.Recipes.CONTENT_URI, rowId);
                     getContext().getContentResolver().notifyChange(noteUri, null);
@@ -450,7 +445,6 @@ public class RecipeBookProvider extends ContentProvider {
         sRecipesProjectionMap = new HashMap<String, String>();
         sRecipesProjectionMap.put(Recipes._ID, Recipes._ID);
         sRecipesProjectionMap.put(Recipes.TITLE, Recipes.TITLE);
-        sRecipesProjectionMap.put(Recipes.RECIPE, Recipes.RECIPE);
         sRecipesProjectionMap.put(Recipes.CREATED_DATE, Recipes.CREATED_DATE);
         sRecipesProjectionMap.put(Recipes.MODIFIED_DATE, Recipes.MODIFIED_DATE);
         sRecipesProjectionMap.put(Ingredients._ID, Ingredients._ID);
