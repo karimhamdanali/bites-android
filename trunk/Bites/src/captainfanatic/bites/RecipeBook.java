@@ -62,12 +62,6 @@ public final class RecipeBook {
         public static final String TITLE = "title";
 
         /**
-         * The recipe itself (in xml format)
-         * <P>Type: TEXT</P>
-         */
-        public static final String RECIPE = "recipe";
-
-        /**
          * The timestamp for when the recipe was created
          * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
          */

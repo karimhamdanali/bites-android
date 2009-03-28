@@ -221,7 +221,10 @@ public class RecipeList extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		mUri = ContentUris.withAppendedId(getIntent().getData(), id);
 		Bites.mRecipeId = id;
-		Bites.mRecipeName = mCursor.getString(1);
+		//Get a temp cursor to the uri of the clicked item
+		Cursor c = getContentResolver().query(mUri, PROJECTION, null, null, null);
+		c.moveToLast();
+		Bites.mRecipeName = c.getString(1);
 		//Update the header text with the current recipe name
 		mHeader.setText(Bites.mRecipeName);
 	}
@@ -243,6 +246,7 @@ public class RecipeList extends ListActivity {
                     	ContentValues values = new ContentValues();
                     	values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                     	mUri = getContentResolver().insert(Recipes.CONTENT_URI,values);
+                    	getListView().performItemClick(getListView(), 0, Long.parseLong(mUri.getLastPathSegment()));
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
