@@ -188,7 +188,7 @@ public class RecipeBookProvider extends ContentProvider {
                 orderBy = sortOrder;
             }
             break;
-
+           
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
