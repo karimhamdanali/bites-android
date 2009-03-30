@@ -10,6 +10,8 @@ package captainfanatic.bites;
  *  
  *  from http://mobiforge.com/developing/story/sms-messaging-android
 */
+import captainfanatic.bites.RecipeBook.Ingredients;
+import captainfanatic.bites.RecipeBook.Methods;
 import captainfanatic.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -229,12 +231,7 @@ public class RecipeList extends ListActivity {
 	        case MENU_ITEM_SEND: {
 	        	//Send the recipe via sms
 	        	Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-	        	String msg =  "***Bites Recipe***\n";
-	        	msg = msg + Bites.mRecipeName + "\n";
-	        	msg = msg + "**Ingredients**\n";
-	        	msg = msg + "**Method**\n";
-	        	msg = msg + "***";
-	        	sendIntent.putExtra("sms_body", msg);
+	        	sendIntent.putExtra("sms_body", RecipeToString());
 	        	sendIntent.setType("vnd.android-dir/mms-sms");
 	        	startActivity(sendIntent);
 	        	return true;
@@ -243,6 +240,45 @@ public class RecipeList extends ListActivity {
         return false;
 	}
 
+	private String RecipeToString(){
+		String msg;
+		//Get an ingredient cursor
+    	Cursor cIngredient = getContentResolver().query(Ingredients.CONTENT_URI, 
+    											new String[] {Ingredients._ID, Ingredients.TEXT}, 
+    											Ingredients.RECIPE + "=" + Bites.mRecipeId , 
+    											null, 
+    											null);
+    	Cursor cMethod = getContentResolver().query(Methods.CONTENT_URI, 
+				new String[] {Methods._ID, Methods.STEP, Methods.TEXT}, 
+				Methods.RECIPE + "=" + Bites.mRecipeId , 
+				null, 
+				null);
+    	
+    	msg =  "***Bites Recipe***\n";
+    	msg = msg + Bites.mRecipeName + "\n";
+    	msg = msg + "**Ingredients**\n";
+    	//Get ingredients
+    	int colIng = cIngredient.getColumnIndex(Ingredients.TEXT);
+    	cIngredient.moveToFirst();
+    	while (!cIngredient.isLast() && !cIngredient.isNull(0) )
+    	{
+    		
+    		msg = msg + cIngredient.getString(colIng) + "\n";
+    		cIngredient.moveToNext();
+    	}
+    	msg = msg + "**Method**\n";
+    	//Get methods
+    	int colStep = cMethod.getColumnIndex(Methods.STEP);
+    	int colMethod = cMethod.getColumnIndex(Methods.TEXT);
+    	cMethod.moveToFirst();
+    	while (!cMethod.isLast())
+    	{
+    		msg = msg + cMethod.getString(colStep) + "." + cMethod.getString(colMethod) + "\n";
+    		cMethod.moveToNext();
+    	}
+    	msg = msg + "***";
+		return msg;
+	}
 
 
 	@Override
