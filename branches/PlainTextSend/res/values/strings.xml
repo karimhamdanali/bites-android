@@ -10,6 +10,7 @@
 <string name="dialog_delete_recipe_title">Delete Recipe</string>
 <string name="edit_recipe">Edit Recipe</string>
 <string name="delete_recipe">Delete Recipe</string>
+<string name="dialog_received_title">Recipe Received</string>
 
 <string name="tab_ingredients">Ingredients</string>
 <string name="dialog_ingredient_title">Edit Ingredient</string>
