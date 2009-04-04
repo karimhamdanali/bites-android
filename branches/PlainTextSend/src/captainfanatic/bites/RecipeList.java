@@ -83,7 +83,7 @@ public class RecipeList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		
 		Intent intent = getIntent();
-        if (intent.getData() == null) {
+		if (intent.getData() == null) {
             intent.setData(Recipes.CONTENT_URI);
         }
         
@@ -99,12 +99,7 @@ public class RecipeList extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		Intent intent = getIntent();
-		if (getIntent().hasExtra(SmsReceiver.KEY_MSG_TEXT)) {
-			showDialog(DIALOG_RECVD);
-		}
-		
+			
 		mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
                 Recipes.DEFAULT_SORT_ORDER);
 
@@ -377,24 +372,6 @@ public class RecipeList extends ListActivity {
                     }
                 })
                 .create();
-		case DIALOG_RECVD:
-			mDialogView = factory.inflate(R.layout.dialog_received, null);
-			mDialogText = (TextView)mDialogView.findViewById(R.id.received_recipe);
-            return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_received_title)
-                .setView(mDialogView)
-                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                	public void onClick(DialogInterface dialog, int whichButton) {
-                    	/* User clicked OK so do some stuff */
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        /* User clicked cancel so do some stuff */
-                    }
-                })
-                .create();
-			
 		}
 		return null;
 	}

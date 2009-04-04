@@ -17,6 +17,11 @@ public class Bites extends TabActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        if (getIntent().getAction() == "com.captainfanatic.bites.RECEIVED_RECIPE") {
+			//TODO: add recipe received dialog
+        	//showDialog(DIALOG_RECVD);
+		}
                
         final TabHost tabHost = getTabHost();
                
