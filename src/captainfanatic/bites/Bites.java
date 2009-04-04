@@ -19,8 +19,7 @@ public class Bites extends TabActivity {
         super.onCreate(savedInstanceState);
                
         final TabHost tabHost = getTabHost();
-
-        
+               
         tabHost.addTab(tabHost.newTabSpec("tab_recipes")
                 .setIndicator(getResources().getText(R.string.tab_recipes))
                 .setContent(new Intent(this, RecipeList.class)));

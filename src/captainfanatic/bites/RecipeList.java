@@ -51,6 +51,7 @@ public class RecipeList extends ListActivity {
     private static final int DIALOG_EDIT = 1;
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
+    private static final int DIALOG_RECVD = 4;
     
     /**
      * Column indexes
@@ -98,6 +99,12 @@ public class RecipeList extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		Intent intent = getIntent();
+		if (getIntent().hasExtra(SmsReceiver.KEY_MSG_TEXT)) {
+			showDialog(DIALOG_RECVD);
+		}
+		
 		mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
                 Recipes.DEFAULT_SORT_ORDER);
 
@@ -130,6 +137,8 @@ public class RecipeList extends ListActivity {
                 .setIcon(android.R.drawable.ic_menu_add);
         menu.add(0, MENU_ITEM_EDIT, 0, "edit")
         .setIcon(android.R.drawable.ic_menu_edit);
+        menu.add(0, MENU_ITEM_SEND, 0, "send")
+        .setIcon(android.R.drawable.ic_menu_send);
         
      // Generate any additional actions that can be performed on the
         // overall list.  In a normal install, there are no additional
@@ -161,10 +170,14 @@ public class RecipeList extends ListActivity {
 			mDialogEdit.setText(mCursor.getString(1));
 			break;
 	    case MENU_ITEM_DELETE:
-	        // Edit an existing item
+	        // Delete an existing item
 			showDialog(DIALOG_DELETE);
 			mDialogText.setText(mCursor.getString(1));
 			break;
+	    case MENU_ITEM_SEND:
+	    	// Send a recipe
+	    	SendRecipe();
+	    	break;
 	    }
         return super.onOptionsItemSelected(item);
     }
@@ -230,17 +243,16 @@ public class RecipeList extends ListActivity {
 	        
 	        case MENU_ITEM_SEND: {
 	        	//Send the recipe via sms
-	        	Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-	        	sendIntent.putExtra("sms_body", RecipeToString());
-	        	sendIntent.setType("vnd.android-dir/mms-sms");
-	        	startActivity(sendIntent);
+	        	SendRecipe();
 	        	return true;
 	        }
         }
         return false;
 	}
 
-	private String RecipeToString(){
+	private void SendRecipe(){
+		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+		
 		String msg;
 		//Get an ingredient cursor
     	Cursor cIngredient = getContentResolver().query(Ingredients.CONTENT_URI, 
@@ -277,7 +289,9 @@ public class RecipeList extends ListActivity {
     		cMethod.moveToNext();
     	}
     	msg = msg + "***";
-		return msg;
+    	sendIntent.putExtra("sms_body", msg);
+    	sendIntent.setType("vnd.android-dir/mms-sms");
+    	startActivity(sendIntent);
 	}
 
 
@@ -363,6 +377,24 @@ public class RecipeList extends ListActivity {
                     }
                 })
                 .create();
+		case DIALOG_RECVD:
+			mDialogView = factory.inflate(R.layout.dialog_received, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.received_recipe);
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_received_title)
+                .setView(mDialogView)
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* User clicked OK so do some stuff */
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
+			
 		}
 		return null;
 	}
