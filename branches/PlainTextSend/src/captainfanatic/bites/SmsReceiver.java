@@ -41,18 +41,6 @@ public class SmsReceiver extends BroadcastReceiver {
 		
 		if (message.contains("***Bites Recipe***")) {
 	
-			
-			/*NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-			//increment the notificaton id
-			ID += 1;
-			PendingIntent pendIntent = PendingIntent.getActivity(
-															context, 
-															0, 
-															new Intent(), 
-															0);
-			Notification notification = new Notification(R.drawable.icon, "Recipe Received", );
-			nm.notify(ID, notification);*/
-			
 			Intent broadcast = new Intent("com.captainfanatic.bites.RECEIVED_RECIPE");
 			broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			
@@ -65,13 +53,25 @@ public class SmsReceiver extends BroadcastReceiver {
 			
 			//Methods array
 			broadcast.putExtra(KEY_METH_ARRAY, "");
+	
+			NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+			//increment the notificaton id
+			ID += 1;
+			PendingIntent pendIntent = PendingIntent.getActivity(
+															context, 
+															0, 
+															broadcast, 
+															0);
+			Notification notification = new Notification(R.drawable.icon, "Recipe Received",System.currentTimeMillis());
+			notification.contentIntent = pendIntent;
+			nm.notify(ID, notification);
 			
-			try {
+			/*try {
 				context.startActivity(broadcast);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}			
+			}*/			
 		}				
 	}
 }

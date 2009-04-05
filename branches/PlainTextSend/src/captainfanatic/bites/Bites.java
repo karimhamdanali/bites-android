@@ -36,6 +36,8 @@ public class Bites extends TabActivity {
                 .setContent(new Intent(this, MethodList.class)));  
     
     }
+    
+    
 
 	/*@Override
 	protected void onResume() {
