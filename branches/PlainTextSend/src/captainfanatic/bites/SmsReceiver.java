@@ -20,12 +20,14 @@ public class SmsReceiver extends BroadcastReceiver {
 	public static final String KEY_RECIPE = "recipeName";
 	public static final String KEY_ING_ARRAY = "ingredientArray";
 	public static final String KEY_METH_ARRAY = "methodArray";
+	public static final String KEY_NOTIFY_ID = "notifyId";
 	
 	private static int ID = 0;
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String message = "asdf";
+		String recipe = "recipe";
 		
 		if (!intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
 			return;
@@ -46,32 +48,33 @@ public class SmsReceiver extends BroadcastReceiver {
 			
 			broadcast.putExtra(KEY_MSG_TEXT, message);
 			//Recipe name
-			broadcast.putExtra(KEY_RECIPE, "");
+			broadcast.putExtra(KEY_RECIPE, recipe);
 			
 			//ingredients array
 			broadcast.putExtra(KEY_ING_ARRAY, "");
 			
 			//Methods array
 			broadcast.putExtra(KEY_METH_ARRAY, "");
+			
+			/**
+			 * Notification ID
+			 * Increment the notificaton id and use this as a UID for the notication
+			 * This ID will be needed to cancel the notification so pass it as an extra 
+			 */
+			ID += 1;
+			broadcast.putExtra(KEY_NOTIFY_ID, ID);
 	
 			NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-			//increment the notificaton id
-			ID += 1;
+
 			PendingIntent pendIntent = PendingIntent.getActivity(
 															context, 
 															0, 
 															broadcast, 
-															0);
+															Intent.FLAG_ACTIVITY_NEW_TASK);
 			Notification notification = new Notification(R.drawable.icon, "Recipe Received",System.currentTimeMillis());
-			notification.contentIntent = pendIntent;
+			notification.setLatestEventInfo(context, "Recipe Received", recipe, pendIntent);
 			nm.notify(ID, notification);
-			
-			/*try {
-				context.startActivity(broadcast);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/			
+
 		}				
 	}
 }

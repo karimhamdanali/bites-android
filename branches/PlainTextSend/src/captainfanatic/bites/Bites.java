@@ -1,6 +1,8 @@
 package captainfanatic.bites;
 
+import android.app.NotificationManager;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
@@ -19,8 +21,11 @@ public class Bites extends TabActivity {
         super.onCreate(savedInstanceState);
         
         if (getIntent().getAction() == "com.captainfanatic.bites.RECEIVED_RECIPE") {
-			//TODO: add recipe received dialog
-        	//showDialog(DIALOG_RECVD);
+        	//Cancel the notification using the id extra in the intent
+    		NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+    		nm.cancel(getIntent().getIntExtra(SmsReceiver.KEY_NOTIFY_ID,0));
+    		//TODO: add recipe, ingredients and methods to content provider
+    		//TODO: select (highlight?) the new recipe in the RecipeList activity
 		}
                
         final TabHost tabHost = getTabHost();
