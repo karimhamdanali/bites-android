@@ -1,5 +1,17 @@
 package captainfanatic.bites;
 
+/*
+ * Send Text message using built in sms message app
+ * 
+ *  Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+ *  sendIntent.putExtra("sms_body", "Content of the SMS goes here...");
+ *  sendIntent.setType("vnd.android-dir/mms-sms");
+ *  startActivity(sendIntent);
+ *  
+ *  from http://mobiforge.com/developing/story/sms-messaging-android
+*/
+import captainfanatic.bites.RecipeBook.Ingredients;
+import captainfanatic.bites.RecipeBook.Methods;
 import captainfanatic.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,6 +43,7 @@ public class RecipeList extends ListActivity {
 	public static final int MENU_ITEM_EDIT = Menu.FIRST;
 	public static final int MENU_ITEM_DELETE = Menu.FIRST + 1;
     public static final int MENU_ITEM_INSERT = Menu.FIRST + 2;
+    public static final int MENU_ITEM_SEND = Menu.FIRST + 3;
     
     /**
      * Case selections for the type of dialog box displayed
@@ -38,6 +51,7 @@ public class RecipeList extends ListActivity {
     private static final int DIALOG_EDIT = 1;
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
+    private static final int DIALOG_RECVD = 4;
     
     /**
      * Column indexes
@@ -69,7 +83,7 @@ public class RecipeList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		
 		Intent intent = getIntent();
-        if (intent.getData() == null) {
+		if (intent.getData() == null) {
             intent.setData(Recipes.CONTENT_URI);
         }
         
@@ -85,6 +99,7 @@ public class RecipeList extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+			
 		mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
                 Recipes.DEFAULT_SORT_ORDER);
 
@@ -117,6 +132,8 @@ public class RecipeList extends ListActivity {
                 .setIcon(android.R.drawable.ic_menu_add);
         menu.add(0, MENU_ITEM_EDIT, 0, "edit")
         .setIcon(android.R.drawable.ic_menu_edit);
+        menu.add(0, MENU_ITEM_SEND, 0, "send")
+        .setIcon(android.R.drawable.ic_menu_send);
         
      // Generate any additional actions that can be performed on the
         // overall list.  In a normal install, there are no additional
@@ -148,10 +165,14 @@ public class RecipeList extends ListActivity {
 			mDialogEdit.setText(mCursor.getString(1));
 			break;
 	    case MENU_ITEM_DELETE:
-	        // Edit an existing item
+	        // Delete an existing item
 			showDialog(DIALOG_DELETE);
 			mDialogText.setText(mCursor.getString(1));
 			break;
+	    case MENU_ITEM_SEND:
+	    	// Send a recipe
+	    	SendRecipe();
+	    	break;
 	    }
         return super.onOptionsItemSelected(item);
     }
@@ -176,6 +197,7 @@ public class RecipeList extends ListActivity {
         // Add a menu item to delete the note
         menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_recipe);
         menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_recipe);
+        menu.add(0, MENU_ITEM_SEND, 0, R.string.send_recipe);
 	}
 	
 	
@@ -197,6 +219,8 @@ public class RecipeList extends ListActivity {
         }
         
         mUri = ContentUris.withAppendedId(getIntent().getData(), cursor.getLong(COLUMN_INDEX_ID));
+        Bites.mRecipeId = mCursor.getLong(COLUMN_INDEX_ID);
+        Bites.mRecipeName = mCursor.getString(COLUMN_INDEX_TITLE);
 
         switch (item.getItemId()) {
 	        case MENU_ITEM_EDIT: {
@@ -211,10 +235,59 @@ public class RecipeList extends ListActivity {
 				mDialogText.setText(cursor.getString(COLUMN_INDEX_TITLE));
                 return true;
             }
+	        
+	        case MENU_ITEM_SEND: {
+	        	//Send the recipe via sms
+	        	SendRecipe();
+	        	return true;
+	        }
         }
         return false;
 	}
 
+	private void SendRecipe(){
+		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+		
+		String msg;
+		//Get an ingredient cursor
+    	Cursor cIngredient = getContentResolver().query(Ingredients.CONTENT_URI, 
+    											new String[] {Ingredients._ID, Ingredients.TEXT}, 
+    											Ingredients.RECIPE + "=" + Bites.mRecipeId , 
+    											null, 
+    											null);
+    	Cursor cMethod = getContentResolver().query(Methods.CONTENT_URI, 
+				new String[] {Methods._ID, Methods.STEP, Methods.TEXT}, 
+				Methods.RECIPE + "=" + Bites.mRecipeId , 
+				null, 
+				null);
+    	
+    	msg =  "***Bites Recipe***\n";
+    	msg = msg + Bites.mRecipeName + "\n";
+    	msg = msg + "**Ingredients**\n";
+    	//Get ingredients
+    	int colIng = cIngredient.getColumnIndex(Ingredients.TEXT);
+    	cIngredient.moveToFirst();
+    	while (!cIngredient.isLast() && !cIngredient.isNull(0) )
+    	{
+    		
+    		msg = msg + cIngredient.getString(colIng) + "\n";
+    		cIngredient.moveToNext();
+    	}
+    	msg = msg + "**Method**\n";
+    	//Get methods
+    	int colStep = cMethod.getColumnIndex(Methods.STEP);
+    	int colMethod = cMethod.getColumnIndex(Methods.TEXT);
+    	cMethod.moveToFirst();
+    	while (!cMethod.isLast())
+    	{
+    		msg = msg + cMethod.getString(colStep) + "." + cMethod.getString(colMethod) + "\n";
+    		cMethod.moveToNext();
+    	}
+    	msg = msg + "***";
+    	sendIntent.putExtra("sms_body", msg);
+    	sendIntent.setType("vnd.android-dir/mms-sms");
+    	startActivity(sendIntent);
+	}
 
 
 	@Override
@@ -224,7 +297,7 @@ public class RecipeList extends ListActivity {
 		//Get a temp cursor to the uri of the clicked item
 		Cursor c = getContentResolver().query(mUri, PROJECTION, null, null, null);
 		c.moveToLast();
-		Bites.mRecipeName = c.getString(1);
+		Bites.mRecipeName = c.getString(COLUMN_INDEX_TITLE);
 		//Update the header text with the current recipe name
 		mHeader.setText(Bites.mRecipeName);
 	}
