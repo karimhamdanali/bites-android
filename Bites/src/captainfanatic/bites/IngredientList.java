@@ -185,6 +185,8 @@ public class IngredientList extends ListActivity {
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, IngredientList.class), null, intent, 0, null);
        
+        //TODO: add "Add to shopping list" if shopping list activity is installed
+        //TODO: add "Send via SMS"
         menu.add(0, MENU_ITEM_DELETE, 0, "delete")
         .setIcon(android.R.drawable.ic_menu_delete);
         
@@ -209,6 +211,8 @@ public class IngredientList extends ListActivity {
 			showDialog(DIALOG_DELETE);
 			mDialogText.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
 			break;
+			//TODO: add to shopping list - ticked/unticked dialog
+			//TODO: send via sms - ticked/unticked dialog
 	    }
         return super.onOptionsItemSelected(item);
     }
@@ -288,7 +292,18 @@ public class IngredientList extends ListActivity {
                     }
                 })
                 .create();
+            //TODO: Ticked/Unticked dialog for shopping list creation
 		}
 		return null;
+	}
+	
+	/**
+	 * Send Shopping List via sms.
+	 * 
+	 * @param checked 0=send unchecked, 1=send checked items
+	 */
+	private void SendShoppingList(Boolean checked)
+	{
+		//TODO: send an sms intent
 	}
 }
