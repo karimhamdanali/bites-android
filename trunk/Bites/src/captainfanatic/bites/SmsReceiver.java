@@ -11,9 +11,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.gsm.SmsMessage;
 
-/** Listen for received sms and interpret raw pdus into messages to check for recipes
+/** Listen for received sms and interpret raw pdus into messages to check for recipes.
+ * Creates a recipe received notification with an intent to add the new recipe to the
+ * Bites content provider. 
  * 
- * @author ben
+ * @author Ben Caldwell
  *
  */
 public class SmsReceiver extends BroadcastReceiver {

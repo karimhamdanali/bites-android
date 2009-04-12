@@ -13,8 +13,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TabHost;
 
-//TODO: handle sms message text in intent from SmsReceiver
-
+/**
+ * The main activity, operates as a top level tabhost that contains list activities for
+ * recipes, ingredients and method steps.
+ * 
+ * Recipe received notifications send an intent to Bites to add the new recipe when clicked.
+ *  
+ * @author Ben Caldwell
+ *
+ */
 public class Bites extends TabActivity {
 	SmsReceiver sms;
 	
@@ -32,42 +39,7 @@ public class Bites extends TabActivity {
          */
         if (getIntent().getAction() != null)
         {
-        	if(getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE")) 
-        	{
-	        	//Cancel the notification using the id extra in the intent
-	    		NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-	    		nm.cancel(getIntent().getIntExtra(SmsReceiver.KEY_NOTIFY_ID,0));
-	    		
-	    		ContentValues values = new ContentValues();
-	    		values.put(Recipes.TITLE, getIntent().getStringExtra(SmsReceiver.KEY_RECIPE));
-	    		Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
-	    		long recipeId = Long.parseLong(recipeUri.getLastPathSegment());
-
-	    		//get ingredients from the intent extras and load into the content provider
-	    		String ingredients[] = getIntent().getStringArrayExtra(SmsReceiver.KEY_ING_ARRAY);
-	    			for (int i =0; i<ingredients.length; i++)
-		    		{
-		    			values = new ContentValues();
-		    			values.put(Ingredients.RECIPE, recipeId);
-		    			values.put(Ingredients.TEXT,ingredients[i]);
-		    			getContentResolver().insert(Ingredients.CONTENT_URI, values);
-		    		}
-	    		
-	    		//get methods from the intent extras and load into the content provider
-	    		String methods[] = getIntent().getStringArrayExtra(SmsReceiver.KEY_METH_ARRAY);
-	    		int methodSteps[] = getIntent().getIntArrayExtra(SmsReceiver.KEY_METH_STEP_ARRAY);
-	    		
-	    		for (int i = 0; i<methods.length; i++)
-	    		{
-	    			values = new ContentValues();
-	    			values.put(Methods.RECIPE, recipeId);
-	    			values.put(Methods.TEXT, methods[i]);
-	    			values.put(Methods.STEP, (i<methodSteps.length) ? methodSteps[i] : i);
-	    			getContentResolver().insert(Methods.CONTENT_URI, values);
-	    		}
-	    		
-	    		//TODO: select (highlight?) the new recipe in the RecipeList activity
-        	}
+        	AddReceivedRecipe();
 		}
                
         final TabHost tabHost = getTabHost();
@@ -83,35 +55,47 @@ public class Bites extends TabActivity {
                 .setContent(new Intent(this, MethodList.class)));  
     
     }
-    
-    
 
-	/*@Override
-	protected void onResume() {
-		super.onResume();
-		
-				Intent intent = getIntent();
-		
-		//Check for new xml recipe from a text message etc.
-		if (!intent.hasExtra(SmsReceiver.KEY_MSG_TEXT)) {
-			return;
-		}
+    /**
+     * Add a recipe received via sms to the content provider
+     */
+	private void AddReceivedRecipe() {
+		if(getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE")) 
+		{
+			//Cancel the notification using the id extra in the intent
+			NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+			nm.cancel(getIntent().getIntExtra(SmsReceiver.KEY_NOTIFY_ID,0));
+			
+			ContentValues values = new ContentValues();
+			values.put(Recipes.TITLE, getIntent().getStringExtra(SmsReceiver.KEY_RECIPE));
+			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
+			long recipeId = Long.parseLong(recipeUri.getLastPathSegment());
 
-		String strRecipe = intent.getStringExtra(SmsReceiver.KEY_MSG_TEXT);
-		Recipe newRecipe = new Recipe();
-		try {
-			newRecipe.Pull(strRecipe);
-		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//get ingredients from the intent extras and load into the content provider
+			String ingredients[] = getIntent().getStringArrayExtra(SmsReceiver.KEY_ING_ARRAY);
+				for (int i =0; i<ingredients.length; i++)
+				{
+					values = new ContentValues();
+					values.put(Ingredients.RECIPE, recipeId);
+					values.put(Ingredients.TEXT,ingredients[i]);
+					getContentResolver().insert(Ingredients.CONTENT_URI, values);
+				}
+			
+			//get methods from the intent extras and load into the content provider
+			String methods[] = getIntent().getStringArrayExtra(SmsReceiver.KEY_METH_ARRAY);
+			int methodSteps[] = getIntent().getIntArrayExtra(SmsReceiver.KEY_METH_STEP_ARRAY);
+			
+			for (int i = 0; i<methods.length; i++)
+			{
+				values = new ContentValues();
+				values.put(Methods.RECIPE, recipeId);
+				values.put(Methods.TEXT, methods[i]);
+				values.put(Methods.STEP, (i<methodSteps.length) ? methodSteps[i] : i);
+				getContentResolver().insert(Methods.CONTENT_URI, values);
+			}
+			
+			//TODO: select (highlight?) the new recipe in the RecipeList activity
 		}
-		//If the xml pullparser was successful and we have a new recipe object
-		mRecipeList.add(newRecipe);
-				
 	}
-    */
-
+    
 }
