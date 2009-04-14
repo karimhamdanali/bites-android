@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,7 @@ public class IngredientList extends ListActivity {
 	public static final int MENU_ITEM_DELETE = Menu.FIRST + 1;
     public static final int MENU_ITEM_INSERT = Menu.FIRST + 2;
     public static final int MENU_ITEM_CHECK = Menu.FIRST + 3;
+    public static final int MENU_ITEM_SEND = Menu.FIRST + 4;
 	
 	/**
      * The columns we are interested in from the database
@@ -58,6 +60,7 @@ public class IngredientList extends ListActivity {
     private static final int DIALOG_EDIT = 1;
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
+    private static final int DIALOG_SEND = 4;
     
     private Uri mUri;
     
@@ -68,6 +71,8 @@ public class IngredientList extends ListActivity {
 	private TextView mHeader;
 
 	private Cursor mCursor;	
+	
+	private Boolean mSendChecked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,8 @@ public class IngredientList extends ListActivity {
 		mHeader = (TextView)findViewById(R.id.ingredientheader);
 		
 		getListView().setOnCreateContextMenuListener(this);		
+		
+		mSendChecked = false;
 	}
 		
 	@Override
@@ -186,7 +193,8 @@ public class IngredientList extends ListActivity {
                 new ComponentName(this, IngredientList.class), null, intent, 0, null);
        
         //TODO: add "Add to shopping list" if shopping list activity is installed
-        //TODO: add "Send via SMS"
+        menu.add(0, MENU_ITEM_SEND, 0, "send")
+        .setIcon(android.R.drawable.ic_menu_send);
         menu.add(0, MENU_ITEM_DELETE, 0, "delete")
         .setIcon(android.R.drawable.ic_menu_delete);
         
@@ -212,7 +220,11 @@ public class IngredientList extends ListActivity {
 			mDialogText.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
 			break;
 			//TODO: add to shopping list - ticked/unticked dialog
-			//TODO: send via sms - ticked/unticked dialog
+	    case MENU_ITEM_SEND:
+	    	showDialog(DIALOG_SEND);
+	    	//Set default selection to send unchecked ingredients
+	    	mSendChecked = false;
+	    	break;
 	    }
         return super.onOptionsItemSelected(item);
     }
@@ -292,7 +304,38 @@ public class IngredientList extends ListActivity {
                     }
                 })
                 .create();
-            //TODO: Ticked/Unticked dialog for shopping list creation
+		case DIALOG_SEND:
+            return new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_sendshoppinglist)
+                .setSingleChoiceItems(R.array.send_checked_unchecked, 0, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which)
+						{
+						case 0:
+							mSendChecked = false;
+						case 1:
+							mSendChecked = true;
+						}
+					}
+                })
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                	public void onClick(DialogInterface dialog, int whichButton) {
+                    	/* 
+                    	 * Create an intent to send a text message (sms). 
+                    	 * The body of the message is all the ticked/unticked ingredients.
+                    	 */
+                		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                		sendIntent.putExtra("sms_body", CreateShoppingList());
+                    	sendIntent.setType("vnd.android-dir/mms-sms");
+                    	startActivity(sendIntent);
+                	}
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        /* User clicked cancel so do some stuff */
+                    }
+                })
+                .create();
 		}
 		return null;
 	}
@@ -300,10 +343,21 @@ public class IngredientList extends ListActivity {
 	/**
 	 * Send Shopping List via sms.
 	 * 
-	 * @param checked 0=send unchecked, 1=send checked items
 	 */
-	private void SendShoppingList(Boolean checked)
+	private String CreateShoppingList()
 	{
-		//TODO: send an sms intent
+		String msg = "***Shopping List***\n";
+		ListView lv = getListView();
+		int lvCount = lv.getChildCount();
+		for (int i=0; i<lvCount; i++)
+		{
+			CheckBox cb = (CheckBox)lv.getChildAt(i).findViewById(R.id.ingredientcheck);
+			if (cb.isChecked() == mSendChecked)
+			{
+				msg = msg + ((TextView)lv.getChildAt(i).findViewById(R.id.ingredienttext)).getText() + "\n";
+			}
+		}
+		msg = msg + "***";
+		return msg;
 	}
 }
