@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="send_checked_unchecked">
+    	<item>Send Unchecked</item>
+    	<item>Send Checked</item>
+    </string-array>
+</resources>

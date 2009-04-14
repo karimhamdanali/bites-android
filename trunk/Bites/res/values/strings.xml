@@ -20,6 +20,7 @@
 <string name="no_ingredients">No Ingredients</string>
 <string name="check_ingredient">Check Ingredient</string>
 <string name="edit_ingredient">Edit Ingredient</string>
+<string name="dialog_sendshoppinglist">Send Shopping List</string>
 
 <string name="tab_method">Method</string>
 <string name="dialog_method_title">Edit Method</string>
