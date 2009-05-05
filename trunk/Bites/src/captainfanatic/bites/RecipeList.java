@@ -311,7 +311,7 @@ public class RecipeList extends ListActivity {
 			mDialogView = factory.inflate(R.layout.dialog_recipename, null);
 			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_recipename_title)
+                .setTitle(R.string.recipe_name)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
@@ -332,7 +332,7 @@ public class RecipeList extends ListActivity {
 			mDialogView = factory.inflate(R.layout.dialog_recipename, null);
 			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_recipename_title)
+                .setTitle(R.string.recipe_name)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
@@ -352,7 +352,7 @@ public class RecipeList extends ListActivity {
 			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
 			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_delete_recipe_title)
+                .setTitle(R.string.delete_recipe)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {

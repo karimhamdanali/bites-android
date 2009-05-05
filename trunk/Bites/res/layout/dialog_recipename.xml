@@ -21,7 +21,7 @@
 
     <EditText
         android:id="@+id/recipename_edit"
-        android:hint="@string/dialog_recipename_hint"
+        android:hint="@string/recipe_name"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:layout_marginLeft="20dip"
