@@ -13,7 +13,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -244,7 +243,7 @@ public class IngredientList extends ListActivity {
             mDialogView = factory.inflate(R.layout.dialog_ingredient, null);
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.ingredient_edit);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_ingredient_title)
+                .setTitle(R.string.edit_ingredient)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
@@ -266,7 +265,7 @@ public class IngredientList extends ListActivity {
 			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
 			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_delete_ingredient_title)
+                .setTitle(R.string.delete_ingredient)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
@@ -284,7 +283,7 @@ public class IngredientList extends ListActivity {
             mDialogView = factory.inflate(R.layout.dialog_ingredient, null);
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.ingredient_edit);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_ingredient_title)
+                .setTitle(R.string.insert_ingredient)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {

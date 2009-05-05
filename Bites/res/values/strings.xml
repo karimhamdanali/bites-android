@@ -5,31 +5,27 @@
 
 
 <string name="tab_recipes">Recipes</string>
-<string name="dialog_recipename_title">Recipe Name</string>
-<string name="dialog_recipename_hint">Recipe Name</string>
-<string name="dialog_delete_recipe_title">Delete Recipe</string>
-<string name="edit_recipe">Edit Recipe</string>
-<string name="delete_recipe">Delete Recipe</string>
-<string name="dialog_received_title">Recipe Received</string>
+<string name="recipe_name">Recipe name</string>
+<string name="edit_recipe">Edit recipe</string>
+<string name="delete_recipe">Delete recipe</string>
+<string name="dialog_received_title">Recipe received</string>
 
 <string name="tab_ingredients">Ingredients</string>
-<string name="dialog_ingredient_title">Edit Ingredient</string>
+<string name="insert_ingredient">Insert ingredient</string>
 <string name="dialog_ingredient_hint">Ingredient</string>
-<string name="dialog_delete_ingredient_title">Delete Ingredient</string>
-<string name="delete_ingredient">Delete Ingredient</string>
-<string name="no_ingredients">No Ingredients</string>
-<string name="check_ingredient">Check Ingredient</string>
-<string name="edit_ingredient">Edit Ingredient</string>
-<string name="dialog_sendshoppinglist">Send Shopping List</string>
+<string name="delete_ingredient">Delete ingredient</string>
+<string name="no_ingredients">No ingredients</string>
+<string name="check_ingredient">Check ingredient</string>
+<string name="edit_ingredient">Edit ingredient</string>
+<string name="dialog_sendshoppinglist">Send shopping list</string>
 
 <string name="tab_method">Method</string>
-<string name="dialog_method_title">Edit Method</string>
-<string name="dialog_method_step_hint">Step Number</string>
+<string name="dialog_method_step_hint">Step number</string>
 <string name="dialog_method_text_hint">Method</string>
-<string name="dialog_delete_method_title">Delete Method</string>
-<string name="no_methods">No Methods</string>
-<string name="edit_method">Edit Method</string>
-<string name="delete_method">Delete Method</string>
+<string name="no_methods">No methods</string>
+<string name="edit_method">Edit method</string>
+<string name="insert_method">Insert method</string>
+<string name="delete_method">Delete method</string>
 
 <string name="dialog_ok">OK</string>
 <string name="dialog_cancel">Cancel</string>

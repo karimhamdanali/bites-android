@@ -5,6 +5,7 @@
 	android:orientation="horizontal" >
 	<TextView 
 	    android:id="@+id/ingredienttext"
+	    style="@style/ListText"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:padding="5sp"
@@ -13,6 +14,6 @@
 		android:id="@+id/ingredientcheck"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:gravity="right" 
+		android:gravity="right|center_vertical" 
 		android:focusable="false"/>
 </LinearLayout>

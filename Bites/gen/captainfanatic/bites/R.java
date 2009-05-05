@@ -21,27 +21,27 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int EditRecipeIngredient_1=0x7f07000e;
-        public static final int EditRecipeIngredients=0x7f07000d;
-        public static final int EditRecipeMethod_1=0x7f070011;
-        public static final int EditRecipeMethods=0x7f070010;
-        public static final int EditRecipeTitle=0x7f07000c;
-        public static final int btn_AddIngredient=0x7f07000f;
-        public static final int btn_AddMethodStep=0x7f070012;
-        public static final int dialog_confirm_prompt=0x7f070000;
-        public static final int ingredient_edit=0x7f070001;
-        public static final int ingredientcheck=0x7f070007;
-        public static final int ingredientheader=0x7f070008;
-        public static final int ingredienttext=0x7f070006;
-        public static final int method_edit=0x7f070003;
-        public static final int method_step=0x7f070002;
-        public static final int methodheader=0x7f07000b;
-        public static final int methodstep=0x7f070009;
-        public static final int methodtext=0x7f07000a;
-        public static final int received_recipe=0x7f070004;
-        public static final int recipeheader=0x7f070014;
-        public static final int recipename_edit=0x7f070005;
-        public static final int recipetitle=0x7f070013;
+        public static final int EditRecipeIngredient_1=0x7f08000e;
+        public static final int EditRecipeIngredients=0x7f08000d;
+        public static final int EditRecipeMethod_1=0x7f080011;
+        public static final int EditRecipeMethods=0x7f080010;
+        public static final int EditRecipeTitle=0x7f08000c;
+        public static final int btn_AddIngredient=0x7f08000f;
+        public static final int btn_AddMethodStep=0x7f080012;
+        public static final int dialog_confirm_prompt=0x7f080000;
+        public static final int ingredient_edit=0x7f080001;
+        public static final int ingredientcheck=0x7f080007;
+        public static final int ingredientheader=0x7f080008;
+        public static final int ingredienttext=0x7f080006;
+        public static final int method_edit=0x7f080003;
+        public static final int method_step=0x7f080002;
+        public static final int methodheader=0x7f08000b;
+        public static final int methodstep=0x7f080009;
+        public static final int methodtext=0x7f08000a;
+        public static final int received_recipe=0x7f080004;
+        public static final int recipeheader=0x7f080014;
+        public static final int recipename_edit=0x7f080005;
+        public static final int recipetitle=0x7f080013;
     }
     public static final class layout {
         public static final int dialog_confirm=0x7f030000;
@@ -59,35 +59,34 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f060003;
-        public static final int check_ingredient=0x7f060011;
-        public static final int delete_ingredient=0x7f06000f;
-        public static final int delete_method=0x7f06001b;
-        public static final int delete_recipe=0x7f060009;
-        public static final int dialog_cancel=0x7f06001d;
-        public static final int dialog_delete_ingredient_title=0x7f06000e;
-        public static final int dialog_delete_method_title=0x7f060018;
-        public static final int dialog_delete_recipe_title=0x7f060007;
-        public static final int dialog_ingredient_hint=0x7f06000d;
-        public static final int dialog_ingredient_title=0x7f06000c;
-        public static final int dialog_method_step_hint=0x7f060016;
-        public static final int dialog_method_text_hint=0x7f060017;
-        public static final int dialog_method_title=0x7f060015;
-        public static final int dialog_ok=0x7f06001c;
-        public static final int dialog_received_title=0x7f06000a;
-        public static final int dialog_recipename_hint=0x7f060006;
-        public static final int dialog_recipename_title=0x7f060005;
-        public static final int dialog_sendshoppinglist=0x7f060013;
-        public static final int edit_ingredient=0x7f060012;
-        public static final int edit_method=0x7f06001a;
-        public static final int edit_recipe=0x7f060008;
+        public static final int check_ingredient=0x7f06000e;
+        public static final int delete_ingredient=0x7f06000c;
+        public static final int delete_method=0x7f060017;
+        public static final int delete_recipe=0x7f060007;
+        public static final int dialog_cancel=0x7f060019;
+        public static final int dialog_ingredient_hint=0x7f06000b;
+        public static final int dialog_method_step_hint=0x7f060012;
+        public static final int dialog_method_text_hint=0x7f060013;
+        public static final int dialog_ok=0x7f060018;
+        public static final int dialog_received_title=0x7f060008;
+        public static final int dialog_sendshoppinglist=0x7f060010;
+        public static final int edit_ingredient=0x7f06000f;
+        public static final int edit_method=0x7f060015;
+        public static final int edit_recipe=0x7f060006;
         public static final int hello=0x7f060002;
-        public static final int no_ingredients=0x7f060010;
-        public static final int no_methods=0x7f060019;
-        public static final int send_recipe=0x7f06001e;
+        public static final int insert_ingredient=0x7f06000a;
+        public static final int insert_method=0x7f060016;
+        public static final int no_ingredients=0x7f06000d;
+        public static final int no_methods=0x7f060014;
+        public static final int recipe_name=0x7f060005;
+        public static final int send_recipe=0x7f06001a;
         public static final int sql_delete_orphan_ingredients=0x7f060000;
         public static final int sql_delete_orphan_methods=0x7f060001;
-        public static final int tab_ingredients=0x7f06000b;
-        public static final int tab_method=0x7f060014;
+        public static final int tab_ingredients=0x7f060009;
+        public static final int tab_method=0x7f060011;
         public static final int tab_recipes=0x7f060004;
+    }
+    public static final class style {
+        public static final int ListText=0x7f070000;
     }
 }

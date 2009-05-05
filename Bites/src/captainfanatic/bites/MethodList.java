@@ -234,7 +234,7 @@ public class MethodList extends ListActivity {
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
             mDialogStep = (EditText)mDialogView.findViewById(R.id.method_step);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_method_title)
+                .setTitle(R.string.edit_method)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
@@ -267,7 +267,7 @@ public class MethodList extends ListActivity {
 			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
 			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_delete_method_title)
+                .setTitle(R.string.delete_method)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
@@ -286,7 +286,7 @@ public class MethodList extends ListActivity {
             mDialogEdit = (EditText)mDialogView.findViewById(R.id.method_edit);
             mDialogStep = (EditText)mDialogView.findViewById(R.id.method_step);
             return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_method_title)
+                .setTitle(R.string.insert_method)
                 .setView(mDialogView)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                 	public void onClick(DialogInterface dialog, int whichButton) {
