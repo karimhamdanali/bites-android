@@ -17,8 +17,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -33,11 +35,13 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class RecipeList extends ListActivity {
+	
 	private static final String TAG = "RecipeList";
 	// Menu item ids
 	public static final int MENU_ITEM_EDIT = Menu.FIRST;
@@ -77,6 +81,44 @@ public class RecipeList extends ListActivity {
 	private TextView mDialogText;
     private TextView mHeader;
     
+    /**
+     * Custom adapter for recipe list.
+     * Allows filtering by recipe name.
+     * @author Ben
+     *
+     */
+    private class RecipeAdapter extends SimpleCursorAdapter implements Filterable
+    {
+    	private ContentResolver mContent;   
+    	
+		public RecipeAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to) {
+			super(context, layout, c, from, to);
+			mContent = context.getContentResolver();
+		}
+
+		@Override
+        public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
+            if (getFilterQueryProvider() != null) {
+                return getFilterQueryProvider().runQuery(constraint);
+            }
+
+            StringBuilder buffer = null;
+            String[] args = null;
+            if (constraint != null) {
+                buffer = new StringBuilder();
+                buffer.append("UPPER(");
+                buffer.append(Recipes.TITLE);
+                buffer.append(") GLOB ?");
+                args = new String[] { constraint.toString().toUpperCase() + "*" };
+            }
+
+            return mContent.query(Recipes.CONTENT_URI, PROJECTION,
+                    buffer == null ? null : buffer.toString(), args,
+                    null);
+        }
+    }
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -104,7 +146,7 @@ public class RecipeList extends ListActivity {
                 Recipes.DEFAULT_SORT_ORDER);
 
         // Used to map notes entries from the database to views
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.recipelist_item, mCursor,
+        RecipeAdapter adapter = new RecipeAdapter(this, R.layout.recipelist_item, mCursor,
                 new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
         setListAdapter(adapter);
         if (mCursor.moveToFirst())
