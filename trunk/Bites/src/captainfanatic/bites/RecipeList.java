@@ -406,6 +406,12 @@ public class RecipeList extends ListActivity {
                         {
                         	getListView().performItemClick(null, 0, mCursor.getLong(0));
                         }
+                        else //empty list - clear the recipe title header
+                        {
+                        	Bites.mRecipeId = 0;
+                        	Bites.mRecipeName = "";
+                        	mHeader.setText(Bites.mRecipeName);
+                        }
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
