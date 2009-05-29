@@ -11,6 +11,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.xmlpull.v1.XmlPullParser;
@@ -112,16 +113,17 @@ public class Bites extends TabActivity {
 		nm.cancel(getIntent().getIntExtra(SmsReceiver.KEY_NOTIFY_ID,0));
 		
 		ContentValues values = new ContentValues();
-		values.put(Recipes.TITLE, getIntent().getStringExtra(SmsReceiver.KEY_RECIPE));
+		mRecipeName = getIntent().getStringExtra(SmsReceiver.KEY_RECIPE);
+		values.put(Recipes.TITLE, mRecipeName);
 		Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
-		long recipeId = Long.parseLong(recipeUri.getLastPathSegment());
+		mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
 
 		//get ingredients from the intent extras and load into the content provider
 		String ingredients[] = getIntent().getStringArrayExtra(SmsReceiver.KEY_ING_ARRAY);
 			for (int i =0; i<ingredients.length; i++)
 			{
 				values = new ContentValues();
-				values.put(Ingredients.RECIPE, recipeId);
+				values.put(Ingredients.RECIPE, mRecipeId);
 				values.put(Ingredients.TEXT,ingredients[i]);
 				getContentResolver().insert(Ingredients.CONTENT_URI, values);
 			}
@@ -133,13 +135,11 @@ public class Bites extends TabActivity {
 		for (int i = 0; i<methods.length; i++)
 		{
 			values = new ContentValues();
-			values.put(Methods.RECIPE, recipeId);
+			values.put(Methods.RECIPE, mRecipeId);
 			values.put(Methods.TEXT, methods[i]);
 			values.put(Methods.STEP, (i<methodSteps.length) ? methodSteps[i] : i);
 			getContentResolver().insert(Methods.CONTENT_URI, values);
 		}
-		
-		//TODO: select (highlight?) the new recipe in the RecipeList activity
 	}
 	
 	/**
@@ -162,11 +162,35 @@ public class Bites extends TabActivity {
 			NodeList ingredients = recipe.getElementsByTagName("ingredient");
 			NodeList methods = recipe.getElementsByTagName("method");
 			
-			String recipeName=recipe.getAttribute("name");
-			//TODO: insert recipe with ingredients into database - use for each for multi recipe files? 
-			String ingredient1=ingredients.item(0).getFirstChild().getNodeValue();
 
+			//Insert new recipe title
+			ContentValues values = new ContentValues();
+			mRecipeName = recipe.getAttribute("name");
+			values.put(Recipes.TITLE, mRecipeName);
+			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
+			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
+			
+			//insert ingredients for the new recipe
+			values = new ContentValues();
+			for (int i =0; i<ingredients.getLength(); i++)
+			{
+				values.put(Ingredients.RECIPE, mRecipeId);
+				values.put(Ingredients.TEXT,ingredients.item(i).getFirstChild().getNodeValue());
+				getContentResolver().insert(Ingredients.CONTENT_URI, values);
+			}
+			
+			//insert methods for the new recipe
+			values = new ContentValues();
+			for (int i =0; i<methods.getLength(); i++)
+			{
+				values.put(Methods.RECIPE, mRecipeId);
+				values.put(Methods.STEP,((Element)methods.item(i)).getAttribute("step"));
+				values.put(Methods.TEXT,methods.item(i).getFirstChild().getNodeValue());
+				getContentResolver().insert(Methods.CONTENT_URI, values);
+			}
+			
 			//TODO: Delete the file?
+			
 		} catch (Throwable t) {
 			// TODO Auto-generated catch block
 			t.printStackTrace();
