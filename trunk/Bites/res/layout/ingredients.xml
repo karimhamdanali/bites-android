@@ -17,6 +17,7 @@
     <TextView android:id="@android:id/empty"
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
+    	style="@style/ListText"
     	android:text="@string/no_ingredients" 
     	android:background="@drawable/bites_image"
         android:cacheColorHint="#00000000" />

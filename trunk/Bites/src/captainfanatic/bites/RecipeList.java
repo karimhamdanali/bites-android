@@ -55,7 +55,6 @@ public class RecipeList extends ListActivity {
     private static final int DIALOG_EDIT = 1;
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
-    private static final int DIALOG_RECVD = 4;
     
     /**
      * Column indexes
@@ -380,8 +379,11 @@ public class RecipeList extends ListActivity {
                 	public void onClick(DialogInterface dialog, int whichButton) {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
+                    	/*Bites.mRecipeName = mDialogEdit.getText().toString();
+                    	mHeader.setText(Bites.mRecipeName);*/
                         values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                         getContentResolver().update(mUri, values, null, null);
+                        getListView().performItemClick(getListView(), 0, Long.parseLong(mUri.getLastPathSegment()));
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

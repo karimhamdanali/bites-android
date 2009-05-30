@@ -1,26 +1,17 @@
 package captainfanatic.bites;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringReader;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
 import captainfanatic.bites.RecipeBook.Ingredients;
 import captainfanatic.bites.RecipeBook.Methods;
 import captainfanatic.bites.RecipeBook.Recipes;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.TabActivity;
 import android.content.ContentValues;
@@ -29,7 +20,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TabHost;
-import android.widget.Toast;
 
 /**
  * The main activity, operates as a top level tabhost that contains list activities for
@@ -45,7 +35,9 @@ public class Bites extends TabActivity {
 	
 	static long mRecipeId;
 	static String mRecipeName;
-		
+
+	private static final int DIALOG_DELETE = 1;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -189,11 +181,20 @@ public class Bites extends TabActivity {
 				getContentResolver().insert(Methods.CONTENT_URI, values);
 			}
 			
-			//TODO: Delete the file?
+			//Delete the downloaded file?
+			showDialog(DIALOG_DELETE);
 			
 		} catch (Throwable t) {
 			// TODO Auto-generated catch block
 			t.printStackTrace();
 		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		// TODO Auto-generated method stub
+		return super.onCreateDialog(id);
 	}  
+	
+	
 }
