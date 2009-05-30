@@ -55,7 +55,7 @@ public class MethodList extends ListActivity {
      * Column indexes
      */
     private static final int COLUMN_INDEX_ID = 0;
-    private static final int COLUMN_INDEX_RECIPE = 1;
+//    private static final int COLUMN_INDEX_RECIPE = 1;
     private static final int COLUMN_INDEX_STEP = 2;
     private static final int COLUMN_INDEX_METHOD = 3;
     
