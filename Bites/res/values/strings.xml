@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Bites</string>
-    <string name="app_name">Bites</string>
 
+<string name="hello">Hello World, Bites</string>
+<string name="app_name">Bites</string>
 
 <string name="tab_recipes">Recipes</string>
 <string name="recipe_name">Recipe name</string>
 <string name="edit_recipe">Edit recipe</string>
 <string name="delete_recipe">Delete recipe</string>
 <string name="dialog_received_title">Recipe received</string>
+<string name="delete_file">Delete File?</string>
 
 <string name="tab_ingredients">Ingredients</string>
 <string name="insert_ingredient">Insert ingredient</string>
 <string name="dialog_ingredient_hint">Ingredient</string>
 <string name="delete_ingredient">Delete ingredient</string>
 <string name="no_ingredients">No ingredients</string>
-<string name="check_ingredient">Check ingredient</string>
 <string name="edit_ingredient">Edit ingredient</string>
 <string name="dialog_sendshoppinglist">Send shopping list</string>
 
@@ -31,4 +31,5 @@
 <string name="dialog_cancel">Cancel</string>
 
 <string name="send_recipe">Send Recipe</string>
+
 </resources>

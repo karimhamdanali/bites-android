@@ -11,15 +11,20 @@ import org.xmlpull.v1.XmlPullParserException;
 import captainfanatic.bites.RecipeBook.Ingredients;
 import captainfanatic.bites.RecipeBook.Methods;
 import captainfanatic.bites.RecipeBook.Recipes;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.TabActivity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 /**
  * The main activity, operates as a top level tabhost that contains list activities for
@@ -35,8 +40,11 @@ public class Bites extends TabActivity {
 	
 	static long mRecipeId;
 	static String mRecipeName;
-
+	private File mFile;
+	
 	private static final int DIALOG_DELETE = 1;
+
+	private String mPath;
 	
     /** Called when the activity is first created. */
     @Override
@@ -143,13 +151,13 @@ public class Bites extends TabActivity {
 	 */
 	private void addXmlRecipe() throws XmlPullParserException, IOException {
 		
-		String path = getIntent().getData().getPath();
-		File file = new File(path);
+		mPath = getIntent().getData().getPath();
+		mFile = new File(mPath);
 
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
 														.newDocumentBuilder();
-			Document doc = builder.parse(file);
+			Document doc = builder.parse(mFile);
 			Element recipe = doc.getDocumentElement();
 			NodeList ingredients = recipe.getElementsByTagName("ingredient");
 			NodeList methods = recipe.getElementsByTagName("method");
@@ -192,8 +200,29 @@ public class Bites extends TabActivity {
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		// TODO Auto-generated method stub
-		return super.onCreateDialog(id);
+		LayoutInflater factory = LayoutInflater.from(this);
+		switch (id)	{
+		case DIALOG_DELETE:
+			View mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			TextView mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
+			mDialogText.setText(mPath);
+			return new AlertDialog.Builder(this)
+            .setTitle(R.string.delete_file)
+            .setView(mDialogView)
+            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int whichButton) {
+                	/* User clicked OK so do some stuff */
+            		mFile.delete();
+                }
+            })
+            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    /* User clicked cancel so do some stuff */
+                }
+            })
+            .create();
+		}
+		return null;
 	}  
 	
 	

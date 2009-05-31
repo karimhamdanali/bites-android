@@ -9,6 +9,8 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,6 +63,8 @@ public class IngredientList extends ListActivity {
     private static final int DIALOG_INSERT = 3;
     private static final int DIALOG_SEND = 4;
     
+    private static final String CHECK_PREFERENCE = "checkbox preference";
+    
     private Uri mUri;
     
   //Use private members for dialog textview to prevent weird persistence problem
@@ -83,12 +87,10 @@ public class IngredientList extends ListActivity {
         }
 			
 		setContentView(R.layout.ingredients);
-		
 		mHeader = (TextView)findViewById(R.id.ingredientheader);
-		
 		getListView().setOnCreateContextMenuListener(this);		
-		
-		mSendChecked = false;
+		SharedPreferences prefs = getPreferences(0); 
+		mSendChecked = prefs.getBoolean(CHECK_PREFERENCE, false);
 	}
 		
 	@Override
@@ -306,15 +308,22 @@ public class IngredientList extends ListActivity {
 		case DIALOG_SEND:
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_sendshoppinglist)
-                .setSingleChoiceItems(R.array.send_checked_unchecked, 0, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(R.array.send_checked_unchecked, mSendChecked ? 1 : 0, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which)
 						{
 						case 0:
 							mSendChecked = false;
+							break;
 						case 1:
 							mSendChecked = true;
+							break;
 						}
+						//Remember the checked selection for nex time
+						SharedPreferences prefs = getPreferences(0);
+						Editor editor = prefs.edit();
+						editor.putBoolean(CHECK_PREFERENCE, mSendChecked);
+						editor.commit();
 					}
                 })
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {

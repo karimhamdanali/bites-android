@@ -128,13 +128,10 @@ public class RecipeList extends ListActivity {
             intent.setData(Recipes.CONTENT_URI);
         }
         
-        setContentView(R.layout.recipes);
-        
+        setContentView(R.layout.recipes);      
         mHeader = (TextView)findViewById(R.id.recipeheader);
-	        
         getListView().setOnCreateContextMenuListener(this);
 	}
-	
 	
 	
 	@Override
