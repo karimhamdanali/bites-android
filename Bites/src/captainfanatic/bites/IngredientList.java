@@ -38,6 +38,7 @@ public class IngredientList extends ListActivity {
     public static final int MENU_ITEM_INSERT = Menu.FIRST + 2;
     public static final int MENU_ITEM_CHECK = Menu.FIRST + 3;
     public static final int MENU_ITEM_SEND = Menu.FIRST + 4;
+    public static final int MENU_ITEM_SHOP_LIST = Menu.FIRST + 5;
 	
 	/**
      * The columns we are interested in from the database
@@ -194,6 +195,8 @@ public class IngredientList extends ListActivity {
                 new ComponentName(this, IngredientList.class), null, intent, 0, null);
        
         //TODO: add "Add to shopping list" if shopping list activity is installed
+        menu.add(0, MENU_ITEM_SHOP_LIST, 0, "shopping list")
+        .setIcon(android.R.drawable.ic_menu_agenda);
         menu.add(0, MENU_ITEM_SEND, 0, "send")
         .setIcon(android.R.drawable.ic_menu_send);
         menu.add(0, MENU_ITEM_DELETE, 0, "delete")
@@ -220,7 +223,11 @@ public class IngredientList extends ListActivity {
 			showDialog(DIALOG_DELETE);
 			mDialogText.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
 			break;
-			//TODO: add to shopping list - ticked/unticked dialog
+	    case MENU_ITEM_SHOP_LIST:
+			//TODO: add uri/data when there is a shopping list activity to use
+/*	    	Intent shopIntent = new Intent(Intent.ACTION_INSERT);
+	    	startActivity(shopIntent);
+*/	    	break;
 	    case MENU_ITEM_SEND:
 	    	showDialog(DIALOG_SEND);
 	    	//Set default selection to send unchecked ingredients
