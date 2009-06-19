@@ -1,5 +1,7 @@
 package captainfanatic.bites;
 
+import java.util.List;
+
 import captainfanatic.bites.RecipeBook.Ingredients;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,10 +9,12 @@ import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -189,14 +193,12 @@ public class IngredientList extends ListActivity {
         // overall list.  In a normal install, there are no additional
         // actions found here, but this allows other applications to extend
         // our menu with their own actions.
-        Intent intent = new Intent(null, getIntent().getData());
+        //Intent intent = new Intent(null, getIntent().getData());
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.dir/vnd.captainfanatic.trolly");
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, IngredientList.class), null, intent, 0, null);
-       
-        //TODO: add "Add to shopping list" if shopping list activity is installed
-        menu.add(0, MENU_ITEM_SHOP_LIST, 0, "shopping list")
-        .setIcon(android.R.drawable.ic_menu_agenda);
         menu.add(0, MENU_ITEM_SEND, 0, "send")
         .setIcon(android.R.drawable.ic_menu_send);
         menu.add(0, MENU_ITEM_DELETE, 0, "delete")
@@ -375,4 +377,17 @@ public class IngredientList extends ListActivity {
 		msg = msg + "***";
 		return msg;
 	}
+	
+	public static boolean isShopListAvail(Context context)
+	{
+		final PackageManager packageManager = context.getPackageManager();
+		final Intent intent = new Intent();
+		intent.setData(Uri.parse("content://captainfanatic.provider.Trolly/shoppinglist"));
+		return packageManager
+				.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+				.size() > 0;
+	}
+
 }
+
+	
