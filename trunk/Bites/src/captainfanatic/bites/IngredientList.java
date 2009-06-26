@@ -1,6 +1,6 @@
 package captainfanatic.bites;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import captainfanatic.bites.RecipeBook.Ingredients;
 import android.app.AlertDialog;
@@ -9,12 +9,10 @@ import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -101,7 +99,6 @@ public class IngredientList extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
 		/**Refresh the cursor using the selected recipe whenever the activity is resumed.
 		 * A new recipe can only be selected from the recipelist activity and 
 		 * this activity has to be resumed to display again so this should work fine. 
@@ -117,7 +114,6 @@ public class IngredientList extends ListActivity {
 			
 		//Set the header text to the current recipe name
 		mHeader.setText(Bites.mRecipeName);
-		
 	}
 
 	@Override
@@ -140,7 +136,6 @@ public class IngredientList extends ListActivity {
         // Add a menu item to delete the note
         menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_ingredient);
         menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_ingredient);
-        
 	}	
 
 	@Override
@@ -197,6 +192,7 @@ public class IngredientList extends ListActivity {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setType("vnd.android.cursor.dir/vnd.captainfanatic.trolly");
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        intent.putStringArrayListExtra("items", getListExtra());
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, IngredientList.class), null, intent, 0, null);
         menu.add(0, MENU_ITEM_SEND, 0, "send")
@@ -209,7 +205,8 @@ public class IngredientList extends ListActivity {
 	
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+		//Shopping list item is not in this switch as it is an intent menu item and does not need to be handled here
+		switch (item.getItemId()) {
         case MENU_ITEM_INSERT:
             // Insert a new item
         	showDialog(DIALOG_INSERT);
@@ -225,11 +222,6 @@ public class IngredientList extends ListActivity {
 			showDialog(DIALOG_DELETE);
 			mDialogText.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
 			break;
-	    case MENU_ITEM_SHOP_LIST:
-			//TODO: add uri/data when there is a shopping list activity to use
-/*	    	Intent shopIntent = new Intent(Intent.ACTION_INSERT);
-	    	startActivity(shopIntent);
-*/	    	break;
 	    case MENU_ITEM_SEND:
 	    	showDialog(DIALOG_SEND);
 	    	//Set default selection to send unchecked ingredients
@@ -342,7 +334,7 @@ public class IngredientList extends ListActivity {
                     	 * The body of the message is all the ticked/unticked ingredients.
                     	 */
                 		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                		sendIntent.putExtra("sms_body", CreateShoppingList());
+                		sendIntent.putExtra("sms_body", createShoppingList());
                     	sendIntent.setType("vnd.android-dir/mms-sms");
                     	startActivity(sendIntent);
                 	}
@@ -360,8 +352,10 @@ public class IngredientList extends ListActivity {
 	/**
 	 * Send Shopping List via sms.
 	 * 
+	 * <P>Create a shopping list text string for sending via sms, 
+	 * and load an intent with data for a shopping list activity. </P>
 	 */
-	private String CreateShoppingList()
+	private String createShoppingList()
 	{
 		String msg = "***Shopping List***\n";
 		ListView lv = getListView();
@@ -378,16 +372,25 @@ public class IngredientList extends ListActivity {
 		return msg;
 	}
 	
-	public static boolean isShopListAvail(Context context)
-	{
-		final PackageManager packageManager = context.getPackageManager();
-		final Intent intent = new Intent();
-		intent.setData(Uri.parse("content://captainfanatic.provider.Trolly/shoppinglist"));
-		return packageManager
-				.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-				.size() > 0;
+	/**
+	 * Get a string list of ingredients to use for an intent to add items to a shopping list activity.
+	 * @return
+	 */
+	private ArrayList<String> getListExtra() {
+		ArrayList<String> list = new ArrayList<String>();
+		ListView lv = getListView();
+		int lvCount = lv.getChildCount();
+		for (int i=0; i<lvCount; i++)
+		{
+			CheckBox cb = (CheckBox)lv.getChildAt(i).findViewById(R.id.ingredientcheck);
+			if (cb.isChecked() == mSendChecked)
+			{
+				 list.add((String) ((TextView)lv.getChildAt(i).findViewById(R.id.ingredienttext)).getText());
+			}
+		}
+		return list;
 	}
-
+	
 }
 
 	
