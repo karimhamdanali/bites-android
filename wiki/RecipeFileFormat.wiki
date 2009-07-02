@@ -1,0 +1,23 @@
+#summary File format for Bites recipe files.
+
+= Recipe Files =
+
+Bites recipes can be shared via an xml file saved with a .txt extension.
+Just create your file from the following template and post it on the web, then anyone with Bites on their phone can download and use your recipe.
+
+----
+== Recipe File Template ==
+
+{{{
+<?xml version="1.0"?>
+
+<recipe name="Your Recipe Name">
+	<ingredient>Your first ingredient</ingredient>
+	<ingredient>Your second ingredient</ingredient>
+	<method step="1">Your first method step</method>
+	<method step="2">Your second method step</method>
+</recipe>
+}}}
+----
+
+Simply replace the relevant fields and copy and paste as many ingredient and method rows as you need for your recipe. *Don't forget to save the file with a .txt extension* - this is the only file type that Bites can read so far.
