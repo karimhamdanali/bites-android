@@ -1,4 +1,4 @@
-package captainfanatic.bites;
+package caldwell.ben.bites;
 
 /*
  * Send Text message using built in sms message app
@@ -10,9 +10,9 @@ package captainfanatic.bites;
  *  
  *  from http://mobiforge.com/developing/story/sms-messaging-android
 */
-import captainfanatic.bites.RecipeBook.Ingredients;
-import captainfanatic.bites.RecipeBook.Methods;
-import captainfanatic.bites.RecipeBook.Recipes;
+import caldwell.ben.bites.RecipeBook.Ingredients;
+import caldwell.ben.bites.RecipeBook.Methods;
+import caldwell.ben.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -124,7 +124,6 @@ public class RecipeList extends ListActivity {
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
 		Intent intent = getIntent();
