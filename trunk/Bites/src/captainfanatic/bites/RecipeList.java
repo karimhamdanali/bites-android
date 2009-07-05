@@ -23,9 +23,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -48,6 +51,7 @@ public class RecipeList extends ListActivity {
 	public static final int MENU_ITEM_DELETE = Menu.FIRST + 1;
     public static final int MENU_ITEM_INSERT = Menu.FIRST + 2;
     public static final int MENU_ITEM_SEND = Menu.FIRST + 3;
+    public static final int MENU_ITEM_PREFERENCES = Menu.FIRST + 4;
     
     /**
      * Case selections for the type of dialog box displayed
@@ -71,7 +75,7 @@ public class RecipeList extends ListActivity {
     };
     	
     private Cursor mCursor;
-    
+    private SharedPreferences mPrefs;
     private Uri mUri;
     
     //Use private members for dialog textview to prevent weird persistence problem
@@ -128,18 +132,27 @@ public class RecipeList extends ListActivity {
             intent.setData(Recipes.CONTENT_URI);
         }
         
-        setContentView(R.layout.recipes);      
+        setContentView(R.layout.recipes);
         mHeader = (TextView)findViewById(R.id.recipeheader);
         getListView().setOnCreateContextMenuListener(this);
+        
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 	
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-			
-		mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
-                Recipes.DEFAULT_SORT_ORDER);
+		
+		String sortOrder = mPrefs.getString(getString(R.string.key_recipe_sort), Recipes.DEFAULT_SORT_ORDER);
+		try {
+			mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
+	                sortOrder);
+		} catch (SQLiteException e) {
+			//Try a safer query
+			mCursor = managedQuery(Recipes.CONTENT_URI, PROJECTION, null, null,
+	                Recipes.DEFAULT_SORT_ORDER);
+		}
 
         // Used to map notes entries from the database to views
         RecipeAdapter adapter = new RecipeAdapter(this, R.layout.recipelist_item, mCursor,
@@ -184,6 +197,8 @@ public class RecipeList extends ListActivity {
        
         menu.add(0, MENU_ITEM_DELETE, 0, "delete")
         .setIcon(android.R.drawable.ic_menu_delete);
+        menu.add (0, MENU_ITEM_PREFERENCES, 0, R.string.preferences)
+        .setIcon(android.R.drawable.ic_menu_preferences);
         
         return true;
 	}
@@ -211,6 +226,9 @@ public class RecipeList extends ListActivity {
 	    	// Send a recipe
 	    	SendRecipe();
 	    	break;
+	    case MENU_ITEM_PREFERENCES:
+        	startActivity(new Intent(this,BitesPreferences.class));
+        	return true;
 	    }
         return super.onOptionsItemSelected(item);
     }

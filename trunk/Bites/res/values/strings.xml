@@ -10,6 +10,7 @@
 <string name="delete_recipe">Delete recipe</string>
 <string name="dialog_received_title">Recipe received</string>
 <string name="delete_file">Delete File?</string>
+<string name="key_recipe_sort">Recipe sort order</string>
 
 <string name="tab_ingredients">Ingredients</string>
 <string name="insert_ingredient">Insert ingredient</string>
@@ -18,6 +19,7 @@
 <string name="no_ingredients">No ingredients</string>
 <string name="edit_ingredient">Edit ingredient</string>
 <string name="dialog_sendshoppinglist">Send shopping list</string>
+<string name="ingredient_prefs">Ingredient Preferences</string>
 
 <string name="tab_method">Method</string>
 <string name="dialog_method_step_hint">Step number</string>
@@ -31,5 +33,6 @@
 <string name="dialog_cancel">Cancel</string>
 
 <string name="send_recipe">Send Recipe</string>
+<string name="preferences">Preferences</string>
 
 </resources>

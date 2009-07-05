@@ -11,8 +11,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -64,10 +62,7 @@ public class IngredientList extends ListActivity {
     private static final int DIALOG_EDIT = 1;
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
-    private static final int DIALOG_SEND = 4;
-    
-    private static final String CHECK_PREFERENCE = "checkbox preference";
-    
+       
     private Uri mUri;
     
   //Use private members for dialog textview to prevent weird persistence problem
@@ -77,8 +72,6 @@ public class IngredientList extends ListActivity {
 	private TextView mHeader;
 
 	private Cursor mCursor;	
-	
-	private Boolean mSendChecked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +85,6 @@ public class IngredientList extends ListActivity {
 		setContentView(R.layout.ingredients);
 		mHeader = (TextView)findViewById(R.id.ingredientheader);
 		getListView().setOnCreateContextMenuListener(this);		
-		SharedPreferences prefs = getPreferences(0); 
-		mSendChecked = prefs.getBoolean(CHECK_PREFERENCE, false);
 	}
 		
 	@Override
@@ -223,9 +214,14 @@ public class IngredientList extends ListActivity {
 			mDialogText.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
 			break;
 	    case MENU_ITEM_SEND:
-	    	showDialog(DIALOG_SEND);
-	    	//Set default selection to send unchecked ingredients
-	    	mSendChecked = false;
+	    	/* 
+        	 * Create an intent to send a text message (sms). 
+        	 * The body of the message is all the ticked/unticked ingredients.
+        	 */
+    		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+    		sendIntent.putExtra("sms_body", createShoppingList());
+        	sendIntent.setType("vnd.android-dir/mms-sms");
+        	startActivity(sendIntent);
 	    	break;
 	    }
         return super.onOptionsItemSelected(item);
@@ -306,45 +302,6 @@ public class IngredientList extends ListActivity {
                     }
                 })
                 .create();
-		case DIALOG_SEND:
-            return new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_sendshoppinglist)
-                .setSingleChoiceItems(R.array.send_checked_unchecked, mSendChecked ? 1 : 0, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which)
-						{
-						case 0:
-							mSendChecked = false;
-							break;
-						case 1:
-							mSendChecked = true;
-							break;
-						}
-						//Remember the checked selection for nex time
-						SharedPreferences prefs = getPreferences(0);
-						Editor editor = prefs.edit();
-						editor.putBoolean(CHECK_PREFERENCE, mSendChecked);
-						editor.commit();
-					}
-                })
-                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                	public void onClick(DialogInterface dialog, int whichButton) {
-                    	/* 
-                    	 * Create an intent to send a text message (sms). 
-                    	 * The body of the message is all the ticked/unticked ingredients.
-                    	 */
-                		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                		sendIntent.putExtra("sms_body", createShoppingList());
-                    	sendIntent.setType("vnd.android-dir/mms-sms");
-                    	startActivity(sendIntent);
-                	}
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        /* User clicked cancel so do some stuff */
-                    }
-                })
-                .create();
 		}
 		return null;
 	}
@@ -363,7 +320,8 @@ public class IngredientList extends ListActivity {
 		for (int i=0; i<lvCount; i++)
 		{
 			CheckBox cb = (CheckBox)lv.getChildAt(i).findViewById(R.id.ingredientcheck);
-			if (cb.isChecked() == mSendChecked)
+			//Send the checked items (ones we don't have) via sms
+			if (cb.isChecked())
 			{
 				msg = msg + ((TextView)lv.getChildAt(i).findViewById(R.id.ingredienttext)).getText() + "\n";
 			}
@@ -383,7 +341,8 @@ public class IngredientList extends ListActivity {
 		for (int i=0; i<lvCount; i++)
 		{
 			CheckBox cb = (CheckBox)lv.getChildAt(i).findViewById(R.id.ingredientcheck);
-			if (cb.isChecked() == mSendChecked)
+			//Send checked ingredients (the ones we don't have)
+			if (cb.isChecked())
 			{
 				 list.add((String) ((TextView)lv.getChildAt(i).findViewById(R.id.ingredienttext)).getText());
 			}

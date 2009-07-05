@@ -83,7 +83,6 @@ public class MethodList extends ListActivity {
 		mHeader = (TextView)findViewById(R.id.methodheader);
 		
 		getListView().setOnCreateContextMenuListener(this);
-		
 	}
 	
 	
@@ -188,8 +187,7 @@ public class MethodList extends ListActivity {
         Intent intent = new Intent(null, getIntent().getData());
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-                new ComponentName(this, MethodList.class), null, intent, 0, null);
-       
+                new ComponentName(this, MethodList.class), null, intent, 0, null);     
         menu.add(0, MENU_ITEM_DELETE, 0, "delete")
         .setIcon(android.R.drawable.ic_menu_delete);
         
