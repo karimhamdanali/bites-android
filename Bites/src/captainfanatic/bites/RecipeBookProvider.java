@@ -391,36 +391,63 @@ public class RecipeBookProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
+    public int update(Uri uri, ContentValues initialValues, String where, String[] whereArgs) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
+        
+        ContentValues values;
+        if (initialValues != null) {
+            values = new ContentValues(initialValues);
+        } else {
+            values = new ContentValues();
+        }
+        Long now = Long.valueOf(System.currentTimeMillis());
+                
         switch (sUriMatcher.match(uri)) {
         case RECIPES:
-            count = db.update(RECIPE_TABLE_NAME, values, where, whereArgs);
+        	if (values.containsKey(RecipeBook.Recipes.MODIFIED_DATE) == false) {
+                values.put(RecipeBook.Recipes.MODIFIED_DATE, now);
+            }
+        	count = db.update(RECIPE_TABLE_NAME, values, where, whereArgs);
             break;
 
         case RECIPE_ID:
             String noteId = uri.getPathSegments().get(1);
+            if (values.containsKey(RecipeBook.Recipes.MODIFIED_DATE) == false) {
+                values.put(RecipeBook.Recipes.MODIFIED_DATE, now);
+            }
             count = db.update(RECIPE_TABLE_NAME, values, Recipes._ID + "=" + noteId
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
         case INGREDIENTS:
-            count = db.update(INGREDIENT_TABLE_NAME, values, where, whereArgs);
+        	if (values.containsKey(RecipeBook.Ingredients.MODIFIED_DATE) == false) {
+                values.put(RecipeBook.Ingredients.MODIFIED_DATE, now);
+            }
+        	count = db.update(INGREDIENT_TABLE_NAME, values, where, whereArgs);
             break;
 
         case INGREDIENT_ID:
             String ingredientId = uri.getPathSegments().get(1);
+            if (values.containsKey(RecipeBook.Ingredients.MODIFIED_DATE) == false) {
+                values.put(RecipeBook.Ingredients.MODIFIED_DATE, now);
+            }
             count = db.update(INGREDIENT_TABLE_NAME, values, Ingredients._ID + "=" + ingredientId
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
 
         case METHODS:
-            count = db.update(METHOD_TABLE_NAME, values, where, whereArgs);
+        	if (values.containsKey(RecipeBook.Methods.MODIFIED_DATE) == false) {
+                values.put(RecipeBook.Methods.MODIFIED_DATE, now);
+            }
+        	count = db.update(METHOD_TABLE_NAME, values, where, whereArgs);
             break;
 
         case METHOD_ID:
             String methodId = uri.getPathSegments().get(1);
+            if (values.containsKey(RecipeBook.Methods.MODIFIED_DATE) == false) {
+                values.put(RecipeBook.Methods.MODIFIED_DATE, now);
+            }
             count = db.update(METHOD_TABLE_NAME, values, Methods._ID + "=" + methodId
                     + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
             break;
