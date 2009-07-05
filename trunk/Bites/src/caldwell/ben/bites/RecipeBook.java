@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package captainfanatic.bites;
+package caldwell.ben.bites;
 
 import android.net.Uri;
 import android.provider.BaseColumns;

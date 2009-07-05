@@ -1,4 +1,4 @@
-package captainfanatic.bites;
+package caldwell.ben.bites;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,9 +8,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.xmlpull.v1.XmlPullParserException;
-import captainfanatic.bites.RecipeBook.Ingredients;
-import captainfanatic.bites.RecipeBook.Methods;
-import captainfanatic.bites.RecipeBook.Recipes;
+
+import caldwell.ben.bites.RecipeBook.Ingredients;
+import caldwell.ben.bites.RecipeBook.Methods;
+import caldwell.ben.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -94,10 +95,8 @@ public class Bites extends TabActivity {
 	        	try {
 					addXmlRecipe();
 				} catch (XmlPullParserException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	        }
@@ -193,7 +192,6 @@ public class Bites extends TabActivity {
 			showDialog(DIALOG_DELETE);
 			
 		} catch (Throwable t) {
-			// TODO Auto-generated catch block
 			t.printStackTrace();
 		}
 	}

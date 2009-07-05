@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package captainfanatic.bites;
+package caldwell.ben.bites;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -30,12 +30,10 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-
 import java.util.HashMap;
-
-import captainfanatic.bites.RecipeBook.Ingredients;
-import captainfanatic.bites.RecipeBook.Methods;
-import captainfanatic.bites.RecipeBook.Recipes;
+import caldwell.ben.bites.RecipeBook.Ingredients;
+import caldwell.ben.bites.RecipeBook.Methods;
+import caldwell.ben.bites.RecipeBook.Recipes;
 
 /**
  * Provides access to a database of notes. Each note has a title, the note

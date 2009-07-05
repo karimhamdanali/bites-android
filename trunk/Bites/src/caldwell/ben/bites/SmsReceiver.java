@@ -1,4 +1,4 @@
-package captainfanatic.bites;
+package caldwell.ben.bites;
 
 import android.app.Notification;
 import android.app.NotificationManager;
