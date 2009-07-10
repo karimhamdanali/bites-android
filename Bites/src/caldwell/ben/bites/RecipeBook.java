@@ -121,6 +121,8 @@ public final class RecipeBook {
          * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
          */
         public static final String MODIFIED_DATE = "modified";
+        
+
     }
     
     public static final class Methods implements BaseColumns {

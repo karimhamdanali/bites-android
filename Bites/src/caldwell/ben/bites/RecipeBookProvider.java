@@ -57,7 +57,7 @@ public class RecipeBookProvider extends ContentProvider {
     private static final int INGREDIENT_ID = 4;
     private static final int METHODS = 5;
     private static final int METHOD_ID = 6;
-
+    
     private static final UriMatcher sUriMatcher;
 
     /**
