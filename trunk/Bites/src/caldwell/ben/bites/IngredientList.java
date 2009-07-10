@@ -169,10 +169,10 @@ public class IngredientList extends ListActivity {
 		super.onCreateOptionsMenu(menu);
 		
 		// Insert a new recipe into the list
-        menu.add(0, MENU_ITEM_INSERT, 0, "insert")
+        menu.add(0, MENU_ITEM_INSERT, 1, "insert")
                 .setShortcut('3', 'a')
                 .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(0, MENU_ITEM_EDIT, 0, "edit")
+        menu.add(0, MENU_ITEM_EDIT, 2, "edit")
         .setIcon(android.R.drawable.ic_menu_edit);
         
      // Generate any additional actions that can be performed on the
@@ -186,14 +186,25 @@ public class IngredientList extends ListActivity {
         intent.putStringArrayListExtra("items", getListExtra());
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, IngredientList.class), null, intent, 0, null);
-        menu.add(0, MENU_ITEM_SEND, 0, "send")
+        menu.add(0, MENU_ITEM_SEND, 3, "send")
         .setIcon(android.R.drawable.ic_menu_send);
-        menu.add(0, MENU_ITEM_DELETE, 0, "delete")
+        menu.add(0, MENU_ITEM_DELETE, 5, "delete")
         .setIcon(android.R.drawable.ic_menu_delete);
         
         return true;
 	}
 	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.dir/vnd.caldwell.ben.trolly");
+        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        intent.putStringArrayListExtra("items", getListExtra());
+        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 4,
+                new ComponentName(this, IngredientList.class), null, intent, 0, null);
+		return true;
+	}
+
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
 		//Shopping list item is not in this switch as it is an intent menu item and does not need to be handled here
