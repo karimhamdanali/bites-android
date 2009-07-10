@@ -45,7 +45,7 @@ public class SmsReceiver extends BroadcastReceiver {
 		
 		if (message.contains("***Bites Recipe***")) {
 	
-			Intent broadcast = new Intent("com.captainfanatic.bites.RECEIVED_RECIPE");
+			Intent broadcast = new Intent("caldwell.ben.bites.RECEIVED_RECIPE");
 			broadcast.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			
 			/**

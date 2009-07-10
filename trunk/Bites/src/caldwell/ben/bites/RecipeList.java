@@ -60,12 +60,6 @@ public class RecipeList extends ListActivity {
     private static final int DIALOG_DELETE = 2;
     private static final int DIALOG_INSERT = 3;
     
-    /**
-     * Column indexes
-     */
-    private static final int COLUMN_INDEX_ID = 0;
-    private static final int COLUMN_INDEX_TITLE = 1;
-
 	/**
      * The columns we are interested in from the database
      */
@@ -157,15 +151,13 @@ public class RecipeList extends ListActivity {
         RecipeAdapter adapter = new RecipeAdapter(this, R.layout.recipelist_item, mCursor,
                 new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
         setListAdapter(adapter);
-        if (mCursor.moveToFirst())
-        {
-	        Bites.mRecipeId = mCursor.getLong(COLUMN_INDEX_ID);
-	        Bites.mRecipeName = mCursor.getString(COLUMN_INDEX_TITLE);
-        }
-        else
-        {
+       	mCursor.moveToFirst();
+       	if (!mCursor.isBeforeFirst()) {
+        	Bites.mRecipeId = mCursor.getLong(mCursor.getColumnIndex(Recipes._ID));
+	        Bites.mRecipeName = mCursor.getString(mCursor.getColumnIndex(Recipes.TITLE));
+        } else {
         	Bites.mRecipeId = 0;
-        	Bites.mRecipeName = "";
+        	Bites.mRecipeName = "";             	
         }
         mHeader.setText(Bites.mRecipeName);
 	}
@@ -248,7 +240,7 @@ public class RecipeList extends ListActivity {
             return;
         }
         // Setup the menu header
-        menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_TITLE));
+        menu.setHeaderTitle(cursor.getString(cursor.getColumnIndex(Recipes.TITLE)));
         // Add a menu item to delete the note
         menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_recipe);
         menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_recipe);
@@ -273,21 +265,21 @@ public class RecipeList extends ListActivity {
             return false;
         }
         
-        mUri = ContentUris.withAppendedId(getIntent().getData(), cursor.getLong(COLUMN_INDEX_ID));
-        Bites.mRecipeId = mCursor.getLong(COLUMN_INDEX_ID);
-        Bites.mRecipeName = mCursor.getString(COLUMN_INDEX_TITLE);
+        Bites.mRecipeId = mCursor.getLong(cursor.getColumnIndex(Recipes._ID));
+        Bites.mRecipeName = mCursor.getString(cursor.getColumnIndex(Recipes.TITLE));
+        mUri = ContentUris.withAppendedId(getIntent().getData(), Bites.mRecipeId);
 
         switch (item.getItemId()) {
 	        case MENU_ITEM_EDIT: {
                 // Edit the ingredient that the context menu is for
 	        	showDialog(DIALOG_EDIT);
-				mDialogEdit.setText(cursor.getString(COLUMN_INDEX_TITLE));
+				mDialogEdit.setText(cursor.getString(cursor.getColumnIndex(Recipes.TITLE)));
                 return true;	        	
 	        }    
 	        case MENU_ITEM_DELETE: {
                 // Delete the note that the context menu is for
 	        	showDialog(DIALOG_DELETE);
-				mDialogText.setText(cursor.getString(COLUMN_INDEX_TITLE));
+				mDialogText.setText(cursor.getString(cursor.getColumnIndex(Recipes.TITLE)));
                 return true;
             }
 	        
@@ -352,7 +344,7 @@ public class RecipeList extends ListActivity {
 		//Get a temp cursor to the uri of the clicked item
 		Cursor c = getContentResolver().query(mUri, PROJECTION, null, null, null);
 		c.moveToLast();
-		Bites.mRecipeName = c.getString(COLUMN_INDEX_TITLE);
+		Bites.mRecipeName = c.getString(c.getColumnIndex(Recipes.TITLE));
 		//Update the header text with the current recipe name
 		mHeader.setText(Bites.mRecipeName);
 	}
