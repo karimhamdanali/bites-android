@@ -23,7 +23,7 @@ import android.provider.BaseColumns;
  * Convenience definitions for RecipeBookProvider
  */
 public final class RecipeBook {
-    public static final String AUTHORITY = "captainfanatic.provider.RecipeBook";
+    public static final String AUTHORITY = "caldwell.ben.provider.RecipeBook";
 
     // This class cannot be instantiated
     private RecipeBook() {}
@@ -43,12 +43,12 @@ public final class RecipeBook {
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of recipes.
          */
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.captainfanatic.recipe";
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.caldwell.ben.recipe";
 
         /**
          * The MIME type of a {@link #CONTENT_URI} sub-directory of a single recipe.
          */
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.captainfanatic.recipe";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.caldwell.ben.recipe";
 
         /**
          * The default sort order for this table
@@ -86,12 +86,12 @@ public final class RecipeBook {
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of ingredients.
          */
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.captainfanatic.ingredient";
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.caldwell.ben.ingredient";
 
         /**
          * The MIME type of a {@link #CONTENT_URI} sub-directory of a single ingredient.
          */
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.captainfanatic.ingredient";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.caldwell.ben.ingredient";
 
         /**
          * The default sort order for this table
@@ -135,12 +135,12 @@ public final class RecipeBook {
         /**
          * The MIME type of {@link #CONTENT_URI} providing a directory of methods.
          */
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.captainfanatic.methods";
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.caldwell.ben.methods";
 
         /**
          * The MIME type of a {@link #CONTENT_URI} sub-directory of a single method.
          */
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.captainfanatic.method";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.caldwell.ben.method";
 
         /**
          * The default sort order for this table

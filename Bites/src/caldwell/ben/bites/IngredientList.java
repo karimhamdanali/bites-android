@@ -181,7 +181,7 @@ public class IngredientList extends ListActivity {
         // our menu with their own actions.
         //Intent intent = new Intent(null, getIntent().getData());
         Intent intent = new Intent(Intent.ACTION_INSERT);
-        intent.setType("vnd.android.cursor.dir/vnd.captainfanatic.trolly");
+        intent.setType("vnd.android.cursor.dir/vnd.caldwell.ben.trolly");
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         intent.putStringArrayListExtra("items", getListExtra());
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
