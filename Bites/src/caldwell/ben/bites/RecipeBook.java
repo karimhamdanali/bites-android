@@ -111,6 +111,12 @@ public final class RecipeBook {
         public static final String TEXT = "text";
         
         /**
+         * The checked status of the ingredient
+         * <P>Type: INTEGER</P>
+         */
+        public static final String STATUS = "status";
+        
+        /**
          * The timestamp for when the recipe was created
          * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
          */
@@ -122,7 +128,9 @@ public final class RecipeBook {
          */
         public static final String MODIFIED_DATE = "modified";
         
-
+        public static final int STATUS_CHECKED = 0;
+        public static final int STATUS_UNCHECKED = 1;
+        
     }
     
     public static final class Methods implements BaseColumns {
