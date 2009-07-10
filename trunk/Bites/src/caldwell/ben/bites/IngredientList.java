@@ -3,12 +3,15 @@ package caldwell.ben.bites;
 import java.util.ArrayList;
 
 import caldwell.ben.bites.RecipeBook.Ingredients;
+import caldwell.ben.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,9 +24,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -47,6 +52,7 @@ public class IngredientList extends ListActivity {
             Ingredients._ID, // 0
             Ingredients.RECIPE, // 1
             Ingredients.TEXT, // 2
+            Ingredients.STATUS, // 3
     };
     
     /**
@@ -71,8 +77,65 @@ public class IngredientList extends ListActivity {
 	private TextView mDialogText;
 	private TextView mHeader;
 
-	private Cursor mCursor;	
+	private Cursor mCursor;
+	private long mLastRecipe;
 
+	/**
+	 * IngredientAdapter is a custom cursor adapter for ingredient lists.
+	 * 
+	 * @author Ben
+	 *
+	 */
+	private class IngredientAdapter extends SimpleCursorAdapter implements Filterable
+    {
+    	private ContentResolver mContent;   
+    	
+		public IngredientAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to) {
+			super(context, layout, c, from, to);
+			mContent = context.getContentResolver();
+			
+		}
+
+		@Override
+        public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
+            if (getFilterQueryProvider() != null) {
+                return getFilterQueryProvider().runQuery(constraint);
+            }
+
+            StringBuilder buffer = null;
+            String[] args = null;
+            if (constraint != null) {
+                buffer = new StringBuilder();
+                buffer.append("UPPER(");
+                buffer.append(Recipes.TITLE);
+                buffer.append(") GLOB ?");
+                args = new String[] { constraint.toString().toUpperCase() + "*" };
+            }
+
+            return mContent.query(Ingredients.CONTENT_URI, PROJECTION,
+                    buffer == null ? null : buffer.toString(), args,
+                    null);
+        }
+
+		@Override
+		public void bindView(View view, Context context, Cursor cursor) {
+			TextView item = (TextView)view.findViewById(R.id.ingredienttext);
+			CheckBox cb = (CheckBox)view.findViewById(R.id.ingredientcheck);
+			item.setText(cursor.getString(cursor.getColumnIndex(Ingredients.TEXT)));
+			switch(cursor.getInt(cursor.getColumnIndex(Ingredients.STATUS))){
+			case Ingredients.STATUS_CHECKED:
+				cb.setChecked(true);
+				break;
+			case Ingredients.STATUS_UNCHECKED:
+				cb.setChecked(false);
+				break;
+			}
+		}
+		
+		
+    }
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,6 +148,7 @@ public class IngredientList extends ListActivity {
 		setContentView(R.layout.ingredients);
 		mHeader = (TextView)findViewById(R.id.ingredientheader);
 		getListView().setOnCreateContextMenuListener(this);		
+		mLastRecipe = 0;
 	}
 		
 	@Override
@@ -97,10 +161,24 @@ public class IngredientList extends ListActivity {
 		mCursor = managedQuery(Ingredients.CONTENT_URI, PROJECTION,
 				Ingredients.RECIPE + "=" + Bites.mRecipeId, 
 				null, Ingredients.DEFAULT_SORT_ORDER);
+		
+		//If this is a different recipe to last time set all ingredients to unchecked
+		if (mLastRecipe != Bites.mRecipeId) {
+			ContentValues values = new ContentValues();
+			values.put(Ingredients.STATUS, Ingredients.STATUS_UNCHECKED);
+			getContentResolver().update(getIntent().getData(), 
+										values, 
+										Ingredients.RECIPE + "=" + Bites.mRecipeId, 
+										null);
+			//Remember this recipe id for checking for a new recipe next time
+			mLastRecipe = Bites.mRecipeId;
+			mCursor.requery();
+		}
 
 		// Used to map notes entries from the database to views
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.ingredientlist_item, mCursor,
-		new String[] { Ingredients.TEXT}, new int[] { R.id.ingredienttext});
+		IngredientAdapter adapter = new IngredientAdapter(this, R.layout.ingredientlist_item, mCursor,
+		new String[] { Ingredients.TEXT, Ingredients.STATUS}, 
+						new int[] { R.id.ingredienttext, R.id.ingredientcheck});
 		setListAdapter(adapter);
 			
 		//Set the header text to the current recipe name
@@ -241,8 +319,24 @@ public class IngredientList extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		mUri = ContentUris.withAppendedId(getIntent().getData(), id);
-		CheckBox cb = (CheckBox)v.findViewById(R.id.ingredientcheck);
-		cb.toggle();
+		Cursor c = getContentResolver().query(mUri,PROJECTION, 
+												null, 
+												null, 
+												Ingredients.DEFAULT_SORT_ORDER);
+		ContentValues values = new ContentValues();
+		c.moveToFirst();
+		if (!c.isBeforeFirst()) {
+			switch (c.getInt(c.getColumnIndex(Ingredients.STATUS))) {
+			case Ingredients.STATUS_CHECKED:
+				values.put(Ingredients.STATUS, Ingredients.STATUS_UNCHECKED);
+				getContentResolver().update(mUri, values, null, null);
+				break;
+			case Ingredients.STATUS_UNCHECKED:
+				values.put(Ingredients.STATUS, Ingredients.STATUS_CHECKED);
+				getContentResolver().update(mUri, values, null, null);
+				break;
+			}
+		}
 	}
 	
 	@Override

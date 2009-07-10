@@ -44,7 +44,7 @@ public class RecipeBookProvider extends ContentProvider {
     private static final String TAG = "RecipeBookProvider";
 
     private static final String DATABASE_NAME = "recipe_book.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String RECIPE_TABLE_NAME = "recipes";
     private static final String INGREDIENT_TABLE_NAME = "ingredients";
     private static final String METHOD_TABLE_NAME = "methods";
@@ -81,6 +81,7 @@ public class RecipeBookProvider extends ContentProvider {
                     + Ingredients._ID + " INTEGER PRIMARY KEY,"
                     + Ingredients.RECIPE + " INTEGER,"
                     + Ingredients.TEXT + " TEXT,"
+                    + Ingredients.STATUS + " INTEGER,"
                     + Ingredients.CREATED_DATE + " INTEGER,"
                     + Ingredients.MODIFIED_DATE + " INTEGER"
                     + ");");
@@ -279,6 +280,10 @@ public class RecipeBookProvider extends ContentProvider {
                     values.put(RecipeBook.Ingredients.TEXT, r.getString(android.R.string.untitled));
                 }
                 
+                if (values.containsKey(RecipeBook.Ingredients.STATUS) == false) {
+                    values.put(RecipeBook.Ingredients.STATUS, Ingredients.STATUS_UNCHECKED);
+                }
+                
                 //Don't allow inserting ingredient without a parent recipe
                 if (values.containsKey(RecipeBook.Ingredients.RECIPE) == false) {
                 	throw new SQLException("Failed to insert row into " + uri);
@@ -475,6 +480,7 @@ public class RecipeBookProvider extends ContentProvider {
         sRecipesProjectionMap.put(Ingredients._ID, Ingredients._ID);
         sRecipesProjectionMap.put(Ingredients.RECIPE, Ingredients.RECIPE);
         sRecipesProjectionMap.put(Ingredients.TEXT, Ingredients.TEXT);
+        sRecipesProjectionMap.put(Ingredients.STATUS, Ingredients.STATUS);
         sRecipesProjectionMap.put(Ingredients.CREATED_DATE, Ingredients.CREATED_DATE);
         sRecipesProjectionMap.put(Ingredients.MODIFIED_DATE, Ingredients.MODIFIED_DATE);
         sRecipesProjectionMap.put(Methods._ID, Methods._ID);
