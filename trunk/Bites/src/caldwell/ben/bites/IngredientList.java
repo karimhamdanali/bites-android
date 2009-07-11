@@ -440,12 +440,7 @@ public class IngredientList extends ListActivity {
 	 */
 	private ArrayList<String> getListExtra() {
 		ArrayList<String> list = new ArrayList<String>();
-		long id;
-		Uri uri;
 		int status;
-		ContentValues values = new ContentValues();
-		//Create an unchecked content values to reuse
-		values.put(Ingredients.STATUS, Ingredients.STATUS_UNCHECKED);
 		mCursor.moveToFirst();
 		while (!mCursor.isAfterLast()) {
 			status = mCursor.getInt(mCursor.getColumnIndex(Ingredients.STATUS));
@@ -453,27 +448,9 @@ public class IngredientList extends ListActivity {
 			if (status == Ingredients.STATUS_CHECKED) {
 				list.add(mCursor.getString(mCursor.getColumnIndex(Ingredients.TEXT)) 
 						+ "\n(" + Bites.mRecipeName + ")");
-				id = mCursor.getLong(mCursor.getColumnIndex(Ingredients._ID));
-				uri = ContentUris.withAppendedId(getIntent().getData(), id);
-				//Uncheck the ingredients as they are added to the list 
-				getContentResolver().update(uri,values,null,null);
 			}
 			mCursor.moveToNext();
 		}
-		
-		/*for (int i=0; i<lvCount; i++)
-		{
-			CheckBox cb = (CheckBox)lv.getChildAt(i).findViewById(R.id.ingredientcheck);
-			//Send checked ingredients (the ones we don't have)
-			if (cb.isChecked())
-			{
-				 list.add((String)((TextView)lv.getChildAt(i)
-						 			.findViewById(R.id.ingredienttext))
-						 			.getText() + " (" + Bites.mRecipeName + ")");
-				 //reset the checkbox
-				 cb.setChecked(false);
-			}
-		}*/
 		return list;
 	}
 	
