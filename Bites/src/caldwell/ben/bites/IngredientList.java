@@ -250,19 +250,7 @@ public class IngredientList extends ListActivity {
                 .setShortcut('3', 'a')
                 .setIcon(android.R.drawable.ic_menu_add);
         menu.add(0, MENU_ITEM_EDIT, 2, "edit")
-        .setIcon(android.R.drawable.ic_menu_edit);
-        
-     // Generate any additional actions that can be performed on the
-        // overall list.  In a normal install, there are no additional
-        // actions found here, but this allows other applications to extend
-        // our menu with their own actions.
-        //Intent intent = new Intent(null, getIntent().getData());
-        Intent intent = new Intent(Intent.ACTION_INSERT);
-        intent.setType("vnd.android.cursor.dir/vnd.caldwell.ben.trolly");
-        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-        intent.putStringArrayListExtra("items", getListExtra());
-        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-                new ComponentName(this, IngredientList.class), null, intent, 0, null);
+        .setIcon(android.R.drawable.ic_menu_edit);      
         menu.add(0, MENU_ITEM_SEND, 3, "send")
         .setIcon(android.R.drawable.ic_menu_send);
         menu.add(0, MENU_ITEM_DELETE, 5, "delete")
@@ -273,10 +261,15 @@ public class IngredientList extends ListActivity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		Intent intent = new Intent(Intent.ACTION_INSERT);
-        intent.setType("vnd.android.cursor.dir/vnd.caldwell.ben.trolly");
+		/**
+		 * Add a menu option for any activities that implement the INSERT_FROM_EXTRAS action
+		 * with shopping list item stored in the intent extras as a string array list 
+		 */
+		Intent intent = new Intent(org.openintents.intents.GeneralIntents.ACTION_INSERT_FROM_EXTRAS);
+        intent.setType(org.openintents.intents.ShoppingListIntents.TYPE_STRING_ARRAYLIST_SHOPPING);
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-        intent.putStringArrayListExtra("items", getListExtra());
+        intent.putStringArrayListExtra(org.openintents.intents.ShoppingListIntents.EXTRA_STRING_ARRAYLIST_SHOPPING, 
+        								getListExtra());
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 4,
                 new ComponentName(this, IngredientList.class), null, intent, 0, null);
 		return true;
