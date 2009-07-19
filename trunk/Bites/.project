@@ -3,6 +3,7 @@
 	<name>Bites</name>
 	<comment></comment>
 	<projects>
+		<project>ShoppingList-read-only</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
