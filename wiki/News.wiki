@@ -2,12 +2,17 @@
 #labels Featured
 
 = Bites News =
+
 ----
 _21/7/-09_ *Bites Google Group Created* 
+
 Leave your feedback or discuss possible feature additions at the new Bites Google Group.
 http://groups.google.com/group/bites
+
 ----
 _20/7/09_ * Version 1.0 released to Android Market! * 
+
 Bites Version 1.0 has been released with great excitement to the Android Market. 
 Bites is * available for free * so please try it out and let me know what you think.
+
 ----
