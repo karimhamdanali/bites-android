@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<ListPreference android:key="@string/key_recipe_sort"
+			android:title="Recipes Sort Order"
+			android:summary="The order recipes are sorted in"
+			android:dialogTitle="Recipes Sort Order"
+			android:entries="@array/sort_order"
+			android:entryValues="@array/recipe_sort_values" />
+</PreferenceScreen>
