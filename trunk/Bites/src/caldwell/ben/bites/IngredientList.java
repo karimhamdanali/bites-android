@@ -1,13 +1,12 @@
 package caldwell.ben.bites;
 
 import java.util.ArrayList;
-
 import caldwell.ben.bites.RecipeBook.Ingredients;
 import caldwell.ben.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.ComponentName;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -31,6 +30,7 @@ import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class IngredientList extends ListActivity {
 	
@@ -248,33 +248,15 @@ public class IngredientList extends ListActivity {
 		// Insert a new recipe into the list
         menu.add(0, MENU_ITEM_INSERT, 1, "insert")
                 .setShortcut('3', 'a')
-                .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(0, MENU_ITEM_EDIT, 2, "edit")
-        .setIcon(android.R.drawable.ic_menu_edit);      
+                .setIcon(android.R.drawable.ic_menu_add);     
         menu.add(0, MENU_ITEM_SEND, 3, "send")
         .setIcon(android.R.drawable.ic_menu_send);
-        menu.add(0, MENU_ITEM_DELETE, 5, "delete")
-        .setIcon(android.R.drawable.ic_menu_delete);
+        menu.add(0, MENU_ITEM_SHOP_LIST, 4, "add to shopping list")
+        .setIcon(android.R.drawable.ic_menu_agenda);
         
         return true;
 	}
 	
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		/**
-		 * Add a menu option for any activities that implement the INSERT_FROM_EXTRAS action
-		 * with shopping list item stored in the intent extras as a string array list 
-		 */
-		Intent intent = new Intent(org.openintents.intents.GeneralIntents.ACTION_INSERT_FROM_EXTRAS);
-        intent.setType(org.openintents.intents.ShoppingListIntents.TYPE_STRING_ARRAYLIST_SHOPPING);
-        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-        intent.putStringArrayListExtra(org.openintents.intents.ShoppingListIntents.EXTRA_STRING_ARRAYLIST_SHOPPING, 
-        								getListExtra());
-        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 4,
-                new ComponentName(this, IngredientList.class), null, intent, 0, null);
-		return true;
-	}
-
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
 		//Shopping list item is not in this switch as it is an intent menu item and does not need to be handled here
@@ -284,16 +266,6 @@ public class IngredientList extends ListActivity {
         	showDialog(DIALOG_INSERT);
         	mDialogEdit.setText("");
         	break;
-	    case MENU_ITEM_EDIT:
-	        // Edit an existing item
-			showDialog(DIALOG_EDIT);
-			mDialogEdit.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
-			break;
-	    case MENU_ITEM_DELETE:
-	        // Edit an existing item
-			showDialog(DIALOG_DELETE);
-			mDialogText.setText(mCursor.getString(COLUMN_INDEX_INGREDIENT));
-			break;
 	    case MENU_ITEM_SEND:
 	    	/* 
         	 * Create an intent to send a text message (sms). 
@@ -303,6 +275,17 @@ public class IngredientList extends ListActivity {
     		sendIntent.putExtra("sms_body", createShoppingList());
         	sendIntent.setType("vnd.android-dir/mms-sms");
         	startActivity(sendIntent);
+	    	break;
+	    case MENU_ITEM_SHOP_LIST:
+	    	Intent intent = new Intent(org.openintents.intents.GeneralIntents.ACTION_INSERT_FROM_EXTRAS);
+	        intent.setType(org.openintents.intents.ShoppingListIntents.TYPE_STRING_ARRAYLIST_SHOPPING);
+	        intent.putStringArrayListExtra(org.openintents.intents.ShoppingListIntents.EXTRA_STRING_ARRAYLIST_SHOPPING, 
+	        								getListExtra());
+	        try {
+	        	startActivity(intent);
+	        } catch (ActivityNotFoundException e) {
+	        	Toast.makeText(this, R.string.no_shoppinglist_apps, Toast.LENGTH_SHORT).show();
+	        }
 	    	break;
 	    }
         return super.onOptionsItemSelected(item);
@@ -444,6 +427,9 @@ public class IngredientList extends ListActivity {
 			}
 			mCursor.moveToNext();
 		}
+		if (list.isEmpty()) {
+    		Toast.makeText(this, R.string.no_ingredients_selected, Toast.LENGTH_SHORT).show();
+    	}
 		return list;
 	}
 	

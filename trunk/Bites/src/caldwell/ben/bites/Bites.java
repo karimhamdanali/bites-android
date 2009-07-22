@@ -90,7 +90,7 @@ public class Bites extends TabActivity {
 	         */
 	    if (getIntent().getType() != null)
 	    {
-	    	if (getIntent().getType().contentEquals("text/plain"))
+	    	if (getIntent().getType().contentEquals("text/xml"))
 	        {
 	        	try {
 					addXmlRecipe();

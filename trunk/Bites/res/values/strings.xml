@@ -35,4 +35,7 @@
 <string name="send_recipe">Send Recipe</string>
 <string name="preferences">Preferences</string>
 
+<string name="no_shoppinglist_apps">No shopping list apps installed. \nTry installing Trolly or OI Shopping list</string>
+<string name="no_ingredients_selected">No ingredients selected. \nSelect an ingredient to add to the shopping list</string>
+
 </resources>
