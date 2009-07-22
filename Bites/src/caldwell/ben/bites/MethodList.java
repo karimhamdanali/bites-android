@@ -177,8 +177,8 @@ public class MethodList extends ListActivity {
         menu.add(0, MENU_ITEM_INSERT, 0, "insert")
                 .setShortcut('3', 'a')
                 .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(0, MENU_ITEM_EDIT, 0, "edit")
-        .setIcon(android.R.drawable.ic_menu_edit);
+        /*menu.add(0, MENU_ITEM_EDIT, 0, "edit")
+        .setIcon(android.R.drawable.ic_menu_edit);*/
         
      // Generate any additional actions that can be performed on the
         // overall list.  In a normal install, there are no additional
@@ -188,8 +188,6 @@ public class MethodList extends ListActivity {
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, MethodList.class), null, intent, 0, null);     
-        menu.add(0, MENU_ITEM_DELETE, 0, "delete")
-        .setIcon(android.R.drawable.ic_menu_delete);
         
         return true;
 	}
@@ -203,17 +201,6 @@ public class MethodList extends ListActivity {
         	mDialogEdit.setText("");
         	mDialogStep.setText("");
         	break;
-	    case MENU_ITEM_EDIT:
-	        // Edit an existing item
-			showDialog(DIALOG_EDIT);
-			mDialogEdit.setText(mCursor.getString(COLUMN_INDEX_METHOD));
-			mDialogStep.setText(mCursor.getString(COLUMN_INDEX_STEP));
-			break;
-	    case MENU_ITEM_DELETE:
-	        // Edit an existing item
-			showDialog(DIALOG_DELETE);
-			mDialogText.setText(mCursor.getString(COLUMN_INDEX_METHOD));
-			break;
 	    }
         return super.onOptionsItemSelected(item);
     }

@@ -172,8 +172,6 @@ public class RecipeList extends ListActivity {
         menu.add(0, MENU_ITEM_INSERT, 0, "insert")
                 .setShortcut('3', 'a')
                 .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(0, MENU_ITEM_EDIT, 0, "edit")
-        .setIcon(android.R.drawable.ic_menu_edit);
         menu.add(0, MENU_ITEM_SEND, 0, "send")
         .setIcon(android.R.drawable.ic_menu_send);
         
@@ -186,8 +184,6 @@ public class RecipeList extends ListActivity {
         menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
                 new ComponentName(this, RecipeList.class), null, intent, 0, null);
        
-        menu.add(0, MENU_ITEM_DELETE, 0, "delete")
-        .setIcon(android.R.drawable.ic_menu_delete);
         menu.add (0, MENU_ITEM_PREFERENCES, 0, R.string.preferences)
         .setIcon(android.R.drawable.ic_menu_preferences);
         
@@ -203,20 +199,6 @@ public class RecipeList extends ListActivity {
         	showDialog(DIALOG_INSERT);
         	mDialogEdit.setText("");
         	break;
-	    case MENU_ITEM_EDIT:
-	        // Edit an existing item
-			showDialog(DIALOG_EDIT);
-			mDialogEdit.setText(mCursor.getString(1));
-			break;
-	    case MENU_ITEM_DELETE:
-	        // Delete an existing item
-			showDialog(DIALOG_DELETE);
-			mDialogText.setText(mCursor.getString(1));
-			break;
-	    case MENU_ITEM_SEND:
-	    	// Send a recipe
-	    	SendRecipe();
-	    	break;
 	    case MENU_ITEM_PREFERENCES:
         	startActivity(new Intent(this,BitesPreferences.class));
         	return true;
