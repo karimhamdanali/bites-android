@@ -8,7 +8,7 @@ Just create your file from the following template and post it on the web, then a
 
 ----
 == Recipe File Template ==
-_YourRecipe.xml_
+_'YourRecipe.xml'_
 {{{
 <?xml version="1.0"?>
 
