@@ -4,6 +4,12 @@
 = Bites News =
 
 ----
+
+_22/7/09_ *Version 1.1 released to Android Market*
+
+Bites v1.1 fixes up recipe downloading - recipe files are now proper .xml files. Bug fixes for editing non existent items and a tidy up and simplification of the menus. Integration with Trolly and OI Shopping list improved. Thanks to Peli from [http://www.openintents.org/en/ OpenIntents] for submitting patches and suggestions!
+
+----
 _21/7/-09_ *Bites Google Group Created* 
 
 Leave your feedback or discuss possible feature additions at the new Bites Google Group.
