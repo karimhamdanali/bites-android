@@ -10,6 +10,7 @@
 <string name="delete_recipe">Delete recipe</string>
 <string name="dialog_received_title">Recipe received</string>
 <string name="delete_file">Delete File?</string>
+<string name="import_recipe">Import Recipe?</string>
 <string name="key_recipe_sort">Recipe sort order</string>
 
 <string name="tab_ingredients">Ingredients</string>
