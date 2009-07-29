@@ -44,6 +44,7 @@ public class Bites extends TabActivity {
 	private File mFile;
 	
 	private static final int DIALOG_DELETE = 1;
+	private static final int DIALOG_ADD = 2;
 
 	private String mPath;
 	
@@ -81,7 +82,9 @@ public class Bites extends TabActivity {
 	         */
 	        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE"))
 	        {
-	        	addSmsRecipe();
+	        	//find the imported recipe name to display 
+	        	mRecipeName = getIntent().getStringExtra(SmsReceiver.KEY_RECIPE);
+	        	showDialog(DIALOG_ADD);
 			}
         }
 	        /**
@@ -92,13 +95,20 @@ public class Bites extends TabActivity {
 	    {
 	    	if (getIntent().getType().contentEquals("text/xml"))
 	        {
-	        	try {
-					addXmlRecipe();
-				} catch (XmlPullParserException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	    		//parse the file and find the imported recipe name to display
+	    		mPath = getIntent().getData().getPath();
+	    		mFile = new File(mPath);
+	    		try {
+	    			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+	    														.newDocumentBuilder();
+	    			Document doc = builder.parse(mFile);
+	    			Element recipe = doc.getDocumentElement();
+	    			//Get imported recipe title
+	    			mRecipeName = recipe.getAttribute("name");
+	    		} catch (Throwable t) {
+	    			t.printStackTrace();
+	    		}
+	    		showDialog(DIALOG_ADD);
 	        }
         }
 	}
@@ -199,10 +209,12 @@ public class Bites extends TabActivity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		LayoutInflater factory = LayoutInflater.from(this);
+		View mDialogView;
+		TextView mDialogText;
 		switch (id)	{
 		case DIALOG_DELETE:
-			View mDialogView = factory.inflate(R.layout.dialog_confirm, null);
-			TextView mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
+			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
 			mDialogText.setText(mPath);
 			return new AlertDialog.Builder(this)
             .setTitle(R.string.delete_file)
@@ -211,6 +223,52 @@ public class Bites extends TabActivity {
             	public void onClick(DialogInterface dialog, int whichButton) {
                 	/* User clicked OK so do some stuff */
             		mFile.delete();
+                }
+            })
+            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    /* User clicked cancel so do some stuff */
+                }
+            })
+            .create();
+		case DIALOG_ADD:
+			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
+			mDialogText.setText(mRecipeName);
+			return new AlertDialog.Builder(this)
+            .setTitle(R.string.import_recipe)
+            .setView(mDialogView)
+            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int whichButton) {
+                	/* User clicked OK so do some stuff */
+            		if (getIntent().getAction() != null)
+                    {
+            	        /**
+            	         * If Bites was started by clicking on a notification that a recipe was received
+            	         * load the new recipe into the database and cancel the notification 
+            	         */
+            	        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE"))
+            	        {
+            	        	addSmsRecipe();
+            			}
+                    }
+            	    /**
+        	         * If Bites was started by clicking on a downloaded recipe xml file,
+        	         * parse the xml file and add the new recipe to the database
+        	         */
+        	    if (getIntent().getType() != null)
+        	    {
+        	    	if (getIntent().getType().contentEquals("text/xml"))
+        	        {
+        	        	try {
+        					addXmlRecipe();
+        				} catch (XmlPullParserException e) {
+        					e.printStackTrace();
+        				} catch (IOException e) {
+        					e.printStackTrace();
+        				}
+        	        }
+                }
                 }
             })
             .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
