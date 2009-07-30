@@ -16,6 +16,7 @@ import caldwell.ben.bites.RecipeBook.Recipes;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.TabActivity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -321,6 +322,12 @@ public class RecipeList extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+		selectItem(id);
+		//Get the parent tabactivity and set the curren tab to the ingredients tab
+		((TabActivity)getParent()).getTabHost().setCurrentTab(1);
+	}
+	
+	private void selectItem(long id) {
 		mUri = ContentUris.withAppendedId(getIntent().getData(), id);
 		Bites.mRecipeId = id;
 		//Get a temp cursor to the uri of the clicked item
@@ -330,7 +337,6 @@ public class RecipeList extends ListActivity {
 		//Update the header text with the current recipe name
 		mHeader.setText(Bites.mRecipeName);
 	}
-	
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -348,7 +354,7 @@ public class RecipeList extends ListActivity {
                     	ContentValues values = new ContentValues();
                     	values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                     	mUri = getContentResolver().insert(Recipes.CONTENT_URI,values);
-                    	getListView().performItemClick(getListView(), 0, Long.parseLong(mUri.getLastPathSegment()));
+                    	selectItem(Long.parseLong(mUri.getLastPathSegment()));
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -371,7 +377,7 @@ public class RecipeList extends ListActivity {
                     	mHeader.setText(Bites.mRecipeName);*/
                         values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                         getContentResolver().update(mUri, values, null, null);
-                        getListView().performItemClick(getListView(), 0, Long.parseLong(mUri.getLastPathSegment()));
+                        selectItem(Long.parseLong(mUri.getLastPathSegment()));
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -394,7 +400,7 @@ public class RecipeList extends ListActivity {
                         mCursor.requery();
                         if (mCursor.moveToFirst()) 
                         {
-                        	getListView().performItemClick(null, 0, mCursor.getLong(0));
+                        	selectItem(mCursor.getLong(0));
                         }
                         else //empty list - clear the recipe title header
                         {
