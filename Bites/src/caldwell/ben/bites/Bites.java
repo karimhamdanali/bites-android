@@ -43,8 +43,7 @@ public class Bites extends TabActivity {
 	static String mRecipeName;
 	private File mFile;
 	
-	private static final int DIALOG_DELETE = 1;
-	private static final int DIALOG_ADD = 2;
+	private static final int DIALOG_IMPORT = 1;
 
 	private String mPath;
 	
@@ -66,7 +65,6 @@ public class Bites extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("tab_method")
                 .setIndicator(getResources().getText(R.string.tab_method))
                 .setContent(new Intent(this, MethodList.class)));  
-    
     }
 
     /**
@@ -84,7 +82,7 @@ public class Bites extends TabActivity {
 	        {
 	        	//find the imported recipe name to display 
 	        	mRecipeName = getIntent().getStringExtra(SmsReceiver.KEY_RECIPE);
-	        	showDialog(DIALOG_ADD);
+	        	showDialog(DIALOG_IMPORT);
 			}
         }
 	        /**
@@ -108,7 +106,7 @@ public class Bites extends TabActivity {
 	    		} catch (Throwable t) {
 	    			t.printStackTrace();
 	    		}
-	    		showDialog(DIALOG_ADD);
+	    		showDialog(DIALOG_IMPORT);
 	        }
         }
 	}
@@ -116,7 +114,7 @@ public class Bites extends TabActivity {
     /**
      * Add a recipe received via sms to the content provider
      */
-	private void addSmsRecipe() {
+	private void importSMSRecipe() {
 		//Cancel the notification using the id extra in the intent
 		NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(getIntent().getIntExtra(SmsReceiver.KEY_NOTIFY_ID,0));
@@ -152,13 +150,13 @@ public class Bites extends TabActivity {
 	}
 	
 	/**
-	 * addXmlRecipe
+	 * importXMLRecipe
 	 * Parse a recipe xml file for recipe name, ingredients and methods and 
 	 * add to recipe content provider.
 	 * @throws XmlPullParserException
 	 * @throws IOException
 	 */
-	private void addXmlRecipe() throws XmlPullParserException, IOException {
+	private void importXMLRecipe() throws XmlPullParserException, IOException {
 		
 		mPath = getIntent().getData().getPath();
 		mFile = new File(mPath);
@@ -198,9 +196,6 @@ public class Bites extends TabActivity {
 				getContentResolver().insert(Methods.CONTENT_URI, values);
 			}
 			
-			//Delete the downloaded file?
-			showDialog(DIALOG_DELETE);
-			
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -212,26 +207,7 @@ public class Bites extends TabActivity {
 		View mDialogView;
 		TextView mDialogText;
 		switch (id)	{
-		case DIALOG_DELETE:
-			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
-			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
-			mDialogText.setText(mPath);
-			return new AlertDialog.Builder(this)
-            .setTitle(R.string.delete_file)
-            .setView(mDialogView)
-            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-            	public void onClick(DialogInterface dialog, int whichButton) {
-                	/* User clicked OK so do some stuff */
-            		mFile.delete();
-                }
-            })
-            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    /* User clicked cancel so do some stuff */
-                }
-            })
-            .create();
-		case DIALOG_ADD:
+		case DIALOG_IMPORT:
 			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
 			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
 			mDialogText.setText(mRecipeName);
@@ -249,7 +225,7 @@ public class Bites extends TabActivity {
             	         */
             	        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE"))
             	        {
-            	        	addSmsRecipe();
+            	        	importSMSRecipe();
             			}
                     }
             	    /**
@@ -261,7 +237,7 @@ public class Bites extends TabActivity {
         	    	if (getIntent().getType().contentEquals("text/xml"))
         	        {
         	        	try {
-        					addXmlRecipe();
+        					importXMLRecipe();
         				} catch (XmlPullParserException e) {
         					e.printStackTrace();
         				} catch (IOException e) {
