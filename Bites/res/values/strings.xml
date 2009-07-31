@@ -33,7 +33,10 @@
 <string name="dialog_ok">OK</string>
 <string name="dialog_cancel">Cancel</string>
 
-<string name="send_recipe">Send Recipe</string>
+<string name="send_recipe_sms">Send SMS Recipe</string>
+<string name="send_recipe_email">Send Email Recipe</string>
+<string name="sd_write_error">Can't write to SD card</string>
+<string name="xml_create_error">Can't create recipe file</string>
 <string name="preferences">Preferences</string>
 
 <string name="no_shoppinglist_apps">No shopping list apps installed. \nTry installing Trolly or OI Shopping list</string>

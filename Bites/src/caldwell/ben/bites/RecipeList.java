@@ -10,6 +10,15 @@ package caldwell.ben.bites;
  *  
  *  from http://mobiforge.com/developing/story/sms-messaging-android
 */
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
+
+import org.xmlpull.v1.XmlSerializer;
+
 import caldwell.ben.bites.RecipeBook.Ingredients;
 import caldwell.ben.bites.RecipeBook.Methods;
 import caldwell.ben.bites.RecipeBook.Recipes;
@@ -29,8 +38,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Xml;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +54,7 @@ import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RecipeList extends ListActivity {
 	
@@ -51,8 +63,9 @@ public class RecipeList extends ListActivity {
 	public static final int MENU_ITEM_EDIT = Menu.FIRST;
 	public static final int MENU_ITEM_DELETE = Menu.FIRST + 1;
     public static final int MENU_ITEM_INSERT = Menu.FIRST + 2;
-    public static final int MENU_ITEM_SEND = Menu.FIRST + 3;
+    public static final int MENU_ITEM_SEND_SMS = Menu.FIRST + 3;
     public static final int MENU_ITEM_PREFERENCES = Menu.FIRST + 4;
+    public static final int MENU_ITEM_SEND_EMAIL = Menu.FIRST + 5;
     
     /**
      * Case selections for the type of dialog box displayed
@@ -173,8 +186,6 @@ public class RecipeList extends ListActivity {
         menu.add(0, MENU_ITEM_INSERT, 0, "insert")
                 .setShortcut('3', 'a')
                 .setIcon(android.R.drawable.ic_menu_add);
-        menu.add(0, MENU_ITEM_SEND, 0, "send")
-        .setIcon(android.R.drawable.ic_menu_send);
         
      // Generate any additional actions that can be performed on the
         // overall list.  In a normal install, there are no additional
@@ -227,7 +238,8 @@ public class RecipeList extends ListActivity {
         // Add a menu item to delete the note
         menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_recipe);
         menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_recipe);
-        menu.add(0, MENU_ITEM_SEND, 0, R.string.send_recipe);
+        menu.add(0, MENU_ITEM_SEND_SMS, 0, R.string.send_recipe_sms);
+        menu.add(0, MENU_ITEM_SEND_EMAIL, 0, R.string.send_recipe_email);
 	}
 	
 	
@@ -266,16 +278,96 @@ public class RecipeList extends ListActivity {
                 return true;
             }
 	        
-	        case MENU_ITEM_SEND: {
+	        case MENU_ITEM_SEND_SMS: {
 	        	//Send the recipe via sms
-	        	SendRecipe();
+	        	sendSMSRecipe();
+	        	return true;
+	        }
+	        
+	        case MENU_ITEM_SEND_EMAIL: {
+	        	//Send the recipe via email attachment
+	        	sendEmailRecipe();
 	        	return true;
 	        }
         }
         return false;
 	}
+	
+	private void sendEmailRecipe() {
+		//Get an ingredient cursor
+    	Cursor cIngredient = getContentResolver().query(Ingredients.CONTENT_URI, 
+    											new String[] {Ingredients._ID, Ingredients.TEXT}, 
+    											Ingredients.RECIPE + "=" + Bites.mRecipeId , 
+    											null, 
+    											null);
+    	Cursor cMethod = getContentResolver().query(Methods.CONTENT_URI, 
+				new String[] {Methods._ID, Methods.STEP, Methods.TEXT}, 
+				Methods.RECIPE + "=" + Bites.mRecipeId , 
+				null, 
+				null);
+		
+		//Create the xml string
+		XmlSerializer serializer = Xml.newSerializer();
+		StringWriter swriter = new StringWriter();
+		try {
+			serializer.setOutput(swriter);
+			serializer.startDocument("UTF-8", true);
+			serializer.startTag("", "recipe");
+			serializer.attribute("", "name", Bites.mRecipeName);
+			//add ingredients to xml file
+	    	cIngredient.moveToFirst();
+	    	while (!cIngredient.isLast() && !cIngredient.isNull(0) )
+	    	{
+	    		serializer.startTag("", "ingredient");
+	    		serializer.text(cIngredient.getString(cIngredient.getColumnIndex(Ingredients.TEXT)));
+	    		serializer.endTag("", "ingredient");
+	    		cIngredient.moveToNext();
+	    	}
+	    	//add methods to xml file
+	    	cMethod.moveToFirst();
+	    	while (!cMethod.isLast())
+	    	{
+	    		serializer.startTag("", "method");
+	    		serializer.attribute("", "step", cMethod.getString(cMethod.getColumnIndex(Methods.STEP)));
+	    		serializer.text(cMethod.getString(cMethod.getColumnIndex(Methods.STEP)));
+	    		serializer.endTag("", "method");
+	    		cMethod.moveToNext();
+	    	}
+			serializer.endTag("", "recipe");
+			serializer.endDocument();
+		} catch (Exception e) {
+			//Error creating the xml file, show toast and return
+			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG).show();
+			return;
+		}
+		
+		//Store the xml recipe file on the SD card 
+		File root = Environment.getExternalStorageDirectory();
+		File file = new File(root, Bites.mRecipeName + ".xml");
+		try {
+			file.createNewFile();
+			FileWriter writer = new FileWriter(file);
+			BufferedWriter out = new BufferedWriter(writer);
+			out.write(swriter.toString());
+			//TODO: write the lines of text to the file
+			//close the file writer
+			out.close();
+		} catch (IOException e) {
+			//Error writing the file to the SD card, show toast and abort
+			Toast.makeText(this, R.string.sd_write_error, Toast.LENGTH_LONG).show();
+			//TODO: delete the file if it was created
+			return;
+		}
+				
+		//TODO: Attach the recipe file to an email message
+		Intent sendIntent = new Intent(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_SUBJECT, Bites.mRecipeName); 
+		/*sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse 
+		("file://"+Environment.getExternalStorageDirectory()+"/data.csv"));*/ 
+		sendIntent.setType("text/xml"); 
+	}
 
-	private void SendRecipe(){
+	private void sendSMSRecipe(){
 		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
 		
 		String msg;

@@ -42,10 +42,9 @@ public class Bites extends TabActivity {
 	static long mRecipeId;
 	static String mRecipeName;
 	private File mFile;
+	private String mPath;
 	
 	private static final int DIALOG_IMPORT = 1;
-
-	private String mPath;
 	
     /** Called when the activity is first created. */
     @Override
