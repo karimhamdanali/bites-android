@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
-
 import org.xmlpull.v1.XmlSerializer;
-
 import caldwell.ben.bites.RecipeBook.Ingredients;
 import caldwell.ben.bites.RecipeBook.Methods;
 import caldwell.ben.bites.RecipeBook.Recipes;
@@ -343,7 +340,7 @@ public class RecipeList extends ListActivity {
 		
 		//Store the xml recipe file on the SD card 
 		File root = Environment.getExternalStorageDirectory();
-		File file = new File(root, Bites.mRecipeName + ".xml");
+		File file = new File(root, Bites.mRecipeName.replace(" ", "_") + ".xml");
 		try {
 			file.createNewFile();
 			FileWriter writer = new FileWriter(file);
@@ -363,8 +360,11 @@ public class RecipeList extends ListActivity {
 		Intent sendIntent = new Intent(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_SUBJECT, Bites.mRecipeName); 
 		/*sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse 
-		("file://"+Environment.getExternalStorageDirectory()+"/data.csv"));*/ 
-		sendIntent.setType("text/xml"); 
+		("file://"+Environment.getExternalStorageDirectory()+"/data.csv"));*/
+		sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse 
+		("file://"+file.getAbsolutePath()));
+		sendIntent.setType("text/plain");
+		startActivity(Intent.createChooser(sendIntent,"Send mail..."));
 	}
 
 	private void sendSMSRecipe(){
