@@ -352,11 +352,10 @@ public class RecipeList extends ListActivity {
 		} catch (IOException e) {
 			//Error writing the file to the SD card, show toast and abort
 			Toast.makeText(this, R.string.sd_write_error, Toast.LENGTH_LONG).show();
-			//TODO: delete the file if it was created
+			//TODO: delete the file if it was created?
 			return;
 		}
 				
-		//TODO: Attach the recipe file to an email message
 		Intent sendIntent = new Intent(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_SUBJECT, Bites.mRecipeName); 
 		/*sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse 
@@ -364,7 +363,7 @@ public class RecipeList extends ListActivity {
 		sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse 
 		("file://"+file.getAbsolutePath()));
 		sendIntent.setType("text/plain");
-		startActivity(Intent.createChooser(sendIntent,"Send mail..."));
+		startActivity(sendIntent);
 	}
 
 	private void sendSMSRecipe(){
