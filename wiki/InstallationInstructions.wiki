@@ -10,4 +10,4 @@ Bites can be installed through the android application market place.
 
 The Bites svn trunk can be installed by scanning the barcode below using the "zxing" app or similar.
 
-[]
+[http://bites-android.googlecode.com/svn/trunk/testrelease_qrcode.png]
