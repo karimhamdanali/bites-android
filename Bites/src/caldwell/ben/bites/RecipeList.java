@@ -326,7 +326,7 @@ public class RecipeList extends ListActivity {
 	    	{
 	    		serializer.startTag("", "method");
 	    		serializer.attribute("", "step", cMethod.getString(cMethod.getColumnIndex(Methods.STEP)));
-	    		serializer.text(cMethod.getString(cMethod.getColumnIndex(Methods.STEP)));
+	    		serializer.text(cMethod.getString(cMethod.getColumnIndex(Methods.TEXT)));
 	    		serializer.endTag("", "method");
 	    		cMethod.moveToNext();
 	    	}

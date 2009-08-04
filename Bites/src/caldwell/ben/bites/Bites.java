@@ -8,7 +8,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.xmlpull.v1.XmlPullParserException;
-
 import caldwell.ben.bites.RecipeBook.Ingredients;
 import caldwell.ben.bites.RecipeBook.Methods;
 import caldwell.ben.bites.RecipeBook.Recipes;
@@ -26,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * The main activity, operates as a top level tabhost that contains list activities for
@@ -66,10 +66,10 @@ public class Bites extends TabActivity {
                 .setContent(new Intent(this, MethodList.class)));  
     }
 
-    /**
-     * Check the intent to see if Bites was started on receiving a recipe
-     * from either an sms or a downloaded file and add to the content provider if it was.
-     */
+	/**
+	 * Check the intent to see if Bites was started on receiving a recipe
+	 * from either an sms or a downloaded file and add to the content provider if it was.
+	 */
 	private void checkForReceived() {
 		if (getIntent().getAction() != null)
         {
@@ -83,11 +83,28 @@ public class Bites extends TabActivity {
 	        	mRecipeName = getIntent().getStringExtra(SmsReceiver.KEY_RECIPE);
 	        	showDialog(DIALOG_IMPORT);
 			}
+	        
+	        if (getIntent().getAction().contentEquals(Intent.ACTION_VIEW)) {
+	    		//parse the file and find the imported recipe name to display
+	    		mPath = getIntent().getData().getPath();
+	    		mFile = new File(mPath);
+	    		try {
+	    			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+	    														.newDocumentBuilder();
+	    			Document doc = builder.parse(mFile);
+	    			Element recipe = doc.getDocumentElement();
+	    			//Get imported recipe title
+	    			mRecipeName = recipe.getAttribute("name");
+	    		} catch (Throwable t) {
+	    			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
+	    		}
+	    		showDialog(DIALOG_IMPORT);
+	        }
         }
-	        /**
-	         * If Bites was started by clicking on a downloaded recipe xml file,
-	         * parse the xml file and add the new recipe to the database
-	         */
+		/**
+		 * If Bites was started by clicking on a downloaded recipe xml file,
+		 * parse the xml file and add the new recipe to the database
+		 *//*
 	    if (getIntent().getType() != null)
 	    {
 	    	if (getIntent().getType().contentEquals("text/xml"))
@@ -103,11 +120,11 @@ public class Bites extends TabActivity {
 	    			//Get imported recipe title
 	    			mRecipeName = recipe.getAttribute("name");
 	    		} catch (Throwable t) {
-	    			t.printStackTrace();
+	    			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
 	    		}
 	    		showDialog(DIALOG_IMPORT);
 	        }
-        }
+        }*/
 	}
 
     /**
@@ -146,6 +163,10 @@ public class Bites extends TabActivity {
 			values.put(Methods.STEP, (i<methodSteps.length) ? methodSteps[i] : i);
 			getContentResolver().insert(Methods.CONTENT_URI, values);
 		}
+		
+		//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
+		getTabHost().setCurrentTab(1);
+		getTabHost().setCurrentTab(0);
 	}
 	
 	/**
@@ -167,7 +188,12 @@ public class Bites extends TabActivity {
 			Element recipe = doc.getDocumentElement();
 			NodeList ingredients = recipe.getElementsByTagName("ingredient");
 			NodeList methods = recipe.getElementsByTagName("method");
-			
+
+			//Check for no ingredients or method steps - poorly formed?
+			if (ingredients.getLength() <= 0 || methods.getLength() <= 0) {
+				Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
+				return;
+			}
 
 			//Insert new recipe title
 			ContentValues values = new ContentValues();
@@ -198,6 +224,10 @@ public class Bites extends TabActivity {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+		
+		//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
+		getTabHost().setCurrentTab(1);
+		getTabHost().setCurrentTab(0);
 	}
 
 	@Override
