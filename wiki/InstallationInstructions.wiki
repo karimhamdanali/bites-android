@@ -8,4 +8,4 @@ Bites can be installed through the android application market place.
 
 == Testing Release ==
 
-[http://bites-android.googlecode.com/svn/trunk/testrelease_qrcode.png]
+[http://bites-android.googlecode.com/svn/trunk/bites_testing.png]
