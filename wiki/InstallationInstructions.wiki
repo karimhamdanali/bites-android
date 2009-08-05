@@ -1,11 +1,12 @@
 #summary Installation Instructions.
 
 = Installation =
+Two installation methods are available depending on how you want to use Bites
 
 == Market Releases ==
-
-Bites can be installed through the android application market place.
+If you just want it to work then this is the method for you. Bites can be installed through the android application market place by clicking "market" on your phone.
 
 == Testing Release ==
+This is for those interested in testing new features and finding bugs before a new version is released to the general public through the market. This is still a signed app, but you will need to tick the option to allow installation of non-market applications on your phone. This is under Menu/Settings/Applications/Unknown sources. Once you have done this you can scan the QR code below with _zxing_ to install, or use your phone browser to navigate to the Downloads tab on this page and click on the testing release download. Personally I find the scanner option much quicker.
 
 [http://bites-android.googlecode.com/svn/trunk/bites_testing.png]
