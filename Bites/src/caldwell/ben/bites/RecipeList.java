@@ -164,8 +164,10 @@ public class RecipeList extends ListActivity {
         setListAdapter(adapter);
        	mCursor.moveToFirst();
        	if (!mCursor.isBeforeFirst()) {
-        	Bites.mRecipeId = mCursor.getLong(mCursor.getColumnIndex(Recipes._ID));
-	        Bites.mRecipeName = mCursor.getString(mCursor.getColumnIndex(Recipes.TITLE));
+       		if (Bites.mRecipeId == 0) {
+	       		Bites.mRecipeId = mCursor.getLong(mCursor.getColumnIndex(Recipes._ID));
+		        Bites.mRecipeName = mCursor.getString(mCursor.getColumnIndex(Recipes.TITLE));
+       		}
         } else {
         	Bites.mRecipeId = 0;
         	Bites.mRecipeName = "";             	

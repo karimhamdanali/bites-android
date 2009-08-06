@@ -7,13 +7,15 @@
 	    android:id="@+id/ingredienttext"
 	    style="@style/ListText"
 	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
+	    android:layout_height="?android:attr/listPreferredItemHeight"
+    	android:textAppearance="?android:attr/textAppearanceMedium"
 	    android:padding="5sp"
 		android:layout_weight="1" />
 	<CheckBox
 		android:id="@+id/ingredientcheck"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_height="?android:attr/listPreferredItemHeight"
+    	android:textAppearance="?android:attr/textAppearanceMedium"
 		android:gravity="right|center_vertical"
 		android:focusable="false"
 		android:clickable="false"  />
