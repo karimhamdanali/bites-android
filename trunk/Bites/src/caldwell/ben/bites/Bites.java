@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
@@ -177,7 +178,7 @@ public class Bites extends TabActivity {
 	 * @throws IOException
 	 */
 	private void importXMLRecipe() throws XmlPullParserException, IOException {
-		
+
 		mPath = getIntent().getData().getPath();
 		mFile = new File(mPath);
 
@@ -191,7 +192,12 @@ public class Bites extends TabActivity {
 
 			//Check for no ingredients or method steps - poorly formed?
 			if (ingredients.getLength() <= 0 || methods.getLength() <= 0) {
-				Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
+				Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG).show();
+				mRecipeId = 0;
+				mRecipeName = "";
+				//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
+				getTabHost().setCurrentTab(1);
+				getTabHost().setCurrentTab(0);
 				return;
 			}
 
@@ -256,24 +262,20 @@ public class Bites extends TabActivity {
             	        {
             	        	importSMSRecipe();
             			}
+            	        /**
+            	         * If Bites was started by clicking on a downloaded recipe xml file,
+            	         * parse the xml file and add the new recipe to the database
+            	         */
+            	        if (getIntent().getAction().contentEquals(Intent.ACTION_VIEW)) {
+            	        	try {
+            					importXMLRecipe();
+            				} catch (XmlPullParserException e) {
+            					Toast.makeText(getParent(), R.string.xml_create_error, Toast.LENGTH_LONG).show();
+            				} catch (IOException e) {
+            					Toast.makeText(getParent(), R.string.xml_create_error, Toast.LENGTH_LONG).show();
+            				}
+            	        }
                     }
-            	    /**
-        	         * If Bites was started by clicking on a downloaded recipe xml file,
-        	         * parse the xml file and add the new recipe to the database
-        	         */
-        	    if (getIntent().getType() != null)
-        	    {
-        	    	if (getIntent().getType().contentEquals("text/xml"))
-        	        {
-        	        	try {
-        					importXMLRecipe();
-        				} catch (XmlPullParserException e) {
-        					e.printStackTrace();
-        				} catch (IOException e) {
-        					e.printStackTrace();
-        				}
-        	        }
-                }
                 }
             })
             .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
