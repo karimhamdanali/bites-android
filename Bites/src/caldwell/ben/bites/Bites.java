@@ -1,12 +1,20 @@
 package caldwell.ben.bites;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParserException;
 import caldwell.ben.bites.RecipeBook.Ingredients;
 import caldwell.ben.bites.RecipeBook.Methods;
@@ -178,14 +186,44 @@ public class Bites extends TabActivity {
 	 * @throws IOException
 	 */
 	private void importXMLRecipe() throws XmlPullParserException, IOException {
-
-		mPath = getIntent().getData().getPath();
-		mFile = new File(mPath);
+		
+		DocumentBuilder builder = null;
+		Document doc = null;
+		try {
+			builder = DocumentBuilderFactory.newInstance()
+			.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FactoryConfigurationError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//The scheme is "content" if this is an email attachment file
+		if (getIntent().getScheme().equals("content")) {
+			InputStream attachment = getContentResolver().openInputStream(getIntent().getData());
+			try {
+				doc = builder.parse(attachment);
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//The scheme is "file" for a browser download
+		if (getIntent().getScheme().equals("file")) {
+			mPath = getIntent().getData().getPath();
+			mFile = new File(mPath);
+			try {
+				doc = builder.parse(mFile);
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		try {
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-														.newDocumentBuilder();
-			Document doc = builder.parse(mFile);
 			Element recipe = doc.getDocumentElement();
 			NodeList ingredients = recipe.getElementsByTagName("ingredient");
 			NodeList methods = recipe.getElementsByTagName("method");
