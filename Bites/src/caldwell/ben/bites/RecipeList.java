@@ -209,7 +209,7 @@ public class RecipeList extends ListActivity {
             // Insert a new item
         	showDialog(DIALOG_INSERT);
         	mDialogEdit.setText("");
-        	break;
+        	return true;
 	    case MENU_ITEM_PREFERENCES:
         	startActivity(new Intent(this,BitesPreferences.class));
         	return true;

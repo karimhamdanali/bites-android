@@ -21,6 +21,7 @@
 <string name="edit_ingredient">Edit ingredient</string>
 <string name="dialog_sendshoppinglist">Send shopping list</string>
 <string name="ingredient_prefs">Ingredient Preferences</string>
+<string name="key_ingredient_check">Needed ingredients check state</string>
 
 <string name="tab_method">Method</string>
 <string name="dialog_method_step_hint">Step number</string>
