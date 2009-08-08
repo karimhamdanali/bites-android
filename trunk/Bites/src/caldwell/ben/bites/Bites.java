@@ -1,21 +1,12 @@
 package caldwell.ben.bites;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParserException;
 import caldwell.ben.bites.RecipeBook.Ingredients;
 import caldwell.ben.bites.RecipeBook.Methods;
 import caldwell.ben.bites.RecipeBook.Recipes;
@@ -29,7 +20,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
@@ -50,8 +40,6 @@ public class Bites extends TabActivity {
 	
 	static long mRecipeId;
 	static String mRecipeName;
-	private File mFile;
-	private String mPath;
 	
 	private static final int DIALOG_IMPORT = 1;
 	
@@ -60,7 +48,7 @@ public class Bites extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        checkForReceived();
+        checkRecipeReceived();
         
         final TabHost tabHost = getTabHost();
                
@@ -79,64 +67,128 @@ public class Bites extends TabActivity {
 	 * Check the intent to see if Bites was started on receiving a recipe
 	 * from either an sms or a downloaded file and add to the content provider if it was.
 	 */
-	private void checkForReceived() {
+	private void checkRecipeReceived() {
 		if (getIntent().getAction() != null)
         {
 	        /**
 	         * If Bites was started by clicking on a notification that a recipe was received
 	         * load the new recipe into the database and cancel the notification 
 	         */
-	        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE"))
-	        {
-	        	//find the imported recipe name to display 
-	        	mRecipeName = getIntent().getStringExtra(SmsReceiver.KEY_RECIPE);
+	        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE") 
+	        		|| getIntent().getAction().contentEquals(Intent.ACTION_VIEW)) {
 	        	showDialog(DIALOG_IMPORT);
 			}
-	        
-	        if (getIntent().getAction().contentEquals(Intent.ACTION_VIEW)) {
-	    		//parse the file and find the imported recipe name to display
-	    		mPath = getIntent().getData().getPath();
-	    		mFile = new File(mPath);
-	    		try {
-	    			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-	    														.newDocumentBuilder();
-	    			Document doc = builder.parse(mFile);
-	    			Element recipe = doc.getDocumentElement();
-	    			//Get imported recipe title
-	    			mRecipeName = recipe.getAttribute("name");
-	    		} catch (Throwable t) {
-	    			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
-	    		}
-	    		showDialog(DIALOG_IMPORT);
-	        }
         }
-		/**
-		 * If Bites was started by clicking on a downloaded recipe xml file,
-		 * parse the xml file and add the new recipe to the database
-		 *//*
-	    if (getIntent().getType() != null)
-	    {
-	    	if (getIntent().getType().contentEquals("text/xml"))
-	        {
-	    		//parse the file and find the imported recipe name to display
-	    		mPath = getIntent().getData().getPath();
-	    		mFile = new File(mPath);
-	    		try {
-	    			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-	    														.newDocumentBuilder();
-	    			Document doc = builder.parse(mFile);
-	    			Element recipe = doc.getDocumentElement();
-	    			//Get imported recipe title
-	    			mRecipeName = recipe.getAttribute("name");
-	    		} catch (Throwable t) {
-	    			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
-	    		}
-	    		showDialog(DIALOG_IMPORT);
-	        }
-        }*/
 	}
 
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		LayoutInflater factory = LayoutInflater.from(this);
+		View mDialogView;
+		TextView mDialogText;
+		switch (id)	{
+		case DIALOG_IMPORT:
+			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
+			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
+			mDialogText.setText(getImportedRecipeName());
+			return new AlertDialog.Builder(this)
+            .setTitle(R.string.import_recipe)
+            .setView(mDialogView)
+            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int whichButton) {
+                	/* User clicked OK so do some stuff */
+            		importRecipe();
+                }
+            })
+            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    /* User clicked cancel so do some stuff */
+                }
+            })
+            .create();
+		}
+		return null;
+	}
+	
+	/**
+	 * getImportedRecipeName
+	 * Returns the title of a recipe to be imported from sms or xml file
+	 * @return String
+	 * @author Ben Caldwell
+	 */
+	private String getImportedRecipeName() {
+
+		//If the intent has no action then no recipe was imported - return null
+		if (getIntent().getAction() == null) {
+			return null;
+		}
+
+		//Recipe received via sms
+        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE"))
+        {
+    		return getIntent().getStringExtra(SmsReceiver.KEY_RECIPE);
+		}
+        
+		//Recipe received via XML file download
+        if (getIntent().getScheme().equals("file")) {
+        	String path = getIntent().getData().getPath();
+        	File file = new File(path);
+			try {
+				DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+				Document doc = builder.parse(file);
+				Element recipe = doc.getDocumentElement();
+				return recipe.getAttribute("name");
+			} catch (Exception e) {
+				Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG).show();
+				return null;
+			}
+        }
+		
+		//Recipe received via XML file as gmail attachment
+        if (getIntent().getScheme().equals("content")) {
+        	try {
+	        	InputStream attachment = getContentResolver().openInputStream(getIntent().getData());
+	        	DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+				Document doc = builder.parse(attachment);
+				attachment.close();
+				Element recipe = doc.getDocumentElement();
+				return recipe.getAttribute("name");
+        	} catch (Exception e) {
+        		Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG).show();
+				return null;
+        	}
+        }
+        
+        //Return null if none of the above criteria are satisfied
+        return null;
+	}
+	
+	private void importRecipe() {
+		//If the intent has no action then no recipe was imported - return null
+		if (getIntent().getAction() == null) {
+			return;
+		}
+		//Import recipe received via sms
+        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE"))
+        {
+        	importSMSRecipe();
+        	return;
+		}       
+		//Import recipe received via XML file download
+        if (getIntent().getScheme().equals("file")) {
+        	importXMLDownload();
+        	return;
+        }
+		//Recipe received via XML file as gmail attachment
+        if (getIntent().getScheme().equals("content")) {
+        	importXMLAttachment();
+        	return;
+        }
+	}
+	
     /**
+     * importSMSRecipe
      * Add a recipe received via sms to the content provider
      */
 	private void importSMSRecipe() {
@@ -179,51 +231,23 @@ public class Bites extends TabActivity {
 	}
 	
 	/**
-	 * importXMLRecipe
-	 * Parse a recipe xml file for recipe name, ingredients and methods and 
+	 * importXMLDownload
+	 * Parse a downloaded recipe xml file for recipe name, ingredients and methods and 
 	 * add to recipe content provider.
-	 * @throws XmlPullParserException
-	 * @throws IOException
 	 */
-	private void importXMLRecipe() throws XmlPullParserException, IOException {
-		
-		DocumentBuilder builder = null;
-		Document doc = null;
-		try {
-			builder = DocumentBuilderFactory.newInstance()
-			.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FactoryConfigurationError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//The scheme is "content" if this is an email attachment file
-		if (getIntent().getScheme().equals("content")) {
-			InputStream attachment = getContentResolver().openInputStream(getIntent().getData());
-			try {
-				doc = builder.parse(attachment);
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	private void importXMLDownload() {
 		
 		//The scheme is "file" for a browser download
-		if (getIntent().getScheme().equals("file")) {
-			mPath = getIntent().getData().getPath();
-			mFile = new File(mPath);
-			try {
-				doc = builder.parse(mFile);
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (!getIntent().getScheme().equals("file")) {
+			return;
 		}
 
 		try {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+			.newDocumentBuilder();
+			String path = getIntent().getData().getPath();
+			File file = new File(path);
+			Document doc = builder.parse(file);
 			Element recipe = doc.getDocumentElement();
 			NodeList ingredients = recipe.getElementsByTagName("ingredient");
 			NodeList methods = recipe.getElementsByTagName("method");
@@ -264,67 +288,80 @@ public class Bites extends TabActivity {
 				values.put(Methods.TEXT,methods.item(i).getFirstChild().getNodeValue());
 				getContentResolver().insert(Methods.CONTENT_URI, values);
 			}
-			
-		} catch (Throwable t) {
-			t.printStackTrace();
+		} catch (Exception e) {
+			//Pop a toast showing xml file error and return
+			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
+		} finally {
+			//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
+			getTabHost().setCurrentTab(1);
+			getTabHost().setCurrentTab(0);
 		}
-		
-		//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
-		getTabHost().setCurrentTab(1);
-		getTabHost().setCurrentTab(0);
 	}
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		LayoutInflater factory = LayoutInflater.from(this);
-		View mDialogView;
-		TextView mDialogText;
-		switch (id)	{
-		case DIALOG_IMPORT:
-			mDialogView = factory.inflate(R.layout.dialog_confirm, null);
-			mDialogText = (TextView)mDialogView.findViewById(R.id.dialog_confirm_prompt);
-			mDialogText.setText(mRecipeName);
-			return new AlertDialog.Builder(this)
-            .setTitle(R.string.import_recipe)
-            .setView(mDialogView)
-            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-            	public void onClick(DialogInterface dialog, int whichButton) {
-                	/* User clicked OK so do some stuff */
-            		if (getIntent().getAction() != null)
-                    {
-            	        /**
-            	         * If Bites was started by clicking on a notification that a recipe was received
-            	         * load the new recipe into the database and cancel the notification 
-            	         */
-            	        if (getIntent().getAction().contentEquals("com.captainfanatic.bites.RECEIVED_RECIPE"))
-            	        {
-            	        	importSMSRecipe();
-            			}
-            	        /**
-            	         * If Bites was started by clicking on a downloaded recipe xml file,
-            	         * parse the xml file and add the new recipe to the database
-            	         */
-            	        if (getIntent().getAction().contentEquals(Intent.ACTION_VIEW)) {
-            	        	try {
-            					importXMLRecipe();
-            				} catch (XmlPullParserException e) {
-            					Toast.makeText(getParent(), R.string.xml_create_error, Toast.LENGTH_LONG).show();
-            				} catch (IOException e) {
-            					Toast.makeText(getParent(), R.string.xml_create_error, Toast.LENGTH_LONG).show();
-            				}
-            	        }
-                    }
-                }
-            })
-            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    /* User clicked cancel so do some stuff */
-                }
-            })
-            .create();
+	/**
+	 * importXMLAttachment
+	 * Parse a recipe xml file attached to an email for recipe name, ingredients and methods and 
+	 * add to recipe content provider.
+	 */
+	private void importXMLAttachment() {
+		
+		if (!getIntent().getScheme().equals("content")) {
+			return;
 		}
-		return null;
-	}  
-	
-	
+		
+		try {
+			InputStream attachment = getContentResolver().openInputStream(getIntent().getData());
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+			.newDocumentBuilder();
+			Document doc = builder.parse(attachment);
+			attachment.close();
+			Element recipe = doc.getDocumentElement();
+			NodeList ingredients = recipe.getElementsByTagName("ingredient");
+			NodeList methods = recipe.getElementsByTagName("method");
+
+			//Check for no ingredients or method steps - poorly formed?
+			if (ingredients.getLength() <= 0 || methods.getLength() <= 0) {
+				Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG).show();
+				mRecipeId = 0;
+				mRecipeName = "";
+				//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
+				getTabHost().setCurrentTab(1);
+				getTabHost().setCurrentTab(0);
+				return;
+			}
+
+			//Insert new recipe title
+			ContentValues values = new ContentValues();
+			mRecipeName = recipe.getAttribute("name");
+			values.put(Recipes.TITLE, mRecipeName);
+			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
+			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
+			
+			//insert ingredients for the new recipe
+			values = new ContentValues();
+			for (int i =0; i<ingredients.getLength(); i++)
+			{
+				values.put(Ingredients.RECIPE, mRecipeId);
+				values.put(Ingredients.TEXT,ingredients.item(i).getFirstChild().getNodeValue());
+				getContentResolver().insert(Ingredients.CONTENT_URI, values);
+			}
+			
+			//insert methods for the new recipe
+			values = new ContentValues();
+			for (int i =0; i<methods.getLength(); i++)
+			{
+				values.put(Methods.RECIPE, mRecipeId);
+				values.put(Methods.STEP,((Element)methods.item(i)).getAttribute("step"));
+				values.put(Methods.TEXT,methods.item(i).getFirstChild().getNodeValue());
+				getContentResolver().insert(Methods.CONTENT_URI, values);
+			}
+		} catch (Exception e) {
+			//Pop a toast showing xml file error and return
+			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
+		} finally {
+			//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
+			getTabHost().setCurrentTab(1);
+			getTabHost().setCurrentTab(0);
+		}
+	}
 }
