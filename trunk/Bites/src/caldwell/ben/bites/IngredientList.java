@@ -13,9 +13,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -43,6 +45,7 @@ public class IngredientList extends ListActivity {
     public static final int MENU_ITEM_CHECK = Menu.FIRST + 3;
     public static final int MENU_ITEM_SEND = Menu.FIRST + 4;
     public static final int MENU_ITEM_SHOP_LIST = Menu.FIRST + 5;
+    public static final int MENU_ITEM_PREFERENCES = Menu.FIRST + 6;
 	
 	/**
      * The columns we are interested in from the database
@@ -78,6 +81,8 @@ public class IngredientList extends ListActivity {
 
 	private Cursor mCursor;
 	private long mLastRecipe;
+	private SharedPreferences mPrefs;
+	private Boolean mChecked;
 
 	/**
 	 * IngredientAdapter is a custom cursor adapter for ingredient lists.
@@ -148,6 +153,8 @@ public class IngredientList extends ListActivity {
 		mHeader = (TextView)findViewById(R.id.ingredientheader);
 		getListView().setOnCreateContextMenuListener(this);		
 		mLastRecipe = 0;
+		
+		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 		
 	@Override
@@ -182,6 +189,10 @@ public class IngredientList extends ListActivity {
 			
 		//Set the header text to the current recipe name
 		mHeader.setText(Bites.mRecipeName);
+		
+		String checkState = mPrefs.getString(getString(R.string.key_ingredient_check), 
+							"unchecked");
+		mChecked = checkState.equals("checked");
 	}
 
 	@Override
@@ -253,6 +264,8 @@ public class IngredientList extends ListActivity {
         .setIcon(android.R.drawable.ic_menu_send);
         menu.add(0, MENU_ITEM_SHOP_LIST, 4, "add to shopping list")
         .setIcon(android.R.drawable.ic_menu_agenda);
+        menu.add(0, MENU_ITEM_PREFERENCES, 5, R.string.preferences)
+        .setIcon(android.R.drawable.ic_menu_preferences);
         
         return true;
 	}
@@ -265,7 +278,7 @@ public class IngredientList extends ListActivity {
             // Insert a new item
         	showDialog(DIALOG_INSERT);
         	mDialogEdit.setText("");
-        	break;
+        	return true;
 	    case MENU_ITEM_SEND:
 	    	/* 
         	 * Create an intent to send a text message (sms). 
@@ -275,7 +288,7 @@ public class IngredientList extends ListActivity {
     		sendIntent.putExtra("sms_body", createShoppingList());
         	sendIntent.setType("vnd.android-dir/mms-sms");
         	startActivity(sendIntent);
-	    	break;
+	    	return true;
 	    case MENU_ITEM_SHOP_LIST:
 	    	Intent intent = new Intent(org.openintents.intents.GeneralIntents.ACTION_INSERT_FROM_EXTRAS);
 	        intent.setType(org.openintents.intents.ShoppingListIntents.TYPE_STRING_ARRAYLIST_SHOPPING);
@@ -286,7 +299,10 @@ public class IngredientList extends ListActivity {
 	        } catch (ActivityNotFoundException e) {
 	        	Toast.makeText(this, R.string.no_shoppinglist_apps, Toast.LENGTH_SHORT).show();
 	        }
-	    	break;
+	    	return true;
+	    case MENU_ITEM_PREFERENCES:
+	    	startActivity(new Intent(this,BitesPreferences.class));
+	    	return true;
 	    }
         return super.onOptionsItemSelected(item);
     }
@@ -401,7 +417,7 @@ public class IngredientList extends ListActivity {
 		{
 			CheckBox cb = (CheckBox)lv.getChildAt(i).findViewById(R.id.ingredientcheck);
 			//Send the checked items (ones we don't have) via sms
-			if (cb.isChecked())
+			if (cb.isChecked() == mChecked)
 			{
 				msg = msg + ((TextView)lv.getChildAt(i).findViewById(R.id.ingredienttext)).getText() + "\n";
 			}
@@ -421,7 +437,8 @@ public class IngredientList extends ListActivity {
 		while (!mCursor.isAfterLast()) {
 			status = mCursor.getInt(mCursor.getColumnIndex(Ingredients.STATUS));
 			//If the ingredient is checked add to the shopping list string array
-			if (status == Ingredients.STATUS_CHECKED) {
+			if ((status == Ingredients.STATUS_CHECKED && mChecked)
+					|| (status == Ingredients.STATUS_UNCHECKED && !mChecked)) {
 				list.add(mCursor.getString(mCursor.getColumnIndex(Ingredients.TEXT)) 
 						+ "\n(" + Bites.mRecipeName + ")");
 			}
