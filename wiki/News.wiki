@@ -10,9 +10,10 @@ _8/8/09_ *Version 1.2 released to Android Market*
 Bites v1.2 features improved recipe sharing - simply click on a recipe file in the browser and Bites will open with the option to import the recipe. Long click a recipe in Bites and you will have the option to email the recipe to anyone.
 
 New features in this release
-  *Send and Receive recipes via the gmail app on your phone
-  *Short clicking on a recipe now automatically opens the ingredients tab
-  *Ingredients check state preference - choose whether checked or unchecked ingredients are added to the shopping list
+  * Send and Receive recipes via the gmail app on your phone
+  * Single click recipe importing from the browser
+  * Short clicking on a recipe now automatically opens the ingredients tab
+  * Ingredients check state preference - you can choose whether checked or unchecked ingredients are added to the shopping list
 
 Thanks everyone who has contributed ideas for new features - keep them coming!
 
