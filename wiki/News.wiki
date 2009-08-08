@@ -5,6 +5,20 @@
 
 ----
 
+_8/8/09_ *Version 1.2 released to Android Market*
+
+Bites v1.2 features improved recipe sharing - simply click on a recipe file in the browser and Bites will open with the option to import the recipe. Long click a recipe in Bites and you will have the option to email the recipe to anyone.
+
+New features in this release
+  *Send and Receive recipes via the gmail app on your phone
+  *Short clicking on a recipe now automatically opens the ingredients tab
+  *Ingredients check state preference - choose whether checked or unchecked ingredients are added to the shopping list
+
+Thanks everyone who has contributed ideas for new features - keep them coming!
+
+
+----
+
 _22/7/09_ *Version 1.1 released to Android Market*
 
 Bites v1.1 fixes up recipe downloading - recipe files are now proper .xml files. Bug fixes for editing non existent items and a tidy up and simplification of the menus. Integration with Trolly and OI Shopping list improved. Thanks to Peli from [http://www.openintents.org/en/ OpenIntents] for submitting patches and suggestions!
