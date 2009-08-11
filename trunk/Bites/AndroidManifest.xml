@@ -27,6 +27,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:mimeType="text/xml" />
+                <data android:mimeType="application/xml" />
             </intent-filter>
 		</activity>
     	<receiver android:name=".SmsReceiver"
