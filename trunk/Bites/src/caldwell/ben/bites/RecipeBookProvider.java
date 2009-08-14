@@ -44,7 +44,7 @@ public class RecipeBookProvider extends ContentProvider {
     private static final String TAG = "RecipeBookProvider";
 
     private static final String DATABASE_NAME = "recipe_book.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String RECIPE_TABLE_NAME = "recipes";
     private static final String INGREDIENT_TABLE_NAME = "ingredients";
     private static final String METHOD_TABLE_NAME = "methods";
@@ -74,6 +74,7 @@ public class RecipeBookProvider extends ContentProvider {
             db.execSQL("CREATE TABLE " + RECIPE_TABLE_NAME + " ("
                     + Recipes._ID + " INTEGER PRIMARY KEY,"
                     + Recipes.TITLE + " TEXT,"
+                    + Recipes.AUTHOR + " TEXT,"
                     + Recipes.CREATED_DATE + " INTEGER,"
                     + Recipes.MODIFIED_DATE + " INTEGER"
                     + ");");
@@ -99,8 +100,15 @@ public class RecipeBookProvider extends ContentProvider {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS notes");
-            onCreate(db);
+            switch (oldVersion) {
+            case 2:
+            	//From version 2 to version 3, add authors column to the recipes table
+            	db.execSQL("ALTER TABLE " + RECIPE_TABLE_NAME 
+            				+ " ADD " + Recipes.AUTHOR + " TEXT;");
+            	break;
+            default:
+            	//do nothing...
+            }            
         }
     }
 
@@ -475,6 +483,7 @@ public class RecipeBookProvider extends ContentProvider {
         sRecipesProjectionMap = new HashMap<String, String>();
         sRecipesProjectionMap.put(Recipes._ID, Recipes._ID);
         sRecipesProjectionMap.put(Recipes.TITLE, Recipes.TITLE);
+        sRecipesProjectionMap.put(Recipes.AUTHOR, Recipes.AUTHOR);
         sRecipesProjectionMap.put(Recipes.CREATED_DATE, Recipes.CREATED_DATE);
         sRecipesProjectionMap.put(Recipes.MODIFIED_DATE, Recipes.MODIFIED_DATE);
         sRecipesProjectionMap.put(Ingredients._ID, Ingredients._ID);

@@ -267,6 +267,7 @@ public class Bites extends TabActivity {
 			ContentValues values = new ContentValues();
 			mRecipeName = recipe.getAttribute("name");
 			values.put(Recipes.TITLE, mRecipeName);
+			values.put(Recipes.AUTHOR, recipe.getAttribute("author"));
 			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
 			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
 			
@@ -334,6 +335,7 @@ public class Bites extends TabActivity {
 			ContentValues values = new ContentValues();
 			mRecipeName = recipe.getAttribute("name");
 			values.put(Recipes.TITLE, mRecipeName);
+			values.put(Recipes.AUTHOR, recipe.getAttribute("author"));
 			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
 			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
 			

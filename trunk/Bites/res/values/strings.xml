@@ -6,6 +6,7 @@
 
 <string name="tab_recipes">Recipes</string>
 <string name="recipe_name">Recipe name</string>
+<string name="recipe_author">Recipe author</string>
 <string name="edit_recipe">Edit recipe</string>
 <string name="delete_recipe">Delete recipe</string>
 <string name="dialog_received_title">Recipe received</string>
@@ -42,5 +43,6 @@
 
 <string name="no_shoppinglist_apps">No shopping list apps installed. \nTry installing Trolly</string>
 <string name="no_ingredients_selected">No ingredients selected. \nSelect an ingredient to add to the shopping list</string>
+<string name="database_upgrade_error">Could not upgrade database to new version</string>
 
 </resources>

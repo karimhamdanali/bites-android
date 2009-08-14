@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recipetitle"
-    style="@style/ListText"
-    android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:padding="5sp"
-    android:gravity="center_vertical"
-/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_height="?android:attr/listPreferredItemHeight"
+	android:layout_width="fill_parent" > 
+	<TextView android:id="@+id/recipetitle"
+	    style="@style/ListText"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_alignParentLeft="true"
+	    android:textAppearance="?android:attr/textAppearanceMedium"
+	    android:padding="5sp"
+	    android:gravity="center_vertical" />
+	<TextView android:id="@+id/author"
+	    style="@style/ListText"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_below="@id/recipetitle"	    
+	    android:textAppearance="?android:attr/textAppearanceMedium"
+	    android:padding="5sp"
+	    android:gravity="center_vertical" />
+</RelativeLayout>
