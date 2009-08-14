@@ -60,6 +60,12 @@ public final class RecipeBook {
          * <P>Type: TEXT</P>
          */
         public static final String TITLE = "title";
+        
+        /**
+         * The author of the recipe
+         * <P>Type: TEXT</P>
+         */
+        public static final String AUTHOR = "author";
 
         /**
          * The timestamp for when the recipe was created

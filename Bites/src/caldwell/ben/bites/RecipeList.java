@@ -77,6 +77,7 @@ public class RecipeList extends ListActivity {
     private static final String[] PROJECTION = new String[] {
             Recipes._ID, // 0
             Recipes.TITLE, // 1
+            Recipes.AUTHOR, // 1
     };
     	
     private Cursor mCursor;
@@ -88,6 +89,7 @@ public class RecipeList extends ListActivity {
 	private View mDialogView;
 	private TextView mDialogText;
     private TextView mHeader;
+	private EditText mDialogAuthor;
     
     /**
      * Custom adapter for recipe list.
@@ -158,9 +160,9 @@ public class RecipeList extends ListActivity {
 	                Recipes.DEFAULT_SORT_ORDER);
 		}
 
-        // Used to map notes entries from the database to views
+        // Used to map recipe entries from the database to views
         RecipeAdapter adapter = new RecipeAdapter(this, R.layout.recipelist_item, mCursor,
-                new String[] { Recipes.TITLE }, new int[] { R.id.recipetitle});
+                new String[] { Recipes.TITLE, Recipes.AUTHOR }, new int[] { R.id.recipetitle, R.id.author});
         setListAdapter(adapter);
        	mCursor.moveToFirst();
        	if (!mCursor.isBeforeFirst()) {
@@ -209,6 +211,7 @@ public class RecipeList extends ListActivity {
             // Insert a new item
         	showDialog(DIALOG_INSERT);
         	mDialogEdit.setText("");
+        	mDialogAuthor.setText("");
         	return true;
 	    case MENU_ITEM_PREFERENCES:
         	startActivity(new Intent(this,BitesPreferences.class));
@@ -268,6 +271,7 @@ public class RecipeList extends ListActivity {
                 // Edit the ingredient that the context menu is for
 	        	showDialog(DIALOG_EDIT);
 				mDialogEdit.setText(cursor.getString(cursor.getColumnIndex(Recipes.TITLE)));
+				mDialogAuthor.setText(cursor.getString(cursor.getColumnIndex(Recipes.AUTHOR)));
                 return true;	        	
 	        }    
 	        case MENU_ITEM_DELETE: {
@@ -293,6 +297,12 @@ public class RecipeList extends ListActivity {
 	}
 	
 	private void sendEmailRecipe() {
+		//Get a recipe cursor
+		Cursor cRecipe = getContentResolver().query(Uri.withAppendedPath(Recipes.CONTENT_URI, Long.toString(Bites.mRecipeId)), 
+													new String[] {Recipes._ID, Recipes.TITLE, Recipes.AUTHOR}, 
+													null, 
+													null, 
+													null);
 		//Get an ingredient cursor
     	Cursor cIngredient = getContentResolver().query(Ingredients.CONTENT_URI, 
     											new String[] {Ingredients._ID, Ingredients.TEXT}, 
@@ -313,6 +323,8 @@ public class RecipeList extends ListActivity {
 			serializer.startDocument("UTF-8", true);
 			serializer.startTag("", "recipe");
 			serializer.attribute("", "name", Bites.mRecipeName);
+			cRecipe.moveToFirst();
+			serializer.attribute("", "author", cRecipe.getString(cRecipe.getColumnIndex(Recipes.AUTHOR)));
 			//add ingredients to xml file
 	    	cIngredient.moveToFirst();
 	    	while (!cIngredient.isLast() && !cIngredient.isNull(0) )
@@ -438,6 +450,8 @@ public class RecipeList extends ListActivity {
 		case DIALOG_INSERT:
 			mDialogView = factory.inflate(R.layout.dialog_recipename, null);
 			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
+			mDialogAuthor = (EditText)mDialogView.findViewById(R.id.recipeauthor_edit);
+			mDialogAuthor.setText("");
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.recipe_name)
                 .setView(mDialogView)
@@ -446,6 +460,7 @@ public class RecipeList extends ListActivity {
                     	/* User clicked OK so do some stuff */
                     	ContentValues values = new ContentValues();
                     	values.put(Recipes.TITLE, mDialogEdit.getText().toString());
+                    	values.put(Recipes.AUTHOR, mDialogAuthor.getText().toString());
                     	mUri = getContentResolver().insert(Recipes.CONTENT_URI,values);
                     	selectItem(Long.parseLong(mUri.getLastPathSegment()));
                     }
@@ -459,6 +474,7 @@ public class RecipeList extends ListActivity {
 		case DIALOG_EDIT:
 			mDialogView = factory.inflate(R.layout.dialog_recipename, null);
 			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
+			mDialogAuthor = (EditText)mDialogView.findViewById(R.id.recipeauthor_edit);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.recipe_name)
                 .setView(mDialogView)
@@ -469,6 +485,7 @@ public class RecipeList extends ListActivity {
                     	/*Bites.mRecipeName = mDialogEdit.getText().toString();
                     	mHeader.setText(Bites.mRecipeName);*/
                         values.put(Recipes.TITLE, mDialogEdit.getText().toString());
+                        values.put(Recipes.AUTHOR, mDialogAuthor.getText().toString());
                         getContentResolver().update(mUri, values, null, null);
                         selectItem(Long.parseLong(mUri.getLastPathSegment()));
                     }
