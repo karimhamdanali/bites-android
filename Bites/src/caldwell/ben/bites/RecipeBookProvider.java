@@ -75,6 +75,7 @@ public class RecipeBookProvider extends ContentProvider {
                     + Recipes._ID + " INTEGER PRIMARY KEY,"
                     + Recipes.TITLE + " TEXT,"
                     + Recipes.AUTHOR + " TEXT,"
+                    + Recipes.DESCRIPTION + " TEXT,"
                     + Recipes.CREATED_DATE + " INTEGER,"
                     + Recipes.MODIFIED_DATE + " INTEGER"
                     + ");");
@@ -100,15 +101,14 @@ public class RecipeBookProvider extends ContentProvider {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            switch (oldVersion) {
-            case 2:
+            if (oldVersion <= 2) {
             	//From version 2 to version 3, add authors column to the recipes table
             	db.execSQL("ALTER TABLE " + RECIPE_TABLE_NAME 
             				+ " ADD " + Recipes.AUTHOR + " TEXT;");
-            	break;
-            default:
-            	//do nothing...
-            }            
+            	//From version 2 to version 3, add description column to the recipes table
+            	db.execSQL("ALTER TABLE " + RECIPE_TABLE_NAME 
+            				+ " ADD " + Recipes.DESCRIPTION + " TEXT;");
+            }           
         }
     }
 
@@ -484,6 +484,7 @@ public class RecipeBookProvider extends ContentProvider {
         sRecipesProjectionMap.put(Recipes._ID, Recipes._ID);
         sRecipesProjectionMap.put(Recipes.TITLE, Recipes.TITLE);
         sRecipesProjectionMap.put(Recipes.AUTHOR, Recipes.AUTHOR);
+        sRecipesProjectionMap.put(Recipes.DESCRIPTION, Recipes.DESCRIPTION);
         sRecipesProjectionMap.put(Recipes.CREATED_DATE, Recipes.CREATED_DATE);
         sRecipesProjectionMap.put(Recipes.MODIFIED_DATE, Recipes.MODIFIED_DATE);
         sRecipesProjectionMap.put(Ingredients._ID, Ingredients._ID);

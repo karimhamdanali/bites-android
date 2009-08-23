@@ -77,7 +77,8 @@ public class RecipeList extends ListActivity {
     private static final String[] PROJECTION = new String[] {
             Recipes._ID, // 0
             Recipes.TITLE, // 1
-            Recipes.AUTHOR, // 1
+            Recipes.AUTHOR, // 2
+            Recipes.DESCRIPTION, // 3
     };
     	
     private Cursor mCursor;
@@ -90,6 +91,7 @@ public class RecipeList extends ListActivity {
 	private TextView mDialogText;
     private TextView mHeader;
 	private EditText mDialogAuthor;
+	private EditText mDialogDesc;
     
     /**
      * Custom adapter for recipe list.
@@ -162,7 +164,8 @@ public class RecipeList extends ListActivity {
 
         // Used to map recipe entries from the database to views
         RecipeAdapter adapter = new RecipeAdapter(this, R.layout.recipelist_item, mCursor,
-                new String[] { Recipes.TITLE, Recipes.AUTHOR }, new int[] { R.id.recipetitle, R.id.author});
+                new String[] { Recipes.TITLE, Recipes.AUTHOR, Recipes.DESCRIPTION }, 
+                new int[] { R.id.recipetitle, R.id.author, R.id.description});
         setListAdapter(adapter);
        	mCursor.moveToFirst();
        	if (!mCursor.isBeforeFirst()) {
@@ -272,6 +275,7 @@ public class RecipeList extends ListActivity {
 	        	showDialog(DIALOG_EDIT);
 				mDialogEdit.setText(cursor.getString(cursor.getColumnIndex(Recipes.TITLE)));
 				mDialogAuthor.setText(cursor.getString(cursor.getColumnIndex(Recipes.AUTHOR)));
+				mDialogDesc.setText(cursor.getString(cursor.getColumnIndex(Recipes.DESCRIPTION)));
                 return true;	        	
 	        }    
 	        case MENU_ITEM_DELETE: {
@@ -325,6 +329,9 @@ public class RecipeList extends ListActivity {
 			serializer.attribute("", "name", Bites.mRecipeName);
 			cRecipe.moveToFirst();
 			serializer.attribute("", "author", cRecipe.getString(cRecipe.getColumnIndex(Recipes.AUTHOR)));
+			serializer.startTag("", "description");
+			serializer.text(cRecipe.getString(cRecipe.getColumnIndex(Recipes.AUTHOR)));
+			serializer.endTag("", "description");
 			//add ingredients to xml file
 	    	cIngredient.moveToFirst();
 	    	while (!cIngredient.isLast() && !cIngredient.isNull(0) )
@@ -452,6 +459,8 @@ public class RecipeList extends ListActivity {
 			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
 			mDialogAuthor = (EditText)mDialogView.findViewById(R.id.recipeauthor_edit);
 			mDialogAuthor.setText("");
+			mDialogDesc = (EditText)mDialogView.findViewById(R.id.recipedescription);
+			mDialogDesc.setText("");
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.recipe_name)
                 .setView(mDialogView)
@@ -461,6 +470,7 @@ public class RecipeList extends ListActivity {
                     	ContentValues values = new ContentValues();
                     	values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                     	values.put(Recipes.AUTHOR, mDialogAuthor.getText().toString());
+                    	values.put(Recipes.DESCRIPTION, mDialogDesc.getText().toString());
                     	mUri = getContentResolver().insert(Recipes.CONTENT_URI,values);
                     	selectItem(Long.parseLong(mUri.getLastPathSegment()));
                     }
@@ -475,6 +485,7 @@ public class RecipeList extends ListActivity {
 			mDialogView = factory.inflate(R.layout.dialog_recipename, null);
 			mDialogEdit = (EditText)mDialogView.findViewById(R.id.recipename_edit);
 			mDialogAuthor = (EditText)mDialogView.findViewById(R.id.recipeauthor_edit);
+			mDialogDesc = (EditText)mDialogView.findViewById(R.id.recipedescription);
             return new AlertDialog.Builder(this)
                 .setTitle(R.string.recipe_name)
                 .setView(mDialogView)
@@ -486,6 +497,7 @@ public class RecipeList extends ListActivity {
                     	mHeader.setText(Bites.mRecipeName);*/
                         values.put(Recipes.TITLE, mDialogEdit.getText().toString());
                         values.put(Recipes.AUTHOR, mDialogAuthor.getText().toString());
+                        values.put(Recipes.DESCRIPTION, mDialogDesc.getText().toString());
                         getContentResolver().update(mUri, values, null, null);
                         selectItem(Long.parseLong(mUri.getLastPathSegment()));
                     }
