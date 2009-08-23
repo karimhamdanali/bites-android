@@ -249,6 +249,7 @@ public class Bites extends TabActivity {
 			File file = new File(path);
 			Document doc = builder.parse(file);
 			Element recipe = doc.getDocumentElement();
+			NodeList description = recipe.getElementsByTagName("description");
 			NodeList ingredients = recipe.getElementsByTagName("ingredient");
 			NodeList methods = recipe.getElementsByTagName("method");
 
@@ -268,6 +269,7 @@ public class Bites extends TabActivity {
 			mRecipeName = recipe.getAttribute("name");
 			values.put(Recipes.TITLE, mRecipeName);
 			values.put(Recipes.AUTHOR, recipe.getAttribute("author"));
+			values.put(Recipes.DESCRIPTION, description.item(0).getFirstChild().getNodeValue());
 			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
 			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
 			
@@ -317,6 +319,7 @@ public class Bites extends TabActivity {
 			Document doc = builder.parse(attachment);
 			attachment.close();
 			Element recipe = doc.getDocumentElement();
+			NodeList description = recipe.getElementsByTagName("description");
 			NodeList ingredients = recipe.getElementsByTagName("ingredient");
 			NodeList methods = recipe.getElementsByTagName("method");
 
@@ -336,6 +339,7 @@ public class Bites extends TabActivity {
 			mRecipeName = recipe.getAttribute("name");
 			values.put(Recipes.TITLE, mRecipeName);
 			values.put(Recipes.AUTHOR, recipe.getAttribute("author"));
+			values.put(Recipes.DESCRIPTION,description.item(0).getFirstChild().getNodeValue());
 			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
 			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
 			
