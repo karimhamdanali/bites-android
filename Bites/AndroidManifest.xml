@@ -11,6 +11,9 @@
     	android:label="@string/app_name" >
     	<provider android:name="RecipeBookProvider"
             android:authorities="caldwell.ben.provider.RecipeBook" />
+        <!-- search results are shown in the Bites activity -->
+        <meta-data android:name="android.app.default_searchable"
+                       android:value=".Bites" />
         <activity android:name=".Bites" 
         	android:label="@string/app_name">
             <intent-filter>
@@ -28,6 +31,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:mimeType="text/xml" />
                 <data android:mimeType="application/xml" />
+            </intent-filter>
+            <intent-filter>
+            	<action android:name="android.intent.action.SEARCH" />
+            	<category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 		</activity>
     	<receiver android:name=".SmsReceiver"
