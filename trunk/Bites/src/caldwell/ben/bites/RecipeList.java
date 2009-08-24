@@ -303,7 +303,7 @@ public class RecipeList extends ListActivity {
 	private void sendEmailRecipe() {
 		//Get a recipe cursor
 		Cursor cRecipe = getContentResolver().query(Uri.withAppendedPath(Recipes.CONTENT_URI, Long.toString(Bites.mRecipeId)), 
-													new String[] {Recipes._ID, Recipes.TITLE, Recipes.AUTHOR}, 
+													PROJECTION, 
 													null, 
 													null, 
 													null);
@@ -330,7 +330,7 @@ public class RecipeList extends ListActivity {
 			cRecipe.moveToFirst();
 			serializer.attribute("", "author", cRecipe.getString(cRecipe.getColumnIndex(Recipes.AUTHOR)));
 			serializer.startTag("", "description");
-			serializer.text(cRecipe.getString(cRecipe.getColumnIndex(Recipes.AUTHOR)));
+			serializer.text(cRecipe.getString(cRecipe.getColumnIndex(Recipes.DESCRIPTION)));
 			serializer.endTag("", "description");
 			//add ingredients to xml file
 	    	cIngredient.moveToFirst();
