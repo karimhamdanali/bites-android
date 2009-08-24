@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TabHost;
@@ -308,7 +309,7 @@ public class Bites extends TabActivity {
 	 * add to recipe content provider.
 	 */
 	private void importXMLAttachment() {
-		
+
 		if (!getIntent().getScheme().equals("content")) {
 			return;
 		}
@@ -343,7 +344,7 @@ public class Bites extends TabActivity {
 			values.put(Recipes.DESCRIPTION,description.item(0).getFirstChild().getNodeValue());
 			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
 			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
-			
+						
 			//insert ingredients for the new recipe
 			values = new ContentValues();
 			for (int i =0; i<ingredients.getLength(); i++)
