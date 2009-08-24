@@ -53,8 +53,10 @@ public class IngredientList extends ListActivity {
     private static final String[] PROJECTION = new String[] {
             Ingredients._ID, // 0
             Ingredients.RECIPE, // 1
-            Ingredients.TEXT, // 2
-            Ingredients.STATUS, // 3
+            Ingredients.ORDINAL, // 2
+            Ingredients.TEXT, // 3
+            Ingredients.STATUS, // 4
+            
     };
     
     /**

@@ -82,6 +82,7 @@ public class RecipeBookProvider extends ContentProvider {
             db.execSQL("CREATE TABLE " + INGREDIENT_TABLE_NAME + " ("
                     + Ingredients._ID + " INTEGER PRIMARY KEY,"
                     + Ingredients.RECIPE + " INTEGER,"
+                    + Ingredients.ORDINAL + " INTEGER,"
                     + Ingredients.TEXT + " TEXT,"
                     + Ingredients.STATUS + " INTEGER,"
                     + Ingredients.CREATED_DATE + " INTEGER,"
@@ -101,13 +102,16 @@ public class RecipeBookProvider extends ContentProvider {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            if (oldVersion <= 2) {
+            if (oldVersion < 3) {
             	//From version 2 to version 3, add authors column to the recipes table
             	db.execSQL("ALTER TABLE " + RECIPE_TABLE_NAME 
             				+ " ADD " + Recipes.AUTHOR + " TEXT;");
             	//From version 2 to version 3, add description column to the recipes table
             	db.execSQL("ALTER TABLE " + RECIPE_TABLE_NAME 
             				+ " ADD " + Recipes.DESCRIPTION + " TEXT;");
+            	//From version 2 to version 3, add ordinal column to the ingredients table
+            	db.execSQL("ALTER TABLE " + INGREDIENT_TABLE_NAME 
+            				+ " ADD " + Ingredients.ORDINAL + " INTEGER;");
             }           
         }
     }
@@ -281,6 +285,17 @@ public class RecipeBookProvider extends ContentProvider {
 
                 if (values.containsKey(RecipeBook.Ingredients.MODIFIED_DATE) == false) {
                     values.put(RecipeBook.Ingredients.MODIFIED_DATE, now);
+                }
+                
+                //If there is no ordinal value then increment the highest existing
+                if (values.containsKey(RecipeBook.Ingredients.ORDINAL) == false) {
+                    int ordinal = 0;
+                    Cursor c = db.query(INGREDIENT_TABLE_NAME, new String[]{"max("+Ingredients.ORDINAL+")"}, 
+                    		Ingredients.RECIPE + "=" + values.get(Ingredients.RECIPE), null, null, null, null);
+                    if(c.moveToFirst()) {
+                    	ordinal = c.getInt(0)+1;
+                    }
+                    values.put(RecipeBook.Ingredients.ORDINAL, ordinal);
                 }
 
                 if (values.containsKey(RecipeBook.Ingredients.TEXT) == false) {
@@ -489,6 +504,7 @@ public class RecipeBookProvider extends ContentProvider {
         sRecipesProjectionMap.put(Recipes.MODIFIED_DATE, Recipes.MODIFIED_DATE);
         sRecipesProjectionMap.put(Ingredients._ID, Ingredients._ID);
         sRecipesProjectionMap.put(Ingredients.RECIPE, Ingredients.RECIPE);
+        sRecipesProjectionMap.put(Ingredients.ORDINAL, Ingredients.ORDINAL);
         sRecipesProjectionMap.put(Ingredients.TEXT, Ingredients.TEXT);
         sRecipesProjectionMap.put(Ingredients.STATUS, Ingredients.STATUS);
         sRecipesProjectionMap.put(Ingredients.CREATED_DATE, Ingredients.CREATED_DATE);

@@ -279,6 +279,7 @@ public class Bites extends TabActivity {
 			{
 				values.put(Ingredients.RECIPE, mRecipeId);
 				values.put(Ingredients.TEXT,ingredients.item(i).getFirstChild().getNodeValue());
+				values.put(Ingredients.ORDINAL,i+1);
 				getContentResolver().insert(Ingredients.CONTENT_URI, values);
 			}
 			
@@ -349,6 +350,7 @@ public class Bites extends TabActivity {
 			{
 				values.put(Ingredients.RECIPE, mRecipeId);
 				values.put(Ingredients.TEXT,ingredients.item(i).getFirstChild().getNodeValue());
+				values.put(Ingredients.ORDINAL,i+1);
 				getContentResolver().insert(Ingredients.CONTENT_URI, values);
 			}
 			

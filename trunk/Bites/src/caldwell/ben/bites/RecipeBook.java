@@ -108,13 +108,19 @@ public final class RecipeBook {
         /**
          * The default sort order for this table
          */
-        public static final String DEFAULT_SORT_ORDER = "text ASC";
+        public static final String DEFAULT_SORT_ORDER = "ordinal,text ASC";
 
         /**
          * The ID of the recipe the ingredient belongs to
          * <P>Type: INTEGER</P>
          */
         public static final String RECIPE = "recipe_ID";
+        
+        /**
+         * The ID of the recipe the ingredient belongs to
+         * <P>Type: INTEGER</P>
+         */
+        public static final String ORDINAL = "ordinal";
 
         /**
          * The text of the ingredient
