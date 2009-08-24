@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
+	android:background="@drawable/bites_image"
+	android:cacheColorHint="#00000000"
 	android:orientation="vertical" >
 	<TextView android:id="@+id/recipeheader"
 			android:layout_width="fill_parent"
@@ -12,14 +14,12 @@
 	<ListView android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:textFilterEnabled="true"
-        android:background="@drawable/bites_image"
-        android:cacheColorHint="#00000000" />
+        android:cacheColorHint="#00000000"
+        android:textFilterEnabled="true"/>
     <TextView android:id="@android:id/empty"
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
     	style="@style/ListText"
-    	android:background="@drawable/bites_image"
     	android:cacheColorHint="#00000000"
     	android:text="No Recipes" />
 </LinearLayout>
