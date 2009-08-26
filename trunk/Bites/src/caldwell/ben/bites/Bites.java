@@ -270,7 +270,9 @@ public class Bites extends TabActivity {
 			mRecipeName = recipe.getAttribute("name");
 			values.put(Recipes.TITLE, mRecipeName);
 			values.put(Recipes.AUTHOR, recipe.getAttribute("author"));
-			values.put(Recipes.DESCRIPTION, description.item(0).getFirstChild().getNodeValue());
+			if (description.getLength()>0) {
+				values.put(Recipes.DESCRIPTION, description.item(0).getFirstChild().getNodeValue());
+			}
 			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
 			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
 			
@@ -294,8 +296,10 @@ public class Bites extends TabActivity {
 				getContentResolver().insert(Methods.CONTENT_URI, values);
 			}
 		} catch (Exception e) {
+			mRecipeId = 0;
+			mRecipeName = "";
 			//Pop a toast showing xml file error and return
-			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
+			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG).show();
 		} finally {
 			//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
 			getTabHost().setCurrentTab(1);
@@ -341,7 +345,9 @@ public class Bites extends TabActivity {
 			mRecipeName = recipe.getAttribute("name");
 			values.put(Recipes.TITLE, mRecipeName);
 			values.put(Recipes.AUTHOR, recipe.getAttribute("author"));
-			values.put(Recipes.DESCRIPTION,description.item(0).getFirstChild().getNodeValue());
+			if (description.getLength()>0) {
+				values.put(Recipes.DESCRIPTION,description.item(0).getFirstChild().getNodeValue());
+			}
 			Uri recipeUri = getContentResolver().insert(Recipes.CONTENT_URI, values);
 			mRecipeId = Long.parseLong(recipeUri.getLastPathSegment());
 						
@@ -367,6 +373,8 @@ public class Bites extends TabActivity {
 		} catch (Exception e) {
 			//Pop a toast showing xml file error and return
 			Toast.makeText(this, R.string.xml_create_error, Toast.LENGTH_LONG);
+			mRecipeId = 0;
+			mRecipeName = "";
 		} finally {
 			//Change to ingredients tab and back to recipe tab to force onResume and requery etc.
 			getTabHost().setCurrentTab(1);

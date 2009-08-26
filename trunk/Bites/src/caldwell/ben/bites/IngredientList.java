@@ -58,14 +58,7 @@ public class IngredientList extends ListActivity {
             Ingredients.STATUS, // 4
             
     };
-    
-    /**
-     * Column indexes
-     */
-    private static final int COLUMN_INDEX_ID = 0;
-//    private static final int COLUMN_INDEX_RECIPE = 1;
-    private static final int COLUMN_INDEX_INGREDIENT = 2;
-    
+       
     /**
      * Case selections for the type of dialog box displayed
      */
@@ -213,7 +206,7 @@ public class IngredientList extends ListActivity {
             return;
         }
         // Setup the menu header
-        menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_INGREDIENT));
+        menu.setHeaderTitle(cursor.getString(cursor.getColumnIndex(Ingredients.TEXT)));
         // Add a menu item to delete the note
         menu.add(0, MENU_ITEM_EDIT, 0, R.string.edit_ingredient);
         menu.add(0, MENU_ITEM_DELETE, 0, R.string.delete_ingredient);
@@ -235,19 +228,19 @@ public class IngredientList extends ListActivity {
             return false;
         }
         
-        mUri = ContentUris.withAppendedId(getIntent().getData(), cursor.getLong(COLUMN_INDEX_ID));
+        mUri = ContentUris.withAppendedId(getIntent().getData(), cursor.getLong(cursor.getColumnIndex(Ingredients._ID)));
 
         switch (item.getItemId()) {
 	        case MENU_ITEM_EDIT: {
                 // Edit the ingredient that the context menu is for
 	        	showDialog(DIALOG_EDIT);
-				mDialogEdit.setText(cursor.getString(COLUMN_INDEX_INGREDIENT));
+				mDialogEdit.setText(cursor.getString(cursor.getColumnIndex(Ingredients.TEXT)));
                 return true;	        	
 	        }    
 	        case MENU_ITEM_DELETE: {
                 // Delete the note that the context menu is for
 	        	showDialog(DIALOG_DELETE);
-				mDialogText.setText(cursor.getString(COLUMN_INDEX_INGREDIENT));
+				mDialogText.setText(cursor.getString(cursor.getColumnIndex(Ingredients.TEXT)));
                 return true;
             }
         }
