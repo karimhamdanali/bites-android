@@ -5,6 +5,17 @@
 
 ----
 
+_30/8/09_ *Version 1.3 released to Android Market*
+
+v1.3 update contains a few bug fixes for reported bugs, thanks to all users who took the time to report bugs.
+
+New features include:
+  * Author field added to recipes list
+  * Description field added to recipes list
+  * Recipe files open from more websites
+
+----
+
 _8/8/09_ *Version 1.2 released to Android Market*
 
 Bites v1.2 features improved recipe sharing - simply click on a recipe file in the browser and Bites will open with the option to import the recipe. Long click a recipe in Bites and you will have the option to email the recipe to anyone.
