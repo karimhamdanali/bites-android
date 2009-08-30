@@ -12,7 +12,8 @@ v1.3 update contains a few bug fixes for reported bugs, thanks to all users who 
 New features include:
   * Author field added to recipes list
   * Description field added to recipes list
-  * Recipe files open from more websites
+  * Recipe.xml file format updated to include author and description fields
+  * Intent filters modified to open recipe files open from more websites
 
 ----
 
