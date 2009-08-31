@@ -12,8 +12,8 @@ Just create your file from the following template and post it on the web, then a
 {{{
 <?xml version="1.0"?>
 
-<recipe name="Your Recipe Name" author="Recipe Author">
-	<description>Your first ingredient</description>
+<recipe name="Your Recipe Name" author="Your Name">
+	<description>A short paragraph describing your recipe</description>
 	<ingredient>Your first ingredient</ingredient>
 	<ingredient>Your second ingredient</ingredient>
 	<method step="1">Your first method step</method>
